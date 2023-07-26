@@ -1,8 +1,8 @@
-using Application.Data;
-using Application.Repositories;
-using Application.Service;
+using Data;
+using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Service.Services;
 
 namespace Application
 {

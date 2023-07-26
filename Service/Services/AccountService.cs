@@ -1,7 +1,8 @@
-﻿using Application.Entities;
-using Application.Repositories;
+﻿using Data;
+using Data.Entities;
+using Data.Repositories;
 
-namespace Application.Service
+namespace Service.Services
 {
 	public class AccountService
 	{

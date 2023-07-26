@@ -1,8 +1,8 @@
-﻿using Application.Data;
+﻿using Data;
 
-namespace Application.Repositories
+namespace Data.Repositories
 {
-	public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
+    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
 	{
 		#region Private Members
 

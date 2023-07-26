@@ -1,9 +1,9 @@
-﻿using Application.Data;
-using Application.Entities;
+﻿using Data.Entities;
+using Data;
 
-namespace Application.Repositories
+namespace Data.Repositories
 {
-	public class AccountRepository : BaseRepository<Account>
+    public class AccountRepository : BaseRepository<Account>
 	{
 		private DataContext _dataContext;
 

@@ -1,8 +1,8 @@
-﻿using Application.Entities;
-using Application.Service;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.Services;
+using Data.Entities;
 
 namespace Application.Controllers
 {
