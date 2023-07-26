@@ -7,7 +7,9 @@ namespace Data
 {
     public class DataContext : DbContext
     {
-        public DbSet<Account> Account { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Role> Role { get; set; }
+
         public DataContext()
         {
         }
@@ -17,7 +19,7 @@ namespace Data
         {
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=applicationserver.database.windows.net,1433;database=ApplicationDB;Persist Security Info=True;User ID=jvlita123;password=admin123.;");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=applicationserver.database.windows.net,1433;database=ApplicationDB;Persist Security Info=True;User ID=jvlita123;password=admin123.;");
 
         public void AddEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {

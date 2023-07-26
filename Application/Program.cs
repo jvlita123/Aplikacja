@@ -26,8 +26,10 @@ namespace Application
 				//options.AccessDeniedPath = "/Forbidden/";
 			//});
 
-			builder.Services.AddScoped<AccountService>();
-			builder.Services.AddScoped<AccountRepository>();
+			builder.Services.AddScoped<RoleService>();
+			builder.Services.AddScoped<RoleRepository>();
+			builder.Services.AddScoped<UserService>();
+			builder.Services.AddScoped<UserRepository>();
 
 			var app = builder.Build();
 
