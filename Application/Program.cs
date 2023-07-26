@@ -1,3 +1,9 @@
+using Application.Data;
+using Application.Repositories;
+using Application.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+
 namespace Application
 {
 	public class Program
@@ -8,6 +14,20 @@ namespace Application
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
+
+			string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+			builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+
+			//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			//.AddCookie(options =>
+			//{
+				//options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+				//options.SlidingExpiration = true;
+				//options.AccessDeniedPath = "/Forbidden/";
+			//});
+
+			builder.Services.AddScoped<AccountService>();
+			builder.Services.AddScoped<AccountRepository>();
 
 			var app = builder.Build();
 
@@ -24,12 +44,14 @@ namespace Application
 
 			app.UseRouting();
 
+		//	app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Home}/{action=Index}/{id?}");
 
+			app.UseHttpsRedirection();
 			app.Run();
 		}
 	}
