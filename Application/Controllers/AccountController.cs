@@ -7,7 +7,7 @@ using Service.Services;
 namespace Application.Controllers
 {
     //[Route("api/account")]
-  //  [ApiController]
+    //[ApiController]
     public class AccountController : Controller
     {
         private UserService _userService;
