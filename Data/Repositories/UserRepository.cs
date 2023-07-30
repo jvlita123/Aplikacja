@@ -17,5 +17,12 @@ namespace Data.Repositories
 
             return result;
         }
+
+        public User GetUserByEmail(string email)
+        {
+            User user = _dataContext.User.Where(u => u.Email == email).FirstOrDefault();
+
+            return user;
+        }
     }
 }

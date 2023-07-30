@@ -59,5 +59,19 @@ namespace Service.Services
 
             return newUser;
         }
+
+        public Boolean LoginUser(string email, string password)
+        {
+            User userToLogin = _userRepository.GetUserByEmail(email);
+
+            if (userToLogin != null)
+            {
+                if(userToLogin.PasswordHash == password)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
