@@ -1,8 +1,15 @@
 using Data;
+using Data.Dto_s;
+using Data.Entities;
 using Data.Repositories;
+using Data.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service.Services;
+using System;
 
 namespace Application
 {
@@ -14,22 +21,18 @@ namespace Application
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
+			builder.Services.AddFluentValidation(); 
+			builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
-			string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+            string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 			builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
-			//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			//.AddCookie(options =>
-			//{
-				//options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-				//options.SlidingExpiration = true;
-				//options.AccessDeniedPath = "/Forbidden/";
-			//});
-
-			builder.Services.AddScoped<RoleService>();
+            builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            builder.Services.AddScoped<RoleService>();
 			builder.Services.AddScoped<RoleRepository>();
 			builder.Services.AddScoped<UserService>();
 			builder.Services.AddScoped<UserRepository>();
+			builder.Services.AddScoped<IPasswordHasher<User>,PasswordHasher<User>>();
 
 			var app = builder.Build();
 
@@ -46,7 +49,7 @@ namespace Application
 
 			app.UseRouting();
 
-		//	app.UseAuthentication();
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllerRoute(

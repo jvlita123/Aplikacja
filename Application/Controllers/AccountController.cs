@@ -19,6 +19,7 @@ namespace Application.Controllers
         {
             return View(_userService.GetAllDto());
         }
+        //[HttpGet("register")]
         public IActionResult RegisterUser()
         {
             return View();
@@ -28,8 +29,11 @@ namespace Application.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult RegisterUser(RegisterUserDto dto)
         {
-            User newAccount = _userService.RegisterUserDto(dto);
-            return View(newAccount);
+            if (ModelState.IsValid)
+            {
+                User newAccount = _userService.RegisterUserDto(dto);
+            }
+            return View();
         }
     }
 }

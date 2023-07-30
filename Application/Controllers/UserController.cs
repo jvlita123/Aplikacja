@@ -21,27 +21,5 @@ namespace Application.Controllers
         {
             return View(_userService.GetAll());
         }
-
-        public IActionResult Create()
-        {
-            ViewData["RoleId"] = new SelectList(_roleService.GetAll(), "Id", "Name");
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(User user)
-        {
-            try
-            {
-                _userService.Add(user);
-                ViewData["RoleId"] = new SelectList(_roleService.GetAll(), "Id", "Name", user.RoleId);
-                return View(user);
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

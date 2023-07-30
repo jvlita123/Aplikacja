@@ -1,6 +1,7 @@
 ﻿using Data.Dto_s;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -9,9 +10,12 @@ namespace Service.Services
     public class UserService
     {
         private readonly UserRepository _userRepository;
-        public UserService(UserRepository userRepository)
+        private readonly IPasswordHasher<User> _passwordHasher;
+
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public List<User> GetAll()
@@ -20,6 +24,7 @@ namespace Service.Services
 
             return users;
         }
+
         public List<RegisterUserDto?> GetAllDto()
         {
             List<User> users = _userRepository.GetAll().Include(x=>x.Role).ToList();
@@ -31,7 +36,7 @@ namespace Service.Services
                 RegisterUserDto? user = new RegisterUserDto()
                 {
                     Email = userTmp.Email,
-                    PasswordHash = userTmp.PasswordHash,
+                    Password = userTmp.PasswordHash,
                     RoleId = userTmp.RoleId,
                 };
                 usersDto.Add(user);
@@ -40,21 +45,16 @@ namespace Service.Services
             return usersDto;
         }
 
-        public User Add(User user)
-        {
-            User? newUser = _userRepository.AddAndSaveChanges(user);
-
-            return newUser;
-        }
         public User RegisterUserDto(RegisterUserDto dto)
         {
             var newUser = new User()
             {
                 Email = dto.Email,
-                PasswordHash = dto.PasswordHash,
                 RoleId = dto.RoleId
             };
-
+            var hashedPassword =  _passwordHasher.HashPassword(newUser, dto.Password);
+            
+            newUser.PasswordHash = hashedPassword;
             _userRepository.AddAndSaveChanges(newUser);
 
             return newUser;
