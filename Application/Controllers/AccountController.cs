@@ -6,8 +6,6 @@ using Service.Services;
 
 namespace Application.Controllers
 {
-    //[Route("api/account")]
-    //[ApiController]
     public class AccountController : Controller
     {
         private UserService _userService;
@@ -15,11 +13,12 @@ namespace Application.Controllers
         {
             _userService = userService;
         }
+
         public IActionResult Index()
         {
             return View(_userService.GetAllDto());
         }
-        //[HttpGet("register")]
+
         public IActionResult RegisterUser()
         {
             return View();
