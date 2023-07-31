@@ -1,7 +1,6 @@
 ﻿using Data.Dto_s;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
 
 namespace Application.Controllers
@@ -33,6 +32,18 @@ namespace Application.Controllers
                 User newAccount = _userService.RegisterUserDto(dto);
             }
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginDto dto)
+        {
+            string token = _userService.GenerateJwt(dto);
+            return Ok(token);
         }
     }
 }

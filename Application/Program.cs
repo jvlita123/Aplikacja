@@ -8,8 +8,10 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Service.Services;
 using System;
+using System.Text;
 
 namespace Application
 {
@@ -18,10 +20,30 @@ namespace Application
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+            var authenticationSettings = new AuthenticationSettings();
 
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
-			builder.Services.AddFluentValidation(); 
+			builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+			builder.Services.AddSingleton(authenticationSettings);
+			builder.Services.AddAuthentication(option =>
+			{
+				option.DefaultAuthenticateScheme = "Bearer";
+				option.DefaultScheme = "Bearer";
+				option.DefaultChallengeScheme = "Bearer";
+			}).AddJwtBearer(cfg =>
+			{
+				cfg.RequireHttpsMetadata = false;
+				cfg.SaveToken = true;
+				cfg.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidIssuer = authenticationSettings.JwtIssuer,
+					ValidAudience = authenticationSettings.JwtIssuer,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+				};
+			});
+
+            builder.Services.AddControllersWithViews();
+			//builder.Services.AddFluentValidation(); 
 			builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
             string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");

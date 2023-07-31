@@ -1,9 +1,13 @@
-﻿using Data.Dto_s;
+﻿using Data;
+using Data.Dto_s;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Service.Services
 {
@@ -11,11 +15,13 @@ namespace Service.Services
     {
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly AuthenticationSettings _authenticationSettings;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _authenticationSettings = authenticationSettings;
         }
 
         public List<User> GetAll()
@@ -27,7 +33,7 @@ namespace Service.Services
 
         public List<RegisterUserDto?> GetAllDto()
         {
-            List<User> users = _userRepository.GetAll().Include(x=>x.Role).ToList();
+            List<User> users = _userRepository.GetAll().Include(x => x.Role).ToList();
             List<RegisterUserDto> usersDto = new List<RegisterUserDto>();
 
             foreach (var v in users)
@@ -52,26 +58,52 @@ namespace Service.Services
                 Email = dto.Email,
                 RoleId = dto.RoleId
             };
-            var hashedPassword =  _passwordHasher.HashPassword(newUser, dto.Password);
-            
+            var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
+
             newUser.PasswordHash = hashedPassword;
             _userRepository.AddAndSaveChanges(newUser);
 
             return newUser;
         }
 
-        public Boolean LoginUser(string email, string password)
+        public string GenerateJwt(LoginDto dto)
         {
-            User userToLogin = _userRepository.GetUserByEmail(email);
+            var userToLogin = _userRepository
+                .GetAll()
+                .Include(u => u.Role)
+                .FirstOrDefault(u => u.Email == dto.Email);
 
-            if (userToLogin != null)
+            if (userToLogin is null)
             {
-                if(userToLogin.PasswordHash == password)
-                {
-                    return true;
-                }
+                throw new Exception();//to be corrected
             }
-            return false;
+
+            var result = _passwordHasher.VerifyHashedPassword(userToLogin, userToLogin.PasswordHash, dto.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                throw new Exception();//to be corrected
+            }
+
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
+                new Claim(ClaimTypes.Name,$"{userToLogin.FirstName} {userToLogin.LastName}"),
+                new Claim(ClaimTypes.Role, $"{userToLogin.Role.Name}"),
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(_authenticationSettings.JwtExpireDays));
+
+            var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
+                _authenticationSettings.JwtIssuer,
+                claims,
+                expires: expires,
+                signingCredentials: cred);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
         }
     }
 }
