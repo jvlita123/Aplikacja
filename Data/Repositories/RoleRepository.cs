@@ -1,11 +1,11 @@
-﻿using Data.Entities;
+﻿using Service.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Repositories
+namespace Service.Repositories
 {
     public class RoleRepository : BaseRepository<Role>
     {

@@ -1,5 +1,5 @@
-﻿using Data.Entities;
-using Data.Repositories;
+﻿using Service.Entities;
+using Service.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

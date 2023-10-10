@@ -1,7 +1,7 @@
-﻿using Data;
-using Data.Dto_s;
-using Data.Entities;
-using Data.Repositories;
+﻿using Service;
+using Service.Dto_s;
+using Service.Entities;
+using Service.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +16,14 @@ namespace Service.Services
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly BlockRepository _blockRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, BlockRepository blockRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _blockRepository = blockRepository;
         }
 
         public List<User> GetAll()
@@ -43,7 +45,7 @@ namespace Service.Services
                 {
                     Email = userTmp.Email,
                     Password = userTmp.PasswordHash,
-                    RoleId = userTmp.RoleId,
+                    RoleId = (int)userTmp.RoleId,
                 };
                 usersDto.Add(user);
             }
@@ -56,7 +58,7 @@ namespace Service.Services
             var newUser = new User()
             {
                 Email = dto.Email,
-                RoleId = dto.RoleId
+                RoleId = dto.RoleId,
             };
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
 

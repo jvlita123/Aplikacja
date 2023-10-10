@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-namespace Data.Entities;
+namespace Service.Entities;
 
-public class User
+public partial class User
 {
-    [Key]
     public int Id { get; set; }
 
-    [Required]
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     public string? FirstName { get; set; }
 
@@ -18,10 +15,37 @@ public class User
 
     public DateTime? DateOfBirth { get; set; }
 
-    [Required]
     public string? PasswordHash { get; set; }
+
+    public int AccountId { get; set; }
 
     public int RoleId { get; set; }
 
-    public virtual Role? Role { get; set; }
+    public string? PhoneNumber { get; set; }
+
+    public bool? IsBlocked { get; set; }
+
+    public virtual Account Account { get; set; } = null!;
+
+    public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+
+    //public virtual ICollection<Block> BlockBlockedUsers { get; set; } = new List<Block>();
+
+    public virtual ICollection<Block> BlockedUsers { get; set; } = new List<Block>();
+
+    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+
+   // public virtual ICollection<Message> MessageUserId2Navigations { get; set; } = new List<Message>();
+
+    public virtual ICollection<Message> MessageUsers { get; set; } = new List<Message>();
+
+    public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+
+    public virtual ICollection<Response> Responses { get; set; } = new List<Response>();
+
+    public virtual Role Role { get; set; } = null!;
+
+    public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
 }

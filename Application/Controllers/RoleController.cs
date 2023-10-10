@@ -1,4 +1,4 @@
-﻿using Data.Entities;
+﻿using Service.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;

@@ -1,4 +1,4 @@
-﻿namespace Data.Repositories
+﻿namespace Service.Repositories
 {
 	public interface IBaseRepository<TEntity> where TEntity : class, new()
 	{

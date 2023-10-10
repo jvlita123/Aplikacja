@@ -1,4 +1,4 @@
-﻿namespace Data
+﻿namespace Service
 {
     public class AuthenticationSettings
     {

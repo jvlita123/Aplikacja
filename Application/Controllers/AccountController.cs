@@ -1,5 +1,5 @@
-﻿using Data.Dto_s;
-using Data.Entities;
+﻿using Service.Dto_s;
+using Service.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 

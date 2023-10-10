@@ -1,7 +1,7 @@
-﻿using Data.Dto_s;
+﻿using Service.Dto_s;
 using FluentValidation;
 
-namespace Data.Validators
+namespace Service.Validators
 {
     public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
     {

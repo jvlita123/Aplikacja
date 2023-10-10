@@ -1,0 +1,19 @@
+﻿using Service.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service.Repositories
+{
+    public class StatusRepository : BaseRepository<Status>
+    {
+        private DataContext _dataContext;
+
+        public StatusRepository(DataContext context) : base(context)
+        {
+            _dataContext = context;
+        }
+    }
+}
