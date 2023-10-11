@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.Options;
+using Data.Entities;
 
 namespace Data
 {
@@ -9,7 +10,23 @@ namespace Data
     {
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-
+        public DbSet<Reservation> Reservation { get; set; }
+        public DbSet<Entities.Service> Service { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Course> Course { get; set; }
+        public DbSet<Cycle> Cycles { get; set; }
+        public DbSet<CoursesPerCycle> CoursesPerCycle { get; set; }
+        public DbSet<Survey> Survey { get; set; }
+        public DbSet<Question> Question { get; set; }
+        public DbSet<AnswerOption> AnswerOptions { get; set; }
+        public DbSet<Answer> Answer { get; set; }
+        public DbSet<Response> Responses { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Status> Status { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<Block> Blocks { get; set; }
+        public DbSet<Message> Messages { get; set; }
         public DataContext()
         {
         }

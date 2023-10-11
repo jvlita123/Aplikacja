@@ -1,8 +1,18 @@
-using Data;
+using Service;
+using Data.Dto_s;
+using Data.Entities;
 using Data.Repositories;
+using Data.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Service.Services;
+using System;
+using System.Text;
+using Data;
 
 namespace Application
 {
@@ -12,26 +22,84 @@ namespace Application
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CORSPolicy", builder =>
+                {
+                    builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:3000");
+                });
+            });
 
-			string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+
+            builder.Services.AddControllersWithViews();
+			//builder.Services.AddFluentValidation(); 
+			builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
+
+            string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 			builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
-			//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			//.AddCookie(options =>
-			//{
-				//options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-				//options.SlidingExpiration = true;
-				//options.AccessDeniedPath = "/Forbidden/";
-			//});
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+           .AddCookie(options =>
+           {
+               options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+               options.SlidingExpiration = true;
+               options.AccessDeniedPath = "/Forbidden/";
+           });
 
-			builder.Services.AddScoped<RoleService>();
+            builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            builder.Services.AddScoped<RoleService>();
 			builder.Services.AddScoped<RoleRepository>();
+			builder.Services.AddScoped<ReservationRepository>();
+			builder.Services.AddScoped<ReservationService>();
+			builder.Services.AddScoped<ServiceRepository>();
 			builder.Services.AddScoped<UserService>();
 			builder.Services.AddScoped<UserRepository>();
+			builder.Services.AddScoped<CategoriesRepository>();
+			builder.Services.AddScoped<CategoriesService>();
+			builder.Services.AddScoped<CoursesRepository>();
+			builder.Services.AddScoped<CoursesService>();
+			builder.Services.AddScoped<CyclesRepository>();
+			builder.Services.AddScoped<CyclesService>();
+			builder.Services.AddScoped<CoursesPerCycleRepository>();
+			builder.Services.AddScoped<CoursesPerCycleService>();
+			builder.Services.AddScoped<SurveyRepository>();
+			builder.Services.AddScoped<SurveyService>();
+			builder.Services.AddScoped<QuestionRepository>();
+			builder.Services.AddScoped<QuestionService>();
+			builder.Services.AddScoped<AnswerOptionRepository>();
+			builder.Services.AddScoped<AnswerOptionService>();
+			builder.Services.AddScoped<AnswerRepository>();
+			builder.Services.AddScoped<AnswerService>();
+			builder.Services.AddScoped<ResponseRepository>();
+			builder.Services.AddScoped<ResponseService>();
+			builder.Services.AddScoped<EnrollmentsRepository>();
+			builder.Services.AddScoped<EnrollmentsService>();
+			builder.Services.AddScoped<AttendanceRepository>();
+			builder.Services.AddScoped<AttendanceService>();
+			builder.Services.AddScoped<StatusRepository>();
+			builder.Services.AddScoped<StatusService>();
+			builder.Services.AddScoped<ServiceService>();
+			builder.Services.AddScoped<ServiceRepository>();
+			builder.Services.AddScoped<PhotoRepository>();
+			builder.Services.AddScoped<PhotoService>();
+			builder.Services.AddScoped<BlockRepository>();
+			builder.Services.AddScoped<BlockService>();
+			builder.Services.AddScoped<MessageRepository>();
+			builder.Services.AddScoped<MessageService>();
+			builder.Services.AddScoped<MessageService>();
+			builder.Services.AddScoped<IPasswordHasher<User>,PasswordHasher<User>>();
 
-			var app = builder.Build();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
@@ -46,7 +114,7 @@ namespace Application
 
 			app.UseRouting();
 
-		//	app.UseAuthentication();
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllerRoute(
