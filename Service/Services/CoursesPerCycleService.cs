@@ -1,5 +1,5 @@
-﻿using Service.Entities;
-using Service.Repositories;
+﻿using Data.Entities;
+using Data.Repositories;
 
 namespace Service.Services
 {

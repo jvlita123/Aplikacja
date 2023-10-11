@@ -1,6 +1,6 @@
-﻿using Service;
+﻿using Data;
 
-namespace Service.Repositories
+namespace Data.Repositories
 {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
 	{

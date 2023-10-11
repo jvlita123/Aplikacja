@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Data.Entities;
+using System;
 using System.Collections.Generic;
 
-namespace Service.Entities;
+namespace Data.Entities;
 
 public partial class Answer
 {

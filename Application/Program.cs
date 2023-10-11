@@ -1,8 +1,8 @@
 using Service;
-using Service.Dto_s;
-using Service.Entities;
-using Service.Repositories;
-using Service.Validators;
+using Data.Dto_s;
+using Data.Entities;
+using Data.Repositories;
+using Data.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Service.Services;
 using System;
 using System.Text;
+using Data;
 
 namespace Application
 {
@@ -20,27 +21,21 @@ namespace Application
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-            var authenticationSettings = new AuthenticationSettings();
 
-			builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CORSPolicy", builder =>
+                {
+                    builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:3000");
+                });
+            });
 
-			builder.Services.AddSingleton(authenticationSettings);
-			builder.Services.AddAuthentication(option =>
-			{
-				option.DefaultAuthenticateScheme = "Bearer";
-				option.DefaultScheme = "Bearer";
-				option.DefaultChallengeScheme = "Bearer";
-			}).AddJwtBearer(cfg =>
-			{
-				cfg.RequireHttpsMetadata = false;
-				cfg.SaveToken = true;
-				cfg.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidIssuer = authenticationSettings.JwtIssuer,
-					ValidAudience = authenticationSettings.JwtIssuer,
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
-				};
-			});
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
 
             builder.Services.AddControllersWithViews();
 			//builder.Services.AddFluentValidation(); 
@@ -48,6 +43,14 @@ namespace Application
 
             string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 			builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+           .AddCookie(options =>
+           {
+               options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+               options.SlidingExpiration = true;
+               options.AccessDeniedPath = "/Forbidden/";
+           });
 
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<RoleService>();
@@ -89,9 +92,14 @@ namespace Application
 			builder.Services.AddScoped<BlockService>();
 			builder.Services.AddScoped<MessageRepository>();
 			builder.Services.AddScoped<MessageService>();
+			builder.Services.AddScoped<MessageService>();
 			builder.Services.AddScoped<IPasswordHasher<User>,PasswordHasher<User>>();
 
-			var app = builder.Build();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())

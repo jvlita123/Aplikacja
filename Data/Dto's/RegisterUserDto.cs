@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Dto_s
+namespace Data.Dto_s
 {
     public class RegisterUserDto
     {

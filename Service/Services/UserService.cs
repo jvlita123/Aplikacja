@@ -1,7 +1,9 @@
-﻿using Service;
-using Service.Dto_s;
-using Service.Entities;
-using Service.Repositories;
+﻿using Data;
+using Data.Dto_s;
+using Data.Entities;
+using Data.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,15 +17,13 @@ namespace Service.Services
     {
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
-        private readonly AuthenticationSettings _authenticationSettings;
-        private readonly BlockRepository _blockRepository;
+        private readonly RoleRepository _roleRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, BlockRepository blockRepository)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, RoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _authenticationSettings = authenticationSettings;
-            _blockRepository = blockRepository;
+            _roleRepository = roleRepository;   
         }
 
         public List<User> GetAll()
@@ -60,6 +60,7 @@ namespace Service.Services
                 Email = dto.Email,
                 RoleId = dto.RoleId,
             };
+
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
 
             newUser.PasswordHash = hashedPassword;
@@ -68,7 +69,7 @@ namespace Service.Services
             return newUser;
         }
 
-        public string GenerateJwt(LoginDto dto)
+        public ClaimsIdentity Login(LoginDto dto)
         {
             var userToLogin = _userRepository
                 .GetAll()
@@ -87,25 +88,18 @@ namespace Service.Services
                 throw new Exception();//to be corrected
             }
 
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
-                new Claim(ClaimTypes.Name,$"{userToLogin.FirstName} {userToLogin.LastName}"),
-                new Claim(ClaimTypes.Role, $"{userToLogin.Role.Name}"),
-            };
+            var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
+                        new Claim(ClaimTypes.Name, userToLogin.Email),//need update to Name
+                        new Claim(ClaimTypes.Email, userToLogin.Email),
+                        new Claim(ClaimTypes.Role, userToLogin.Role.Name.ToString()),
+                    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_authenticationSettings.JwtExpireDays));
-
-            var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer,
-                claims,
-                expires: expires,
-                signingCredentials: cred);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+           
+            return claimsIdentity;
         }
     }
 }

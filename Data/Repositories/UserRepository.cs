@@ -1,6 +1,6 @@
-﻿using Service.Entities;
+﻿using Data.Entities;
 
-namespace Service.Repositories
+namespace Data.Repositories
 {
     public class UserRepository : BaseRepository<User>
     {

@@ -1,4 +1,4 @@
-﻿namespace Service
+﻿namespace Data
 {
 	internal class Program
 	{

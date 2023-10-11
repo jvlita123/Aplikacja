@@ -1,9 +1,10 @@
-﻿using Service.Entities;
+﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.Options;
+using Data.Entities;
 
-namespace Service
+namespace Data
 {
     public class DataContext : DbContext
     {
@@ -11,7 +12,6 @@ namespace Service
         public DbSet<Role> Role { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
         public DbSet<Entities.Service> Service { get; set; }
-        public DbSet<Account> Account { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Course> Course { get; set; }
         public DbSet<Cycle> Cycles { get; set; }

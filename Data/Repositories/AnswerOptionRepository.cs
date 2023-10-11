@@ -1,11 +1,11 @@
-﻿using Service.Entities;
+﻿using Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Repositories
+namespace Data.Repositories
 {
     public class AnswerOptionRepository : BaseRepository<AnswerOption>
     {

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Data.Entities;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Service.Entities;
+namespace Data.Entities;
 
 public partial class User
 {
@@ -19,13 +21,11 @@ public partial class User
 
     public int AccountId { get; set; }
 
-    public int RoleId { get; set; }
+    public int RoleId { get; set; } = 1;
 
     public string? PhoneNumber { get; set; }
 
     public bool? IsBlocked { get; set; }
-
-    public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 

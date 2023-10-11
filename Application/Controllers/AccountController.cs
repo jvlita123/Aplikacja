@@ -1,7 +1,10 @@
-﻿using Service.Dto_s;
-using Service.Entities;
+﻿using Data.Dto_s;
+using Data.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
+using System.Security.Claims;
 
 namespace Application.Controllers
 {
@@ -42,8 +45,31 @@ namespace Application.Controllers
         [HttpPost]
         public IActionResult Login(LoginDto dto)
         {
-            string token = _userService.GenerateJwt(dto);
-            return Ok(token);
+            if (ModelState.IsValid)
+            {
+                ClaimsIdentity claimsIdentity = _userService.Login(dto);
+
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                return RedirectToAction("LoggedIn");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Email or Password is wrong.");
+                return RedirectToAction("Login");
+
+            }
+        }
+
+        public IActionResult LoggedIn()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("index", "Home");
         }
     }
 }
