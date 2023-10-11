@@ -9,12 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 		{C2AA89F7-7A7F-4493-855D-802D615F0BF9} = {C2AA89F7-7A7F-4493-855D-802D615F0BF9}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{C2AA89F7-7A7F-4493-855D-802D615F0BF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{C2AA89F7-7A7F-4493-855D-802D615F0BF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{18F3A4CE-E666-488C-AB5D-FB6F098AF194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{18F3A4CE-E666-488C-AB5D-FB6F098AF194}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C2AA89F7-7A7F-4493-855D-802D615F0BF9} = {C2AA89F7-7A7F-4493-855D-802D615F0BF9}
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{96DE5D8F-C28B-4BDA-90BA-D5EC66700710}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
