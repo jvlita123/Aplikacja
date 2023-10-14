@@ -50,7 +50,7 @@ namespace Application.Controllers
                 ClaimsIdentity claimsIdentity = _userService.Login(dto);
 
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("LoggedIn");
+                return RedirectToAction("Login");
             }
             else
             {
