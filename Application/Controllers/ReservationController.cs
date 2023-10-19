@@ -1,6 +1,8 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
+using System.Globalization;
 
 namespace Application.Controllers
 {
@@ -8,11 +10,15 @@ namespace Application.Controllers
     {
         private ReservationService _reservationService;
         private UserService _userService;
+        private ServiceService _serviceService;
+        private StatusService _statusService;
 
-        public ReservationController(ReservationService reservationService, UserService userService)
+        public ReservationController(ReservationService reservationService, ServiceService serviceService,StatusService statusService,UserService userService)
         {
             _reservationService = reservationService;
             _userService = userService;
+            _serviceService = serviceService;
+            _statusService = statusService; 
         }
 
         public IActionResult Index()
@@ -25,19 +31,51 @@ namespace Application.Controllers
         public IActionResult UserReservations()
         {
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
-            List<Reservation> reservations;
 
-            if (User.IsInRole("admin"))
-            {
-                reservations = _reservationService.GetAll().ToList();
-            }
-            else
-            {
-                reservations = _reservationService.GetAll().Where(x => x.UserId == usr.Id).ToList();
-            }
-
-            return View(reservations);
+            return View(_reservationService.getUserReservations(usr));
         }
+
+        public IActionResult Calendar()
+        {
+            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
+
+            ViewData["events"] = _reservationService.getUserReservations(usr);
+
+            return View();
+        }
+
+        public IActionResult ReservationCalendar()
+        {
+            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
+            var reservations = _reservationService.GetAll().Where(x => x.User.Role.Name == "admin").ToList();
+
+            ViewData["events"] = reservations;
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult NewReservation()
+        {
+            var services = new SelectList(_serviceService.GetAll().Select(x => x.Name).ToList());
+            var statuses = new SelectList(_statusService.GetAll().Select(x => x.Name).ToList());
+
+            ViewBag.ServiceId = services;
+            ViewBag.StatusId = statuses;
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult NewReservation(Reservation reservation)
+        {
+            reservation.UserId = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).Select(x=>x.Id).FirstOrDefault();
+
+            _reservationService.newReservation(reservation);
+            
+            return View();
+        }
+
 
         // POST: ReservationController/Create
         [HttpPost]

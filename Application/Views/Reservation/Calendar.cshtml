@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Data.Entities.Reservation>;
+
+@{
+    ViewData["Title"] = "Calendar";
+    var events = (IEnumerable<Data.Entities.Reservation>)ViewData["events"];
+    var length = events.Count();
+}
+
+
+<p>@events.ElementAt(0).Title</p>
+
+<table id="eventsTable">
+    @for(int i = 0; i < events.Count()-1; i++)
+    {
+        <tr>
+            <td>@events.ElementAt(i).Id</td>
+            <td>@events.ElementAt(i).Title</td>
+            <td>@events.ElementAt(i).Start.ToString("yyyy-MM-dd")</td>
+        </tr>
+    }
+</table>
+
+<div id='calendar'></div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script src="~/js/calendar.js"></script>

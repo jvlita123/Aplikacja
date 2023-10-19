@@ -1,15 +1,10 @@
-﻿using Data;
-using Data.Dto_s;
+﻿using Data.Dto_s;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace Service.Services
 {
@@ -23,7 +18,7 @@ namespace Service.Services
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _roleRepository = roleRepository;   
+            _roleRepository = roleRepository;
         }
 
         public List<User> GetAll()
@@ -69,7 +64,7 @@ namespace Service.Services
             return newUser;
         }
 
-        public ClaimsIdentity Login(LoginDto dto)
+        public ClaimsIdentity Login(LoginDto dto) //to be corrected
         {
             var userToLogin = _userRepository
                 .GetAll()
@@ -98,7 +93,7 @@ namespace Service.Services
 
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
-           
+
             return claimsIdentity;
         }
     }

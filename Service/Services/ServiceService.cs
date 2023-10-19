@@ -15,5 +15,11 @@ namespace Service.Services
         {
             _serviceRepository = serviceRepository;
         }
+        public List<Data.Entities.Service> GetAll()
+        {
+            List<Data.Entities.Service> services = _serviceRepository.GetAll().ToList();
+
+            return services;
+        }
     }
 }
