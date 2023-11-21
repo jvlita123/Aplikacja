@@ -1,41 +1,41 @@
 ﻿namespace Data.Repositories
 {
-	public interface IBaseRepository<TEntity> where TEntity : class, new()
-	{
-		TEntity Add(TEntity entity);
+    public interface IBaseRepository<TEntity> where TEntity : class, new()
+    {
+        TEntity Add(TEntity entity);
 
-		TEntity AddAndSaveChanges(TEntity entity);
+        TEntity AddAndSaveChanges(TEntity entity);
 
-		void AddRange(IEnumerable<TEntity> entity);
+        void AddRange(IEnumerable<TEntity> entity);
 
-		void AddRangeAndSaveChanges(IEnumerable<TEntity> entity);
+        void AddRangeAndSaveChanges(IEnumerable<TEntity> entity);
 
-		void Attach(TEntity entity);
+        void Attach(TEntity entity);
 
-		void DetectChanges();
+        void DetectChanges();
 
-		void Dispose();
+        void Dispose();
 
-		IQueryable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll();
 
-		TEntity? GetById(int id);
+        TEntity? GetById(int id);
 
-		void Remove(TEntity entity);
+        void Remove(TEntity entity);
 
-		void RemoveById(int id);
+        void RemoveById(int id);
 
-		void RemoveByIdAndSaveChanges(int id);
+        void RemoveByIdAndSaveChanges(int id);
 
-		void RemoveRange(IEnumerable<TEntity> entity);
+        void RemoveRange(IEnumerable<TEntity> entity);
 
-		void RemoveRangeAndSaveChanges(IEnumerable<TEntity> entity);
+        void RemoveRangeAndSaveChanges(IEnumerable<TEntity> entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		void Update(TEntity entity);
+        void Update(TEntity entity);
 
-		void UpdateAndSaveChanges(TEntity entity);
+        void UpdateAndSaveChanges(TEntity entity);
 
-		void UpdateRangeAndSaveChanges(IEnumerable<TEntity> entities);
-	}
+        void UpdateRangeAndSaveChanges(IEnumerable<TEntity> entities);
+    }
 }

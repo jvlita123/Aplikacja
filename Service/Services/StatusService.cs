@@ -1,10 +1,5 @@
 ﻿using Data.Entities;
 using Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {
@@ -21,6 +16,12 @@ namespace Service.Services
             List<Status> attendances = _statusRepository.GetAll().ToList();
 
             return attendances;
+        }
+        public Status GetByName(string name)
+        {
+            Status status = _statusRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
+
+            return status;
         }
     }
 }

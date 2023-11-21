@@ -1,9 +1,4 @@
-﻿using Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Data.Entities;
+﻿namespace Data.Entities;
 
 public partial class User
 {
@@ -35,7 +30,7 @@ public partial class User
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
-   // public virtual ICollection<Message> MessageUserId2Navigations { get; set; } = new List<Message>();
+    // public virtual ICollection<Message> MessageUserId2Navigations { get; set; } = new List<Message>();
 
     public virtual ICollection<Message> MessageUsers { get; set; } = new List<Message>();
 

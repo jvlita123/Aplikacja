@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Data.Entities;
+﻿namespace Data.Entities;
 
 public partial class Reservation
 {
@@ -25,7 +22,7 @@ public partial class Reservation
 
     public virtual Service Service { get; set; } = null!;
 
-    public virtual Status? Status { get; set; }
+    public virtual Status Status { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

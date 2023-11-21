@@ -1,5 +1,4 @@
 ﻿using Data.Dto_s;
-using Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,7 @@ namespace Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                User newAccount = _userService.RegisterUserDto(dto);
+                _userService.RegisterUserDto(dto);
             }
             return View();
         }
@@ -56,7 +55,6 @@ namespace Application.Controllers
             {
                 ModelState.AddModelError("", "Email or Password is wrong.");
                 return RedirectToAction("Login");
-
             }
         }
 

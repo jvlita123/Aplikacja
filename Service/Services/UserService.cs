@@ -13,17 +13,19 @@ namespace Service.Services
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly RoleRepository _roleRepository;
+        private readonly ReservationRepository _reservationRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, RoleRepository roleRepository)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
+            _reservationRepository = reservationRepository;
         }
 
         public List<User> GetAll()
         {
-            List<User> users = _userRepository.GetAll().Include(x => x.Role).ToList();
+            List<User> users = _userRepository.GetAll().Include(x => x.Role).Include(x => x.Reservations).ToList();
 
             return users;
         }

@@ -1,49 +1,41 @@
 ﻿@model Data.Entities.Reservation
-
-@{
-    ViewData["Title"] = "NewReservation";
-}
-
-<h1>NewReservation</h1>
-
+@inject IHttpContextAccessor context;
 <h4>Reservation</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="NewReservation">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (@context.HttpContext.User.IsInRole("admin"))
+               { <div class="form-group">
+                    <label class="control-label"></label>
+                    <select name="userEmail" id="userEmail" class="form-control" asp-items="ViewBag.Emails"></select>
+                </div>
+            }
+            else{
+                <div class="form-group">
+                    <label asp-for="User.Email" class="control-label"></label>
+                    <input name="userEmail" id="userEmail" class="form-control" value ="@context.HttpContext.User.Identity.Name" readonly/>
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="Start" class="control-label"></label>
-                <input asp-for="Start" class="form-control" />
+                <input asp-for="Start" class="form-control" value="@ViewBag.Start" readonly />
                 <span asp-validation-for="Start" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="End" class="control-label"></label>
-                <input asp-for="End" class="form-control" />
-                <span asp-validation-for="End" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ServiceId" class="control-label"></label>
-                <select asp-for="ServiceId" class="form-control" asp-items="ViewBag.ServiceId"></select>
+                <input asp-for="Title" class="form-control" value="@ViewBag.serviceName" readonly />
             </div>
             <div class="form-group">
                 <label asp-for="PrimaryColor" class="control-label"></label>
-                <input asp-for="PrimaryColor" class="form-control" />
+                <input asp-for ="PrimaryColor" type="color">
                 <span asp-validation-for="PrimaryColor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SecondaryColor" class="control-label"></label>
-                <input asp-for="SecondaryColor" class="form-control" />
+                <input asp-for="SecondaryColor" type="color">
                 <span asp-validation-for="SecondaryColor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StatusId" class="control-label"></label>
-                <select asp-for="StatusId" class ="form-control" asp-items="ViewBag.StatusId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -56,3 +48,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

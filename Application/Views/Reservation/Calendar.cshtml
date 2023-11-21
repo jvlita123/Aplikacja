@@ -3,24 +3,80 @@
 @{
     ViewData["Title"] = "Calendar";
     var events = (IEnumerable<Data.Entities.Reservation>)ViewData["events"];
+    var adminEvents = (IEnumerable<Data.Entities.Reservation>)ViewData["adminEvents"];
+    var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
     var length = events.Count();
 }
+<style>
+    button {
+        border-radius: 20px; /* Zaokrąglenie przycisków */
+        border: 1px solid #ccc; /* Lekkie obramowanie */
+        padding: 5px 10px; /* Wielkość wewnętrznych marginesów przycisków */
+        background-color: #f0f0f0; /* Kolor tła przycisków */
+        color: #333; /* Kolor tekstu przycisków */
+        transition: background-color 0.3s, color 0.3s; /* Animacja zmiany koloru */
+        margin-right: 10px; /* Margines między przyciskami */
+        margin-bottom: 10px; /* Margines między przyciskami */
+    }
 
+        /* Styl po najechaniu myszką */
+        button:hover {
+            background-color: #e0e0e0; /* Jasniejsze tło po najechaniu */
+            color: #666; /* Jasniejszy kolor tekstu po najechaniu */
+            cursor: pointer; /* Zmiana kształtu kursora na wskaźnik */
+        }
+</style>
 
-<p>@events.ElementAt(0).Title</p>
-
-<table id="eventsTable">
-    @for(int i = 0; i < events.Count()-1; i++)
+<table id="eventsTable" style="display: none;">
+    @for (int i = 0; i < events.Count(); i++)
     {
         <tr>
             <td>@events.ElementAt(i).Id</td>
             <td>@events.ElementAt(i).Title</td>
-            <td>@events.ElementAt(i).Start.ToString("yyyy-MM-dd")</td>
+            <td>@events.ElementAt(i).Start.ToString("yyyy-MM-ddTHH:mm:sszzz")</td>
+            <td>@events.ElementAt(i).End.ToString("yyyy-MM-ddTHH:mm:sszzz")</td>
+            <td>@events.ElementAt(i).PrimaryColor</td>
         </tr>
     }
 </table>
 
+
+<table id="adminEventsTable" style="display: none;">
+    @for (int i = 0; i < adminEvents.Count(); i++)
+    {
+        <tr>
+            <td>@adminEvents.ElementAt(i).Id</td>
+            <td>@adminEvents.ElementAt(i).Title</td>
+            <td>@adminEvents.ElementAt(i).Start.ToString("yyyy-MM-ddTHH:mm:sszzz")</td>
+            <td>@adminEvents.ElementAt(i).End.ToString("yyyy-MM-ddTHH:mm:sszzz")</td>
+            <td>@adminEvents.ElementAt(i).PrimaryColor</td>
+        </tr>
+    }
+</table>
+
+<div id="servicesButtons">
+    @foreach (var service in services)
+    {
+        <button onclick="showSchedule('@service.Id', '@service.Name', '@service.ServiceTime',this)">
+            @service.Name
+        </button>
+    }
+</div>
+
+<div id="availableHours"></div>
 <div id='calendar'></div>
 
+<div id="newReservationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="newReservationContent">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-<script src="~/js/calendar.js"></script>
+<script src="~/js/calendar1.js"></script>

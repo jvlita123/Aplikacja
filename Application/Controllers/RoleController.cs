@@ -1,5 +1,4 @@
 ﻿using Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -7,7 +6,7 @@ namespace Application.Controllers
 {
     public class RoleController : Controller
     {
-        private RoleService _roleService;
+        private readonly RoleService _roleService;
 
         public RoleController(RoleService roleService)
         {
@@ -30,8 +29,8 @@ namespace Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Role? role)
         {
-                _roleService.Add(role);
-                return RedirectToAction(nameof(Index));
+            _roleService.Add(role);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
