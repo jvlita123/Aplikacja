@@ -1,5 +1,4 @@
 ﻿
-let eventsArr = [];
 
 let eventsTable = document.getElementById("eventsTable");
 
