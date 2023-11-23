@@ -1,0 +1,178 @@
+﻿@model IEnumerable<Data.Entities.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<button class="newCourseButton btn btn-info" ">
+    add new course
+</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @foreach (var cycle in item.Cycles)
+                    {
+                        <div>
+                            <button class="deleteCycleButton btn btn-danger" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
+                                @cycle.Description @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
+                            </button>
+                        </div>
+                    }
+                </td>
+                <td>
+                    <button class="newEnrollmentButton btn btn-info" data-course-id="@item.Id">
+                        Enroll
+                    </button>
+                    
+                    <button class="addCycleButton btn btn-info" data-course-id="@item.Id">Add New Cycle</button>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="newEnrollmentModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="newEnrollmentContext">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="newCycleModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="newCycleContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteConfirmationModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Are you sure you want to delete this reservation?</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this reservation?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeleteBtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
+                <button id="cancelDeleteBtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Pobieranie najnowszej wersji Bootstrapa -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    let newCycles = []; // Przechowuje lokalnie nowe cykle
+
+    $('.addCycleButton').on('click', function () {
+        var courseId = $(this).data('course-id'); // Pobierz courseId z atrybutu data
+        $('#newCycleModal').modal('show'); // Wyświetl modal po załadowaniu formularza cyklu
+        $.ajax({
+            url: '/Cycles/NewCycle',
+            type: 'GET',
+            data: { id: courseId },
+            success: function (data) {
+                $('#newCycleContent').html(data); // Tutaj dodaj zwracaną zawartość do modala
+            }
+        });
+    });
+
+    $('.newEnrollmentButton').on('click', function () {
+        var courseId = $(this).data('course-id');
+        $('#newEnrollmentModal').modal('show');
+        $.ajax({
+            url: '/Enrollment/NewEnrollment', // Sprawdź, czy ta ścieżka jest poprawna
+            type: 'GET',
+            data: { id: courseId }, // Przekazanie ID kursu
+            success: function (data) {
+                $('#newEnrollmentContext').html(data);
+            }
+        });
+    });
+
+
+    $('.newCourseButton').on('click', function () {
+        $('#newCycleModal').modal('show');
+        $.ajax({
+            url: '/Courses/NewCourse', // Sprawdź, czy ta ścieżka jest poprawna
+            type: 'GET',
+            success: function (data) {
+                $('#newCycleContent').html(data);
+            }
+        });
+    });
+
+    $('.deleteCycleButton').on('click', function () {
+        var cycleId = $(this).data('cycle-id'); // Pobierz identyfikator cyklu z atrybutu data
+        $('#deleteConfirmationModal').modal('show');
+        $('#confirmDeleteBtn').data('cycle-id', cycleId); // Przekaż identyfikator cyklu do przycisku potwierdzenia usuwania
+    });
+
+    $('#confirmDeleteBtn').on('click', function () {
+        var cycleId = $(this).data('cycle-id'); // Pobierz identyfikator cyklu z przycisku potwierdzenia usuwania
+        $.ajax({
+            url: '/Cycles/DeleteCycle',
+            type: 'POST',
+            data: { cycleId: cycleId },
+            success: function (data) {
+                $('#deleteConfirmationModal').modal('hide'); // Zamknij modal po pomyślnym usunięciu cyklu
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

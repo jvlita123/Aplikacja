@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
@@ -13,7 +15,9 @@ public partial class Message
     public int UserId2 { get; set; }
 
     [NotMapped]
-    public virtual User User { get; set; } = null!;
-
-    public virtual User UserId2Navigation { get; set; } = null!;
+    [ForeignKey("UserId")]
+    public virtual User User1 { get; set; } = null!;
+   
+    [ForeignKey("UserId2")]
+    public virtual User User2 { get; set; } = null!;
 }

@@ -1,0 +1,167 @@
+﻿@model IEnumerable<Data.Entities.Message>
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    ViewData["Title"] = "Messenger";
+    var users = (IEnumerable<Data.Entities.User>)ViewData["users"];
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messenger</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            overflow: hidden; /* Zablokowanie przewijania strony */
+        }
+
+        .mask-custom {
+            background: rgba(255, 255, 255, .8);
+            border-radius: 2em;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            background-clip: padding-box;
+            box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+        }
+
+        /* Pozostałe style */
+
+    </style>
+</head>
+<body class="">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <div class="col-md-6 col-lg-5 col-xl-5 mb-4 mb-md-0">
+                <h5 class="font-weight-bold mb-3 text-center text-white">Members</h5>
+                <div class="card mask-custom">
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var item in users)
+                            {
+                                <li class="p-2 border-bottom" style="border-bottom: 1px solid rgba(255,255,255,.3) !important;">
+                                    <a href="#!" class="d-flex justify-content-between link-light">
+                                        <div class="d-flex flex-row">
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
+                                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                                            <div class="pt-1">
+                                                <p class="fw-bold mb-0">
+                                                    <div data-user-id="@item.Id" class="message-row">
+                                                        <div class="image-wrapper rounded">
+                                                            @if (item.Photos.Count > 0)
+                                                            {
+                                                                <img src="~/Photos/@item.Photos.FirstOrDefault().Path" height="50" width="50" />
+                                                            }
+                                                        </div>
+                                                        <p class="fw-bold mb-0">
+                                                            @item.FirstName
+                                                        </p>
+                                                    </div>
+                                                </p>
+                                                <p class="small text-white">Hello, Are you there?</p>
+                                            </div>
+                                        </div>
+                                        <div class="pt-1">
+                                            <p class="small text-white mb-1">Just now</p>
+                                            <span class="badge bg-danger float-end">1</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-7 col-xl-7">
+                <ul class="list-unstyled text-white">
+                    <div id="conversationContainer" style="display: none;">
+                        @Html.Partial("GetConversation")
+                        <!-- Tu będzie wyświetlony partial view konwersacji -->
+                    </div>
+                    <li class="mb-3">
+                        <div class="form-outline form-white">
+                            <form id="sendMessageForm" asp-action="SendMessage">
+                                <div class="form-group textbox-content">
+                                    <textarea rows="4" asp-for="@Model.FirstOrDefault().Text" class="form-input form-control chat-textbox-input" placeholder="Type a message..." style="background-color: white; color: #333;"></textarea>
+                                    <span asp-validation-for="@Model.FirstOrDefault().Text" class="text-danger"></span>
+                                    <button type="submit" class="btn btn-light btn-lg btn-rounded float-end send-button" style="background-color: #ff69b4;">Send</button>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" asp-for="@Model.FirstOrDefault().UserId" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    @if (Model.First().User1.Email == HttpContextAccessor.HttpContext.User.Identity.Name)
+                                    {
+                                        <input type="hidden" asp-for="@Model.FirstOrDefault().UserId2" class="form-control" value="@Model.FirstOrDefault().UserId2" />
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" asp-for="@Model.FirstOrDefault().UserId2" class="form-control" value="@Model.FirstOrDefault().UserId" />
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </body>
+    
+    @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $('.message-row').on('click', function () {
+    var userId = $(this).data('user-id'); // ID użytkownika do konwersacji
+    
+    if (userId) {
+        $.ajax({
+            url: '/Message/GetConversation', // Zastąp 'ControllerName' nazwą Twojego kontrolera
+            type: 'GET',
+            data: { id: userId },
+            success: function (data) {
+                $('#conversationContainer').html(data); // 'conversationContainer' to miejsce na konwersację w Twoim widoku
+                $('#conversationContainer').show(); // Pokazujemy kontener po załadowaniu konwersacji
+            },
+            error: function () {
+                alert('Wystąpił błąd podczas pobierania konwersacji.');
+            }
+        });
+    } else {
+        // Dodatkowe działania lub informacje, jeśli użytkownik nie został wybrany
+        console.log('Proszę wybrać użytkownika.');
+    }
+});
+
+        $(document).ready(function () {
+            $('#sendMessageForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Pobierz dane z formularza
+                var formData = $(this).serialize();
+
+                // Wyślij żądanie AJAX
+                $.ajax({
+                    url: '/Message/SendMessage',
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        // Zaktualizuj zawartość konwersacji
+                        $('#conversationContainer').html(data);
+                    },
+                    error: function () {
+                        alert('Wystąpił błąd podczas wysyłania wiadomości.');
+                    }
+                });
+            });
+        });
+</script>}

@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Data.Entities.Message>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<script src="~/js/bootstrap.min.js"></script>
+
+        @foreach (var message in Model)
+        {
+            <div class="message">
+            <p>
+            From: @message.User1.FirstName
+            </p>
+            <p>
+                To: @message.User2.FirstName
+            </p>
+                <p>@message.Text</p>
+            </div>
+        }

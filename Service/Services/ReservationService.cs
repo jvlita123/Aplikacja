@@ -112,7 +112,7 @@ namespace Service.Services
         {
             Reservation reservation = _reservationRepository.GetById(idReservation);
             reservation.StatusId = idStatus;
-            _reservationRepository.Update(reservation);
+            _reservationRepository.UpdateAndSaveChanges(reservation);
             return reservation;
         }
     }

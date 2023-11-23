@@ -10,7 +10,7 @@ namespace Data
         public DbSet<Reservation> Reservation { get; set; }
         public DbSet<Entities.Service> Service { get; set; }
         public DbSet<Category> Category { get; set; }
-        public DbSet<Course> Course { get; set; }
+        public DbSet<Course> Courses { get; set; }
         public DbSet<Cycle> Cycles { get; set; }
         public DbSet<CoursesPerCycle> CoursesPerCycle { get; set; }
         public DbSet<Survey> Survey { get; set; }
@@ -23,7 +23,7 @@ namespace Data
         public DbSet<Status> Status { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Block> Blocks { get; set; }
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Message> Message { get; set; }
         public DataContext()
         {
         }
@@ -32,6 +32,24 @@ namespace Data
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.User1)
+                .WithMany(u => u.Messages)
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.User2)
+                .WithMany()
+                .HasForeignKey(m => m.UserId2)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=applicationserver.database.windows.net,1433;database=ApplicationDB;Persist Security Info=True;User ID=jvlita123;password=admin123.;");
 

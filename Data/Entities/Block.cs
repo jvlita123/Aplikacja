@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
@@ -11,7 +12,8 @@ public partial class Block
 
     public int BlockedUserId { get; set; }
 
+    [NotMapped]
     public virtual User BlockedUser { get; set; } = null!;
-
+    [NotMapped]
     public virtual User User { get; set; } = null!;
 }

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Data.Entities.Message>
+@{
+    ViewData["Title"] = "GetReceivedMessages";
+}
+
+<h1>GetReceivedMessages xd</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId2)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.UserId2)
+            </td>
+            <td>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+

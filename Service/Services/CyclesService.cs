@@ -19,11 +19,23 @@ namespace Service.Services
             return cycle;
         }
 
-        public Cycle Add(Cycle cycle)
+        public Cycle NewCycle(Cycle cycle)
         {
-            Cycle newCycle = _cyclesRepository.AddAndSaveChanges(cycle);
+            Cycle newCycle = new Cycle();
+            newCycle.Id = cycle.Id;
+            newCycle.CourseId = cycle.CourseId;
+            newCycle.Description = cycle.Description;
+            newCycle.StartDate = cycle.StartDate;
+            newCycle.EndDate = cycle.EndDate;
 
+            _cyclesRepository.AddAndSaveChanges(newCycle);
             return newCycle;
+        }
+
+        public void RemoveCycleById(int id)
+        {
+            _cyclesRepository.RemoveById(id);
+            _cyclesRepository.SaveChanges();
         }
     }
 }

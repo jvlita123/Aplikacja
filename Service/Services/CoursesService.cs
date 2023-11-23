@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
@@ -13,12 +14,12 @@ namespace Service.Services
 
         public List<Course> GetAll()
         {
-            List<Course> courses = _coursesRepository.GetAll().ToList();
+            List<Course> courses = _coursesRepository.GetAll().Include(x => x.Cycles).ToList();
 
             return courses;
         }
 
-        public Course Add(Course course)
+        public Course NewCourse(Course course)
         {
             Course newCourse = _coursesRepository.AddAndSaveChanges(course);
 

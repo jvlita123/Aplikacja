@@ -19,6 +19,7 @@ namespace Application.Controllers
             _serviceService = serviceService;
             _statusService = statusService;
         }
+
         public ActionResult Index()
         {
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
@@ -30,12 +31,14 @@ namespace Application.Controllers
 
             return View(userReservationsDto);
         }
+
         public ActionResult ShowReservation(int id)
         {
             Reservation reservation = _reservationService.GetAll().Where(x => x.Id == id).First();
 
             return PartialView(reservation);
         }
+
         public IActionResult Calendar()
         {
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
@@ -82,6 +85,7 @@ namespace Application.Controllers
 
             return RedirectToAction("Calendar");
         }
+
         public IActionResult RemoveReservation(Reservation reservation)
         {
             Reservation ReservationToRemove = _reservationService.GetAll().Where(x => x.Id == reservation.Id).FirstOrDefault();
@@ -96,6 +100,7 @@ namespace Application.Controllers
 
             return RedirectToAction("Index");
         }
+
         public PartialViewResult EditReservation(int id)
         {
             Reservation reservation = _reservationService.GetAll().Where(x => x.Id == id).FirstOrDefault();

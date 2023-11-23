@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Data.Entities.User>
+
+@{
+    ViewData["Title"] = "My Chats";
+}
+<div class="list-container message-list">
+    <div class="message-row section-title">
+        <h2>Latest Chats</h2>
+    </div>
+    @foreach (var item in Model)
+    {
+        <a href="GetConversation?id=@item.Id" class="message-row">
+            <div class="message-row-content">
+                <div class="header-wrapper">
+                    <div class="image-wrapper rounded">
+                        @if (item.Photos.Count > 0)
+                        {
+                            <img src="~/Photos/@item.Photos.FirstOrDefault().Path" height="50" width="50" />
+                        }
+                    </div>
+                    <h2>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </h2>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </div>
+        </a>
+    }
+</div>

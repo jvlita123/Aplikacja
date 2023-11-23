@@ -86,11 +86,9 @@
                     </span>
                 </div>
                 <h4>@reservation.Title</h4>
-                <!-- Przyciski Delete i Edit z dynamicznymi identyfikatorami -->
-
 
             <button id="deleteReservationBtn"  class="btn btn-danger">Delete</button>
-                <button id="editReservationBtn" class="btn btn-info">Edit</button>
+            <button id="editReservationBtn" class="btn btn-info">Edit</button>
 
             </div>
         }
@@ -148,7 +146,8 @@
                     <div class="reservation-header">
                         <span class="status @(reservation.Status.Name.ToLower())">
                             @reservation.Status.Name
-                        </span>                    <span class="date">
+                        </span>                    
+                        <span class="date">
                             <p class="month">@reservation.Start.ToString("MMMM")</p>
                             <p class="day">@reservation.Start.ToString("dd")</p>
                             <p class="time">@reservation.Start.ToString("HH:mm")</p>

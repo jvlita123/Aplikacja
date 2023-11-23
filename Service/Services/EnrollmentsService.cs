@@ -1,21 +1,70 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
     public class EnrollmentsService
     {
         private readonly EnrollmentsRepository _enrollmentsRepository;
-        public EnrollmentsService(EnrollmentsRepository enrollmentsRepository)
+        private readonly UserRepository _userRepository;
+        private readonly CyclesRepository _cyclespository;
+        private readonly CoursesRepository _coursespository;
+        public EnrollmentsService(EnrollmentsRepository enrollmentsRepository, UserRepository userRepository, CyclesRepository cyclesRepository, CoursesRepository coursespository)
         {
             _enrollmentsRepository = enrollmentsRepository;
+            _coursespository = coursespository;
+            _userRepository = userRepository;
+            _cyclespository = cyclesRepository;
         }
 
         public List<Enrollment> GetAll()
         {
-            List<Enrollment> enrollments = _enrollmentsRepository.GetAll().ToList();
+            List<Enrollment> enrollments = _enrollmentsRepository.GetAll().Include(x => x.Course).Include(x => x.User).ToList();
 
             return enrollments;
+        }
+
+        public Enrollment GetById(int id)
+        {
+            Enrollment enrollment = _enrollmentsRepository.GetById(id);
+
+            return enrollment;
+        }
+
+        public List<Enrollment> GetByCourse(int id)
+        {
+            List<Enrollment> enrollments = _enrollmentsRepository.GetAll().Where(x => x.CourseId == id).ToList();
+
+            return enrollments;
+        }
+
+        public List<Enrollment> GetUserEnrollments(User usr)
+        {
+            if (usr.Role.Name == "admin")
+            {
+                return GetAll();
+            }
+            else
+            {
+                return _enrollmentsRepository.GetAll().Include(x => x.Course).Include(x => x.User).Where(x => x.UserId == usr.Id).ToList();
+            }
+        }
+
+        public Enrollment NewEnrollment(Enrollment enrollment)
+        {
+            Enrollment newEnrollment = new()
+            { 
+                UserId = enrollment.UserId,
+                CourseId = enrollment.CourseId,
+                Cancelled = enrollment.Cancelled,
+                CancellationReason = enrollment.CancellationReason,
+                EnrollmentDate = enrollment.EnrollmentDate, 
+            };
+
+            _enrollmentsRepository.AddAndSaveChanges(newEnrollment);
+
+            return newEnrollment;
         }
     }
 }

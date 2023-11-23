@@ -1,4 +1,7 @@
-﻿namespace Data.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Data.Entities;
 
 public partial class Course
 {
@@ -6,9 +9,11 @@ public partial class Course
 
     public string Description { get; set; } = null!;
 
+    public string? Title { get; set; }
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
-    public virtual ICollection<CoursesPerCycle> CoursesPerCycles { get; set; } = new List<CoursesPerCycle>();
+    public virtual ICollection<Cycle> Cycles { get; set; } = new List<Cycle>();
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 

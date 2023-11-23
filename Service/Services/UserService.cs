@@ -30,6 +30,13 @@ namespace Service.Services
             return users;
         }
 
+        public User GetByEmail(string email)
+        {
+            User user = _userRepository.GetAll().Include(x => x.Role).Include(x => x.Reservations).Where(x => x.Email == email).FirstOrDefault();
+
+            return user;
+        }
+
         public List<RegisterUserDto?> GetAllDto()
         {
             List<User> users = _userRepository.GetAll().Include(x => x.Role).ToList();

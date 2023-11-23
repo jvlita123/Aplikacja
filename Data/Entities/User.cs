@@ -1,4 +1,8 @@
-﻿namespace Data.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
 
 public partial class User
 {
@@ -14,25 +18,21 @@ public partial class User
 
     public string? PasswordHash { get; set; }
 
-    public int AccountId { get; set; }
-
-    public int RoleId { get; set; } = 1;
-
     public string? PhoneNumber { get; set; }
 
     public bool? IsBlocked { get; set; }
 
+    public int? RoleId { get; set; }
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+    [NotMapped]
+    public virtual ICollection<Block> BlockBlockedUsers { get; set; } = new List<Block>();
 
-    //public virtual ICollection<Block> BlockBlockedUsers { get; set; } = new List<Block>();
-
-    public virtual ICollection<Block> BlockedUsers { get; set; } = new List<Block>();
+    public virtual ICollection<Block> Blocks { get; set; } = new List<Block>();
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
-    // public virtual ICollection<Message> MessageUserId2Navigations { get; set; } = new List<Message>();
-
-    public virtual ICollection<Message> MessageUsers { get; set; } = new List<Message>();
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
@@ -40,7 +40,7 @@ public partial class User
 
     public virtual ICollection<Response> Responses { get; set; } = new List<Response>();
 
-    public virtual Role Role { get; set; } = null!;
+    public virtual Role? Role { get; set; }
 
     public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
 }
