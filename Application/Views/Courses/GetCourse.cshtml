@@ -1,0 +1,86 @@
+﻿@model Data.Entities.Course
+@using System.IO;
+@using System.Drawing
+
+@{
+    ViewData["Title"] = "GetCourse";
+    var cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["cycles"];
+
+}
+<style>
+    .small-btn {
+        padding: 0.2rem 0.4rem; /* Zmniejszenie paddingu */
+        font-size: 0.75rem; /* Zmniejszenie rozmiaru czcionki */
+    }
+</style>
+<!-- Początek kodu Bootstrapa -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<form method="post" enctype="multipart/form-data" action="/TwojaAkcjaPrzetwarzajacaPlik">
+    <input type="file" name="plik" id="plik" />
+    <input type="submit" value="Wyślij plik" />
+</form>
+
+<div class="container">
+    <div class="row">
+        @foreach (var v in cycles)
+        {
+            <div class="col-md-3 mb-3">
+                <button class="btn btn-light btn-block small-btn">
+                    <div class="text-center">
+                        <span class="font-weight-bold">@v.StartDate.Day</span><br>
+                        <span>@v.StartDate.ToString("MMM")</span>
+                        <br>
+                        <span>@v.StartDate.ToString("HH:mm")</span>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <span class="font-weight-bold">@v.EndDate.Day</span><br>
+                        <span>@v.EndDate.ToString("MMM")</span>
+                        <br>
+                        <span>@v.EndDate.ToString("HH:mm")</span>
+                    </div>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<form enctype="multipart/form-data" method="post">
+    <dl>
+        <dt>
+            <label asp-for="FileUpload.FormFile"></label>
+        </dt>
+        <dd>
+            <input asp-for="FileUpload.FormFile" type="file">
+            <span asp-validation-for="FileUpload.FormFile"></span>
+        </dd>
+    </dl>
+    <input asp-page-handler="Upload" class="btn" type="submit" value="Upload" />
+</form>
+
+<!-- Koniec kodu Bootstrapa -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <h4>Course</h4>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

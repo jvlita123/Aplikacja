@@ -1,13 +1,5 @@
 ﻿@model Data.Dto_s.LoginDto
 
-@{
-    ViewData["Title"] = "ddddd";
-}
-
-<h1>Login</h1>
-
-<h4>User</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Login">
@@ -30,3 +22,8 @@
 </div>
 
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

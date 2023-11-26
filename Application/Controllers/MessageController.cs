@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Service.Services;
 
 namespace Application.Controllers
@@ -33,10 +34,12 @@ namespace Application.Controllers
         public IActionResult Index()
         {
             ViewData["users"] = _userService.GetAll();
+            User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
+
 
             List<Message> messages = _messageService.GetAll();
 
-            return View(messages);
+            return View();
         }
 
 
@@ -70,22 +73,28 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUserConversations()
+        public async Task<IActionResult> GetUserConversations()
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             List<User> userConversation = _messageService.GetUserConversations(user.Id);
-            return View(userConversation);
+            return PartialView("GetUserConversations",userConversation);
         }
 
         [HttpGet]
-        public PartialViewResult GetConversation(int id)
+        public ViewResult GetConversation(int id)
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
+            List<User> userConversation = _messageService.GetUserConversations(user.Id);
+            List<Message> conversation = _messageService.GetConversation(user.Id, id);
+            ViewData["users"] = userConversation;
+     
+            return View(conversation);
+        }
 
-            List<Message> conversation = new List<Message>();
-            conversation = _messageService.GetConversation(user.Id, id);
-
-            return PartialView(conversation);
+        [HttpPost]
+        public ViewResult GetConversation()
+        {
+            return View();
         }
 
         [HttpGet]

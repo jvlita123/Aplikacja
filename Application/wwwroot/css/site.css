@@ -2,7 +2,7 @@ html {
   font-size: 14px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 2560px) {
   html {
     font-size: 16px;
   }
@@ -14,9 +14,33 @@ html {
 
 html {
   position: relative;
-  min-height: 100%;
+  max-width:2560px;
 }
 
 body {
+  max-width:2560;
   margin-bottom: 60px;
+  padding:0px 10px 40px 10px;
+  max-height: 100vh; /* Ustawienie wysokości body na 100% wysokości widoku */
+  display: flex; /* Użycie flexbox dla body */
+  flex-direction: column; /* Ustawienie kierunku na kolumnę, aby można było użyć flex-grow */
+}
+header{
+  flex-grow: 1; /* Element .content1 zajmie resztę dostępnej przestrzeni (połowę, bo stopka ma 60px margin-bottom) */
+  max-width:100%;
+}
+.content1{
+  flex-grow: 2; /* Element .content1 zajmie resztę dostępnej przestrzeni (połowę, bo stopka ma 60px margin-bottom) */
+  max-width:100%;
+}
+
+.footer {
+ height: 60px; /* Wysokość stopki */
+  line-height: 60px; /* Ustawienie linii tekstu w pionie */
+  background-color: #3330; /* Kolor tła stopki */
+  color: white; /* Kolor tekstu w stopce */
+  text-align: center; /* Wyśrodkowanie tekstu w stopce */
+  position: relative; /* Ustawienie pozycji */
+  bottom: 0; /* Ustawienie na dole */
+  width: 100%; /* Szerokość 100% */
 }

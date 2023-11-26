@@ -19,6 +19,13 @@ namespace Service.Services
             return courses;
         }
 
+        public Course GetById(int id)
+        {
+            Course course = _coursesRepository.GetAll().Include(x => x.Cycles).Where(x=>x.Id==id).ToList().FirstOrDefault();
+
+            return course;
+        }
+
         public Course NewCourse(Course course)
         {
             Course newCourse = _coursesRepository.AddAndSaveChanges(course);

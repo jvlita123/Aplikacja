@@ -36,9 +36,9 @@ namespace Application.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public PartialViewResult Login()
         {
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
@@ -49,12 +49,12 @@ namespace Application.Controllers
                 ClaimsIdentity claimsIdentity = _userService.Login(dto);
 
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Login");
+                return RedirectToAction("index", "Home");
             }
             else
             {
                 ModelState.AddModelError("", "Email or Password is wrong.");
-                return RedirectToAction("Login");
+                return RedirectToAction("Index");
             }
         }
 

@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BootstrapIcons.AspNetCore" Version="1.9.2" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="fullcalendar" Version="3.9.0" />
     <PackageReference Include="jQuery.Fullcalendar" Version="3.9.0" />

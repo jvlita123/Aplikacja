@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Service.Services;
 using System.Collections.Generic;
+using System.Web;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Application.Controllers
 {
@@ -17,8 +19,10 @@ namespace Application.Controllers
         private readonly EnrollmentsService _enrollmentService;
         private readonly CoursesService _coursesService;
         private readonly CyclesService _cyclesService;
+        private IWebHostEnvironment _environment;
 
-        public CoursesController(CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+
+        public CoursesController(IWebHostEnvironment environment,CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
             _reservationService = reservationService;
             _userService = userService;
@@ -27,12 +31,20 @@ namespace Application.Controllers
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
             _cyclesService = cyclesService;
+            _environment = environment;
         }
 
         public ActionResult Index()
         {
             List<Course> courses = _coursesService.GetAll();
             return View(courses);
+        }
+
+        public ActionResult GetCourse(int id)
+        {
+            Course course = _coursesService.GetById(id);
+            ViewData["cycles"] = course.Cycles;
+            return View(course);
         }
 
         [HttpGet]
@@ -48,6 +60,32 @@ namespace Application.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> TwojaAkcjaPrzetwarzajacaPlik(IFormFile plik)
+        {
+            if (plik != null && plik.Length > 0)
+            {
+                var nazwaPliku = Path.GetFileName(plik.FileName);
+                var ścieżkaZapisu = Path.Combine(_environment.WebRootPath, "uploads", nazwaPliku);
+
+                using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
+                {
+                    await plik.CopyToAsync(strumień);
+                }
+
+                // Zapisz tylko ścieżkę do pliku w bazie danych
+                var ścieżkaDoBazy = "/uploads/" + nazwaPliku; // ścieżka, którą będziesz przechowywać w bazie danych
+
+                // Tutaj użyj Entity Framework lub innej metody do zapisania ścieżki do bazy danych
+                // var nowyPlik = new PlikModel { Ścieżka = ścieżkaDoBazy };
+                // dbContext.Pliki.Add(nowyPlik);
+                // dbContext.SaveChanges();
+            }
+
+            return RedirectToAction("AkcjaPoPrzeslaniuPliku");
+        }
+
 
         public ActionResult Details(int id)
         {

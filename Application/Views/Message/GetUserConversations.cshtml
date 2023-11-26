@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<Data.Entities.User>
-
 @{
     ViewData["Title"] = "My Chats";
+    var userId = 0;
 }
+
 <div class="list-container message-list">
     <div class="message-row section-title">
         <h2>Latest Chats</h2>
@@ -27,3 +28,27 @@
         </a>
     }
 </div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('.userId').on('click', function () {
+        var userId = $(this).data('user-id'); // ID użytkownika do konwersacji
+        if (userId) {
+            $.ajax({
+                url: '/Message/GetConversation', // Zastąp 'ControllerName' nazwą Twojego kontrolera
+                type: 'GET',
+                data: { id: userId },
+                success: function (data) {
+                },
+                error: function () {
+                    alert('Wystąpił błąd podczas pobierania konwersacji.');
+                }
+            });
+        } else {
+            // Dodatkowe działania lub informacje, jeśli użytkownik nie został wybrany
+            console.log('Proszę wybrać użytkownika.');
+        }
+    });
+</script>

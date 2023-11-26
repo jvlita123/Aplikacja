@@ -30,6 +30,13 @@ namespace Service.Services
             return users;
         }
 
+        public User GetById(int id)
+        {
+            User user = _userRepository.GetAll().Where(x=>x.Id==id).FirstOrDefault();
+
+            return user;
+        }
+
         public User GetByEmail(string email)
         {
             User user = _userRepository.GetAll().Include(x => x.Role).Include(x => x.Reservations).Where(x => x.Email == email).FirstOrDefault();
@@ -104,6 +111,22 @@ namespace Service.Services
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             return claimsIdentity;
+        }
+        public void UpdateUser(User user)
+        {
+            User userToSave = _userRepository.GetById(user.Id);
+            userToSave.FirstName = user.FirstName;
+            userToSave.LastName = user.LastName;
+            userToSave.Email = user.Email;
+            userToSave.PhoneNumber = user.PhoneNumber;
+            userToSave.DateOfBirth = user.DateOfBirth;
+            userToSave.RoleId = user.RoleId;
+            userToSave.IsBlocked = user.IsBlocked;
+            userToSave.PasswordHash = user.PasswordHash;
+            userToSave.Role = user.Role;
+    
+            _userRepository.UpdateAndSaveChanges(userToSave);
+            _userRepository.SaveChanges();
         }
     }
 }

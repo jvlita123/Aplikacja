@@ -2,93 +2,139 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "";
+    var userId = 0;
+    var users = (IEnumerable<Data.Entities.User>)ViewData["users"];
 }
-@if (Model.First().User1 != null && Model.First().User1 != null){
-<style>
-    .mask-custom {
-        background: rgba(24, 24, 16, .2);
-        border-radius: 2em;
-        backdrop-filter: blur(15px);
-        border: 2px solid rgba(255, 255, 255, 0.05);
-        background-clip: padding-box;
-        box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
-    }
 
-        .list-with-scroll {
-            /* Dodaj pasek przewijania poziomego (jeśli potrzebny) */
-            overflow-x: hidden;
-            /* Dodaj pasek przewijania tylko w pionie */
-            overflow-y: scroll;
-            /* Ustaw szerokość i wysokość, aby określić obszar wyświetlania */
-            max-height: 350px; /* Dostosuj wysokość do Twoich potrzeb */
-        }
-
-        /* Dodatkowy styl dla przewijanego obszaru */
-        .scrollable-area::-webkit-scrollbar {
-            width: 9px; /* Szerokość paska przewijania */
-        }
-
-        /* Kolor paska przewijania */
-        .scrollable-area::-webkit-scrollbar-thumb {
-            background-color: #888;
-            border-radius: 4px;
-        }
-
-        .message-text {
-            font-size: 14px; /* Dostosuj rozmiar czcionki do Twoich potrzeb */
-            margin-bottom: 5px; /* Zmniejsz margines dolny między wiadomościami */
-        }
-    </style>
-    <ul class="list-unstyled list-with-scroll scrollable-area  text-white">
-
-        @foreach (var item in Model)
-        {
-            @if (item.User1.Email == Context.User.Identity.Name)
-    {
-
-        <li class="d-flex justify-content-between mb-4">
-                    <div class="card mask-custom w-100" style="margin-left: auto;">
-                <div class="card-header d-flex justify-content-between p-7"
-                     style="border-bottom: 1px solid rgba(255,255,255,.3);">
-                    <p class="fw-bold mb-0">@item.User1.FirstName</p>
-                    <p class="text-light small mb-0"><i class="far fa-clock"></i> 13 mins ago</p>
-                </div>
-                <div class="card-body">
-                            <p class="mb-0 message-text">
-                        @item.Text
-                    </p>
-                </div>
-            </div>
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp" alt="avatar"
-                 class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" width="60">
-        </li>
-            }
-
-            else
+<div class="containerMess">
+    <div class="list-container message-list">
+        <div class="message-row section-title">
+            <h2>Latest Chats</h2>
+            @foreach (var item in users)
             {
+                <a href="@item.Id" class="message-row">
+                    <div class="message-row-content">
+                        <div class="header-wrapper">
+                            <div class="image-wrapper rounded">
+                                @if (item.Photos.Count > 0)
+                                {
+                                    @*<img src="~/Photos/@item.Photos.FirstOrDefault().Path" height="50" width="50" />*@
+                                }
+                                <img src="~/images/avatar_1.png" height="50" width="50" />
 
-        <li class="d-flex justify-content-between mb-4">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp" alt="avatar"
-                 class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
-                    <div class="card mask-custom" style="margin-right: auto;">
-                <div class="card-header d-flex justify-content-between"
-                     style="border-bottom: 1px solid rgba(255,255,255,.3);">
-                    <p class="fw-bold mb-0">@item.User1.FirstName</p>
-                        <p class="text-light small mb-0"><i class="far fa-clock"></i> 10 mins ago</p>
+                            </div>
+                            <h2>
+                                @item.FirstName
+                            </h2>
+                        </div>
+                        <i class="bi bi-chevron-right">@item.FirstName @item.LastName</i>
                     </div>
-                <div class="card-body ">
-                    <p class="mb-0">
-                        @item.Text
-                    </p>
-                </div>
-            </div>
-        </li>
+                </a>
             }
-        }</ul>
+        </div>
+       
+    </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<div class="list-container message-list wide">
+        @if (Model.Count() >0)
+        {
+
+
+            <div class="message-row section-title">
+                <h2>Conversation with <span>@Model.FirstOrDefault().User1.FirstName</span></h2>
+            </div>
+
+            <div class="chat-wrapper">
+                @foreach (var item in Model)
+                {
+                    @if (Model.FirstOrDefault().User1.Messages.Contains(item))
+                    {
+                        <div class="message-item right">
+                            <div class="message-wrapper">
+                                <p class="username">
+                                    @Html.DisplayFor(modelItem => item.User1.FirstName)
+                                </p>
+
+                                <p class="message-text">
+                                    @Html.DisplayFor(modelItem => item.Text)
+                                </p>
+                            </div>
+                            @if (Model.FirstOrDefault().User1.Photos.Count > 0)
+                            {
+                                <div class="message-user-image">
+                                    <img src="~/images/avatar_2.png" height="50" width="50" />
+                                    @*<img src="~/Photos/@Model.FirstOrDefault().User2.Photos.FirstOrDefault().Path" height="50" width="50"/>*@
+                                </div>
+                            }
+                            <div class="message-user-image">
+                                <img src="~/images/avatar_2.png" height="50" width="50" />
+                                @*<img src="~/Photos/@Model.FirstOrDefault().User2.Photos.FirstOrDefault().Path" height="50" width="50"/>*@
+                            </div>
+                        </div>
+                    }
+
+                    @if (!(Model.FirstOrDefault().User1.Messages.Contains(item)))
+                    {
+                        <div class="message-item left">
+                            @if (Model.FirstOrDefault().User1.Photos.Count > 0)
+                            {
+                                <div class="message-user-image">
+                                    <img src="~/images/avatar_3.png" height="50" width="50" />
+                                    @*<img src="~/Photos/@Model.FirstOrDefault().User1.Photos.FirstOrDefault().Path" height="50" width="50" />*@
+                                </div>
+                            }
+                            <div class="message-user-image">
+                                <img src="~/images/avatar_3.png" height="50" width="50" />
+                                @*<img src="~/Photos/@Model.FirstOrDefault().User1.Photos.FirstOrDefault().Path" height="50" width="50" />*@
+                            </div>
+                            <div class="message-wrapper">
+                                <p class="username">
+                                    @Html.DisplayFor(modelItem => item.User1.FirstName)
+                                </p>
+                                <p class="message-text">
+                                    @Html.DisplayFor(modelItem => item.Text)
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                }
+
+            </div>
+
+            <div class="textbox-wrapper">
+                <form asp-action="SendMessage">
+                    <div class="form-group textbox-content">
+                        <input type="text" asp-for="@Model.FirstOrDefault().Text" class="form-input chat-textbox-input" placeholder="Type a message..." />
+                        <span asp-validation-for="@Model.FirstOrDefault().Text" class="text-danger"></span>
+
+                        <button type="submit" class="button send-button">
+                            Send <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="@Model.FirstOrDefault().UserId" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        @if (Model.First().User1.Email == HttpContextAccessor.HttpContext.User.Identity.Name)
+                        {
+                            <input type="hidden" asp-for="@Model.FirstOrDefault().UserId2" class="form-control" value="@Model.FirstOrDefault().UserId2" />
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="@Model.FirstOrDefault().UserId2" class="form-control" value="@Model.FirstOrDefault().UserId" />
+
+                    }
+            </div>
+        </form>
+    </div>
     }
-}
-}
+
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var chatWrapper = document.querySelector('.list-container.message-list.wide .chat-wrapper');
+    chatWrapper.scrollTop = chatWrapper.scrollHeight;
+</script>

@@ -28,7 +28,7 @@ namespace Application.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View(_cyclesService.GetAll());
         }
 
         [HttpGet]

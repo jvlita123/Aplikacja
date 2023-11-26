@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
 
 namespace Application.Controllers
@@ -17,6 +19,24 @@ namespace Application.Controllers
         public ActionResult Index()
         {
             return View(_userService.GetAll());
+        }
+        public ActionResult MyAccount()
+        {
+            return View(_userService.GetByEmail(User.Identity.Name));
+        }
+
+        public IActionResult EditUser(int id)
+        {
+            User user = _userService.GetById(id);
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult EditUser(User user)
+        {
+            _userService.UpdateUser(user);
+            return RedirectToAction("MyAccount");
         }
     }
 }
