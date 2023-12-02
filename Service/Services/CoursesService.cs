@@ -7,9 +7,12 @@ namespace Service.Services
     public class CoursesService
     {
         private readonly CoursesRepository _coursesRepository;
-        public CoursesService(CoursesRepository coursesRepository)
+        private readonly EnrollmentsRepository _enrollmentRepository;
+
+        public CoursesService(CoursesRepository coursesRepository, EnrollmentsRepository enrollmentRepository)
         {
             _coursesRepository = coursesRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public List<Course> GetAll()
@@ -31,6 +34,16 @@ namespace Service.Services
             Course newCourse = _coursesRepository.AddAndSaveChanges(course);
 
             return newCourse;
+        }
+
+        public List<Course> GetUserCourses(int id)
+        {
+            List<Course> courses = _enrollmentRepository.GetAll().Include(x=>x.User).Include(x=>x.Course).Select(x=>x.Course).Distinct().ToList();
+            foreach(var v in courses)
+            {
+                v.Cycles = GetById(v.Id).Cycles;
+            }
+            return courses;
         }
     }
 }

@@ -33,6 +33,10 @@ namespace Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlServer("Server=tcp:applicationserver.database.windows.net,1433;database=ApplicationDB;User ID=jvlita123;Password=admin123.;");
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>()
@@ -47,11 +51,26 @@ namespace Data
                 .HasForeignKey(m => m.UserId2)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<Cycle>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Cycles__3214EC078C29BF1D");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.SourcePath)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Course).WithMany(p => p.Cycles)
+                    .HasForeignKey(d => d.CourseId)
+                    .HasConstraintName("FK__Cycles__CourseId__607251E5");
+            });
             base.OnModelCreating(modelBuilder);
         }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=applicationserver.database.windows.net,1433;database=ApplicationDB;Persist Security Info=True;User ID=jvlita123;password=admin123.;");
 
         public void AddEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {

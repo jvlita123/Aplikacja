@@ -40,7 +40,7 @@ namespace Application.Controllers
             return View(courses);
         }
 
-        public ActionResult GetCourse(int id)
+        public IActionResult GetCourse(int id)
         {
             Course course = _coursesService.GetById(id);
             ViewData["cycles"] = course.Cycles;
@@ -61,38 +61,18 @@ namespace Application.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> TwojaAkcjaPrzetwarzajacaPlik(IFormFile plik)
+        public IActionResult GetUserCourses()
         {
-            if (plik != null && plik.Length > 0)
-            {
-                var nazwaPliku = Path.GetFileName(plik.FileName);
-                var ścieżkaZapisu = Path.Combine(_environment.WebRootPath, "uploads", nazwaPliku);
+            List<Course> courses = _coursesService.GetUserCourses(_userService.GetByEmail(User.Identity.Name).Id);
 
-                using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
-                {
-                    await plik.CopyToAsync(strumień);
-                }
-
-                // Zapisz tylko ścieżkę do pliku w bazie danych
-                var ścieżkaDoBazy = "/uploads/" + nazwaPliku; // ścieżka, którą będziesz przechowywać w bazie danych
-
-                // Tutaj użyj Entity Framework lub innej metody do zapisania ścieżki do bazy danych
-                // var nowyPlik = new PlikModel { Ścieżka = ścieżkaDoBazy };
-                // dbContext.Pliki.Add(nowyPlik);
-                // dbContext.SaveChanges();
-            }
-
-            return RedirectToAction("AkcjaPoPrzeslaniuPliku");
+            return View(courses);
         }
-
 
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: CoursesController/Create
         public ActionResult Create()
         {
             return View();

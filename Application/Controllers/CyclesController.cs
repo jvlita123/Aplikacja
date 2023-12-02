@@ -14,8 +14,10 @@ namespace Application.Controllers
         private readonly EnrollmentsService _enrollmentService;
         private readonly CoursesService _coursesService;
         private readonly CyclesService _cyclesService;
+        private IWebHostEnvironment _environment;
 
-        public CyclesController(CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+
+        public CyclesController(IWebHostEnvironment environment,CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
             _reservationService = reservationService;
             _userService = userService;
@@ -24,11 +26,17 @@ namespace Application.Controllers
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
             _cyclesService = cyclesService;
+            _environment = environment;
         }
 
         public ActionResult Index()
         {
             return View(_cyclesService.GetAll());
+        }
+
+        public IActionResult GetCycle(int id)
+        {
+            return View(_cyclesService.GetById(id));
         }
 
         [HttpGet]
@@ -59,6 +67,26 @@ namespace Application.Controllers
             return RedirectToAction("Index", "Courses");
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(IFormFile uploadFileCycle, int id)
+        {
+            if (uploadFileCycle != null && uploadFileCycle.Length > 0)
+            {
+                var nazwaPliku = Path.GetFileName(uploadFileCycle.FileName);
+                var ścieżkaZapisu = Path.Combine(_environment.WebRootPath, "uploads", nazwaPliku);
+
+                using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
+                {
+                    await uploadFileCycle.CopyToAsync(strumień);
+                }
+
+                var file = "uploads/" + nazwaPliku;
+                _cyclesService.UploadFile(file, id);
+            }
+
+            return RedirectToAction("Index", "Courses");
+        }
 
         public ActionResult Details(int id)
         {

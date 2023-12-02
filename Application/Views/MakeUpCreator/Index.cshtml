@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Rozpoznawanie Twarzy i Filtry</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/clmtrackr.js"></script>
+</head>
+<body>
+    <h1>Rozpoznawanie Twarzy i Filtry</h1>
+    <div style="display: flex;">
+        <div style="position: relative;">
+            <video id="inputVideo" width="400" height="300" autoplay></video>
+            <canvas id="drawCanvas" width="400" height="300" style="position: absolute; top: 0; left: 0;"></canvas>
+        </div>
+        <div style="margin-left: 20px;">
+            <button onclick="applyFilter('eyeliner')">Eyeliner</button>
+            <button onclick="applyFilter('lips')">Usta</button>
+            <!-- Dodaj więcej przycisków dla innych filtrów -->
+            <div>
+                <label for="lineWidthRange">Grubość linii:</label>
+                <input type="range" id="lineWidthRange" min="1" max="10" value="2" onchange="updateLineWidth(this.value)">
+            </div>
+            <div>
+                <label for="colorPicker">Kolor:</label>
+                <input type="color" id="colorPicker" value="#ff0000" onchange="updateColor(this.value)">
+            </div>
+            <div>
+                <label for="alphaRange">Przezroczystość:</label>
+                <input type="range" id="alphaRange" min="0" max="1" step="0.1" value="0.5" onchange="updateAlpha(this.value)">
+            </div>
+            <div>
+                <label for="extensionRange">Wydłużenie linii:</label>
+                <input type="range" id="extensionRange" min="0" max="50" value="20" onchange="updateExtension(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var videoInput = document.getElementById('inputVideo');
+        var canvasInput = document.getElementById('drawCanvas');
+        var cc = canvasInput.getContext('2d');
+        var ctracker = new clm.tracker();
+
+        var currentFilter = ''; // Aktualnie wybrany filtr
+        var currentLineWidth = 2;
+        var currentColor = '#ff0000';
+        var currentAlpha = 0.5;
+        var currentExtension = 10;
+
+        // Inicjalizacja clmtrackr i rozpoczęcie śledzenia twarzy
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                videoInput.srcObject = stream;
+                ctracker.init();
+                ctracker.start(videoInput);
+                drawLoop();
+            })
+            .catch(function (err) {
+                console.error('Błąd dostępu do kamery:', err);
+            });
+
+        function drawLoop() {
+            requestAnimationFrame(drawLoop);
+            cc.lineWidth = 0.2; // Ustaw grubość linii
+            cc.clearRect(0, 0, canvasInput.width, canvasInput.height);
+            var positions = ctracker.getCurrentPosition();
+            if (positions) {
+                ctracker.draw(canvasInput);
+                // Sprawdź, czy aktualny filtr jest wybrany i zastosuj go do obszaru oczu
+                if (currentFilter === 'eyeliner') {
+                        // Indeksy punktów odpowiadających oczom na twarzy
+                        var leftEyeIndices0 = [23, 23];
+                        var leftEyeIndices1 = [23, 63];
+                        var leftEyeIndices2 = [63, 24];
+                        var leftEyeIndices3 = [24, 64];
+                        var leftEyeIndices4 = [64, 25];
+
+                        var rightEyeIndices1 = [30, 68];
+                        var rightEyeIndices2 = [68, 29];
+                        var rightEyeIndices3 = [29, 67];
+                        var rightEyeIndices4 = [67, 28];
+
+                        // Funkcja pomocnicza do rysowania obszaru powieki
+                    function drawEyelid(points, lineWidth, color, alpha, currentExtension) {
+                            cc.beginPath();
+                            cc.moveTo(positions[points[0]][0], positions[points[0]][1]);
+                            for (var i = 1; i < points.length; i++) {
+                                if (positions[points[i]]) { // Dodaj warunek sprawdzający, czy punkt istnieje
+                                cc.lineTo(positions[points[i]][0] - currentExtension, positions[points[i]][1]);
+                                }
+                            }
+
+                        cc.closePath();
+                        cc.filter = "blur(0.8px)";
+                        cc.strokeStyle = color;
+                        cc.lineWidth = lineWidth;
+                        cc.globalAlpha = alpha;
+                        cc.stroke();
+                        cc.globalAlpha = 1; // reset global alpha
+                     }
+
+                    drawEyelid(leftEyeIndices0, currentLineWidth + 3, currentColor, currentAlpha,currentExtension);
+                    drawEyelid(leftEyeIndices1, currentLineWidth+3, currentColor, currentAlpha,0);
+                    drawEyelid(leftEyeIndices2, currentLineWidth+2, currentColor, currentAlpha,0);
+                    drawEyelid(leftEyeIndices3, currentLineWidth+1, currentColor, currentAlpha,0);
+                    drawEyelid(leftEyeIndices4, currentLineWidth, currentColor, currentAlpha,0);
+                    drawEyelid(rightEyeIndices1, currentLineWidth, currentColor, currentAlpha,0);
+                    drawEyelid(rightEyeIndices2, currentLineWidth+1, currentColor, currentAlpha, 0);
+                    drawEyelid(rightEyeIndices3, currentLineWidth+2, currentColor, currentAlpha, 0);
+                    drawEyelid(rightEyeIndices4, currentLineWidth+3, currentColor, currentAlpha, 0);
+                    }
+                 else if (currentFilter === 'lips') {
+                    var leftUpperMouth1 = [44, 45];
+                    var leftUpperMouth2 = [45, 46];
+                    var leftUpperMouth3 = [46, 47];
+                    var leftUpperMouth4 = [47, 48];
+                    var leftUpperMouth5 = [48, 49];
+                    var leftUpperMouth6 = [49, 50];
+
+                    var leftBottomUpperMouth1 = [44, 55];
+                    var leftBottomUpperMouth2 = [55, 54];
+                    var leftBottomUpperMouth3 = [54, 53];
+                    var leftBottomUpperMouth4 = [53, 52];
+                    var leftBottomUpperMouth5 = [52, 51];
+                    var leftBottomUpperMouth6 = [51, 50];
+
+                    function drawMouth(points, lineWidth, color, alpha) {
+                        cc.beginPath();
+                        cc.moveTo(positions[points[0]][0], positions[points[0]][1]);
+                        for (var i = 1; i < points.length; i++) {
+                            if (positions[points[i]]) {
+                                cc.lineTo(positions[points[i]][0], positions[points[i]][1]);
+                            }
+                        }
+                        cc.closePath();
+                        cc.strokeStyle = color;
+                        cc.lineWidth = lineWidth;
+                        cc.globalAlpha = alpha;
+                        cc.stroke();
+                        cc.globalAlpha = 1; // reset global alpha
+                    }
+
+                    drawMouth(leftUpperMouth1, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftUpperMouth2, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftUpperMouth3, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftUpperMouth4, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftUpperMouth5, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftUpperMouth6, currentLineWidth, currentColor, currentAlpha);
+
+                    drawMouth(leftBottomUpperMouth1, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftBottomUpperMouth2, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftBottomUpperMouth3, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftBottomUpperMouth4, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftBottomUpperMouth5, currentLineWidth, currentColor, currentAlpha);
+                    drawMouth(leftBottomUpperMouth6, currentLineWidth, currentColor, currentAlpha);
+                }
+            }
+        }
+
+        function applyFilter(filter) {
+            currentFilter = filter;
+        }
+
+        function updateLineWidth(value) {
+            currentLineWidth = parseInt(value);
+        }
+
+        function updateColor(value) {
+            currentColor = value;
+        }
+
+        function updateAlpha(value) {
+            currentAlpha = parseFloat(value);
+        }
+
+        function updateExtension(value) {
+            currentExtension = parseInt(value);
+        }
+    </script>
+</body>
+</html>

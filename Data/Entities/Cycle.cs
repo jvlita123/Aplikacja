@@ -15,6 +15,8 @@ public partial class Cycle
 
     public int? CourseId { get; set; }
 
+    public string? SourcePath { get; set; }
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
     public virtual Course? Course { get; set; }

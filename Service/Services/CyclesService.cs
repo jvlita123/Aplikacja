@@ -19,6 +19,23 @@ namespace Service.Services
             return cycle;
         }
 
+        public Cycle GetById(int id)
+        {
+            Cycle cycle = _cyclesRepository.GetAll().Where(x=>x.Id == id).FirstOrDefault();
+
+            return cycle;
+        }
+
+        public Cycle UploadFile(string filePath, int id)
+        {
+            Cycle cycle = _cyclesRepository.GetAll().Where(x=>x.Id==id).FirstOrDefault() ;
+            cycle.SourcePath = filePath;
+
+            _cyclesRepository.Update(cycle);
+            _cyclesRepository.SaveChanges();
+            return cycle;
+        }
+
         public Cycle NewCycle(Cycle cycle)
         {
             Cycle newCycle = new Cycle();

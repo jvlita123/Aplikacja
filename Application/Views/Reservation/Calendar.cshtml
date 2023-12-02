@@ -20,11 +20,11 @@
     }
 
         /* Styl po najechaniu myszką */
-        button:hover {
-            background-color: #e0e0e0; /* Jasniejsze tło po najechaniu */
-            color: #666; /* Jasniejszy kolor tekstu po najechaniu */
-            cursor: pointer; /* Zmiana kształtu kursora na wskaźnik */
-        }
+    button:hover {
+       background-color: #e0e0e0; /* Jasniejsze tło po najechaniu */
+       color: #666; /* Jasniejszy kolor tekstu po najechaniu */
+       cursor: pointer; /* Zmiana kształtu kursora na wskaźnik */
+    }
 </style>
 
 <table id="eventsTable" style="display: none;">
@@ -80,3 +80,7 @@
 
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
 <script src="~/js/calendar1.js"></script>
+<script>
+    var elementsWithDataDate = document.querySelectorAll('[data-date]');
+    console.log(elementsWithDataDate)
+</script>

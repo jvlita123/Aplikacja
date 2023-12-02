@@ -19,14 +19,15 @@
             else{
                 <div class="form-group">
                     <label asp-for="User.Email" class="control-label"></label>
-                    <input name="userEmail" id="userEmail" class="form-control" value ="@context.HttpContext.User.Identity.Name" readonly/>
+                    <input name="userEmail" id="userEmail" class="form-control" value ="@context.HttpContext.User.Identity.Name" type="hidden" readonly/>
                 </div>
             }
+            Book confirmation
             <div class="form-group">
-                <input name="courseId" id="courseId" class="form-control" value="@ViewBag.course" readonly />
+                <input name="courseId" id="courseId" class="form-control" value="@ViewBag.course"  type="hidden"readonly />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Book" class="btn btn-primary" />
             </div>
         </form>
     </div>

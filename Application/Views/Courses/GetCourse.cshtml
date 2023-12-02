@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = "GetCourse";
     var cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["cycles"];
-
 }
 <style>
     .small-btn {
@@ -16,17 +15,12 @@
 <!-- Początek kodu Bootstrapa -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-<form method="post" enctype="multipart/form-data" action="/TwojaAkcjaPrzetwarzajacaPlik">
-    <input type="file" name="plik" id="plik" />
-    <input type="submit" value="Wyślij plik" />
-</form>
-
 <div class="container">
     <div class="row">
         @foreach (var v in cycles)
         {
             <div class="col-md-3 mb-3">
-                <button class="btn btn-light btn-block small-btn">
+                <a class="btn btn-light btn-block small-btn" asp-controller="Cycles" asp-action="GetCycle" asp-route-id="@v.Id">
                     <div class="text-center">
                         <span class="font-weight-bold">@v.StartDate.Day</span><br>
                         <span>@v.StartDate.ToString("MMM")</span>
@@ -40,24 +34,11 @@
                         <br>
                         <span>@v.EndDate.ToString("HH:mm")</span>
                     </div>
-                </button>
+                </a>
             </div>
         }
     </div>
 </div>
-
-<form enctype="multipart/form-data" method="post">
-    <dl>
-        <dt>
-            <label asp-for="FileUpload.FormFile"></label>
-        </dt>
-        <dd>
-            <input asp-for="FileUpload.FormFile" type="file">
-            <span asp-validation-for="FileUpload.FormFile"></span>
-        </dd>
-    </dl>
-    <input asp-page-handler="Upload" class="btn" type="submit" value="Upload" />
-</form>
 
 <!-- Koniec kodu Bootstrapa -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

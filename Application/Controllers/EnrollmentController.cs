@@ -53,8 +53,7 @@ namespace Application.Controllers
             enrollment.Cancelled = false;
 
             _enrollmentService.NewEnrollment(enrollment);
-
-            return RedirectToAction("Calendar");
+            return RedirectToAction("GetCourse", "Courses", new { id = courseId });
         }
 
         public ActionResult Details(int id)

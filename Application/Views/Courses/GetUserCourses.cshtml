@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Data.Entities.Course>
+
+@{
+    ViewData["Title"] = "GetUserCourses";
+    var cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["cycles"];
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/courses/userCourses.css" />
+</head>
+
+<div class="course-list">
+    @foreach (var item in Model)
+    {
+        <div class="course-item">
+            <h3>@item.Title</h3>
+            <p>@item.Description</p>
+            <div class="time-windows">
+                @foreach (var v in item.Cycles)
+                {
+                    <div class="time-window">
+                        <div class="start-time">
+                            <span class="font-weight-bold">@v.StartDate.Day</span><br>
+                            <span>@v.StartDate.ToString("MMM")</span><br>
+                            <span>@v.StartDate.ToString("HH:mm")</span>
+                        </div>
+                        <div class="end-time">
+                            <span>@v.EndDate.Day</span><br>
+                            <span>@v.EndDate.ToString("MMM")</span><br>
+                            <span>@v.EndDate.ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
