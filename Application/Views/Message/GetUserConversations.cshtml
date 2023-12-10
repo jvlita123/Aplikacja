@@ -34,10 +34,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $('.userId').on('click', function () {
-        var userId = $(this).data('user-id'); // ID użytkownika do konwersacji
+        var userId = $(this).data('user-id'); 
         if (userId) {
             $.ajax({
-                url: '/Message/GetConversation', // Zastąp 'ControllerName' nazwą Twojego kontrolera
+                url: '/Message/GetConversation', 
                 type: 'GET',
                 data: { id: userId },
                 success: function (data) {
@@ -47,7 +47,6 @@
                 }
             });
         } else {
-            // Dodatkowe działania lub informacje, jeśli użytkownik nie został wybrany
             console.log('Proszę wybrać użytkownika.');
         }
     });

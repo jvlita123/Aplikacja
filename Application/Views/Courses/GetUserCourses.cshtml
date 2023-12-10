@@ -6,32 +6,38 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/courses/userCourses.css" />
+    <link rel="stylesheet" href="~/css/courses/course.css" />
 </head>
 
 <div class="course-list">
-    @foreach (var item in Model)
-    {
-        <div class="course-item">
-            <h3>@item.Title</h3>
-            <p>@item.Description</p>
-            <div class="time-windows">
-                @foreach (var v in item.Cycles)
-                {
-                    <div class="time-window">
-                        <div class="start-time">
-                            <span class="font-weight-bold">@v.StartDate.Day</span><br>
-                            <span>@v.StartDate.ToString("MMM")</span><br>
-                            <span>@v.StartDate.ToString("HH:mm")</span>
-                        </div>
-                        <div class="end-time">
-                            <span>@v.EndDate.Day</span><br>
-                            <span>@v.EndDate.ToString("MMM")</span><br>
-                            <span>@v.EndDate.ToString("HH:mm")</span>
-                        </div>
+
+        <div class="courses-wrapper">
+            @foreach (var item in Model)
+            {
+                <div class="btn getCourseButton" data-course-id="@item.Id">
+                    <div class="course-card">
+                        <h3>@item.Title</h3>
+                        <p>@item.Description</p>
+                        <ul>
+                            @foreach (var cycle in item.Cycles)
+                            {
+                                <button class="deleteCycleButton btn button-styled" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
+                                    @cycle.Description - @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
+                                </button>
+                            }
+                        </ul>
                     </div>
-                }
-            </div>
+                </div>
+
+            }
         </div>
-    }
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $('.getCourseButton').on('click', function () {
+        var courseId = $(this).data('course-id');
+        window.location.href = '/Courses/GetCourse/' + courseId;
+    });
+</script>

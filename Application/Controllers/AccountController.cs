@@ -20,9 +20,9 @@ namespace Application.Controllers
             return View(_userService.GetAllDto());
         }
 
-        public IActionResult RegisterUser()
+        public PartialViewResult RegisterUser()
         {
-            return View();
+            return PartialView();
         }
 
         [HttpPost]

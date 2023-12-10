@@ -5,44 +5,166 @@
 @{
     ViewData["Title"] = "GetCourse";
     var cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["cycles"];
+    var enrolledUsers = (IEnumerable<Data.Entities.User>)ViewData["enrolledUsers"];
 }
-<style>
-    .small-btn {
-        padding: 0.2rem 0.4rem; /* Zmniejszenie paddingu */
-        font-size: 0.75rem; /* Zmniejszenie rozmiaru czcionki */
-    }
-</style>
-<!-- Początek kodu Bootstrapa -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container">
-    <div class="row">
+<head>
+    <link rel="stylesheet" href="~/css/courses/getCourse.css" />
+
+</head>
+
+<section id="cd-timeline" class="cd-container">
         @foreach (var v in cycles)
         {
-            <div class="col-md-3 mb-3">
-                <a class="btn btn-light btn-block small-btn" asp-controller="Cycles" asp-action="GetCycle" asp-route-id="@v.Id">
-                    <div class="text-center">
-                        <span class="font-weight-bold">@v.StartDate.Day</span><br>
-                        <span>@v.StartDate.ToString("MMM")</span>
-                        <br>
-                        <span>@v.StartDate.ToString("HH:mm")</span>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <span class="font-weight-bold">@v.EndDate.Day</span><br>
-                        <span>@v.EndDate.ToString("MMM")</span>
-                        <br>
-                        <span>@v.EndDate.ToString("HH:mm")</span>
-                    </div>
-                </a>
+
+    <div class="cd-timeline-block">
+        <div class="cd-timeline-img cd-picture">
+        </div>
+            <div class="cd-timeline-content">
+                            <a asp-controller="Cycles" style = "text-decoration:none"asp-action="GetCycle" asp-route-id="@v.Id">
+                <h2>@v.Title</h2>
+                    <h2 style="display:none"></h2>
+                <div class="timeline-content-info">
+                    <span class="timeline-content-info-title">
+                        <i class="fa fa-certificate" aria-hidden="true"></i>
+                        @v.Title
+                    </span>
+                    <span class="timeline-content-info-date">
+                        <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                        @v.StartDate.ToString("MMM") @v.StartDate.ToString("HH:mm") - @v.EndDate.ToString("MMM") @v.EndDate.ToString("HH:mm")
+                    </span>
+                </div>
+                <p>@v.Description</p>
+    </a>
             </div>
+    </div> 
         }
+</section> 
+<button class="newAttendance button-styled" data-course-id="@Model.Id">
+    Check Attendance
+</button>
+@*
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Reservations</h4>
+                <div class="button-container">
+                    <button class="newAttendance button-styled" data-course-id="@Model.Id">
+                        Check Attendance
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> User </th>
+                                <th class="" style="text-decoration:none; font-weight:normal">
+                                    <a class="nav-link dropdown-toggle" id="courseDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Course Day
+                                    </a>
+                                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="courseDropdown">
+                                        @foreach (var v in cycles)
+                                        {
+                                            <a class="dropdown-item selected-day" data-cycle-attendance-id="@v.Id">
+                                                @v.StartDate - @v.EndDate
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                    </div>
+                                </th>
+                                <th>
+                                    Present
+                                </th>
+                                
+                                <th> Absent </th>
+                                <th>
+                                    Time arrived
+                                </th>
+                                <th> Time Leaved </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody id="reservationsTable" >
+                            @foreach (var v in enrolledUsers)
+                            {
+                                <tr data-user-id="@v.Id">
+                                    @if (v.Photos.Where(x => x.IsProfilePicture == true).Count() > 0)
+                                    {
+                                        <td >
+                                            <img src="~/images/@v.Photos.Where(x => x.IsProfilePicture == true).First().Path" class="me-2" alt="User-Profile-Image">
+                                            @v.FirstName @v.LastName
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <img src="~/assets/images/faces/face1.jpg" class="me-2" alt="image">
+                                            @v.FirstName @v.LastName
+                                        </td>
+                                    }
+                                    <td>  
+
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-success">
+                                            <label class="form-check-label">
+                                                <input id="saas"type="checkbox" class="form-check-input" checked>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-danger">
+                                            <label class="form-check-label">
+                                                <input  id="assd"type="checkbox" class="form-check-input">
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="time" class="form-control" placeholder="dd/mm/yyyy" />
+                                    </td>
+                                    <td>
+                                        <input type="time" class="form-control" placeholder="dd/mm/yyyy" />
+                                    </td>
+                                    </tr>
+                                  }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@foreach (var v in cycles)
+{
+    <a class="cycle-attendance btn btn-primary" data-selected-cycle-attendance="@v.Id">
+        @v.StartDate - @v.EndDate
+    </a>
+    <div class="dropdown-divider"></div>
+}
+<div class ="row attendancesList"></div>
+
+<div class="form-check">
+    <label class="form-check-label">
+        <input name="xssa" id="sssss" type="checkbox" class="form-check-input" checked>
+    </label>
+</div>
+
+<div id="newEnrollmentModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="newEnrollmentContext">
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Koniec kodu Bootstrapa -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
     <h4>Course</h4>
@@ -60,8 +182,47 @@
             @Html.DisplayFor(model => model.Title)
         </dd>
     </dl>
-</div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    var courseId = $('.newAttendance').data('course-id');
+    var cycleId = '' // Można zostawić pustą wartość początkową
+
+    $('.cycle-attendance').on('click',function(){
+
+            var cycleAttendanceId = $(this).data('selected-cycle-attendance');
+            courseIdd = $('.newAttendance').data('course-id'); // Aktualizacja courseId
+
+            $.ajax({
+                url: '/Attendances/GetAttendancesForCycle', // Ścieżka do akcji, która zwraca Partial View z listą obecności
+                type: 'GET',
+                data: { id: cycleAttendanceId, courseId: courseIdd }, // Dostarcz odpowiednie dane do partial view
+                success: function (result) {
+                    // Wstawienie partial view w odpowiednie miejsce na stronie
+                    $('.attendancesList').html(result);
+                },
+                error: function () {
+                    // Obsługa błędu
+                }
+            });
+    })
+        $('.dropdown-item').on('click', function () {
+            // Pobierz wartość data-cycle-attendance-id wybranego elementu
+             cycleId = $(this).data('cycle-attendance-id');
+
+            // Zaktualizuj wybrany element w rozwijanej liście
+            $('#courseDropdown').text($(this).text());
+
+            // Tutaj możesz wykonać dodatkowe czynności, jeśli to konieczne, na podstawie wybranego elementu
+            // ...
+        });
+        
+
+    });
+
+</script>

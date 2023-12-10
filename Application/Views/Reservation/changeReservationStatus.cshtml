@@ -9,8 +9,8 @@
                 <input name="id" id="id" class="form-control" value="@ViewBag.ReservationId" />
             </div>
             <div class="form-group">
-                <label name="status" id="status" class="control-label"></label>
-                <select name="status" id="status" class="form-control" asp-items="ViewBag.StatusList"></select>
+                <label name="status" status="status" class="control-label"></label>
+                <select name="status" status="status" class="form-control" asp-items="ViewBag.StatusList"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -18,10 +18,7 @@
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

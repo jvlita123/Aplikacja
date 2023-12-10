@@ -14,13 +14,15 @@ namespace Service.Services
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly RoleRepository _roleRepository;
         private readonly ReservationRepository _reservationRepository;
+        private readonly PhotoRepository _photoRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository, PhotoRepository photoRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
             _reservationRepository = reservationRepository;
+            _photoRepository = photoRepository;
         }
 
         public List<User> GetAll()
@@ -84,6 +86,7 @@ namespace Service.Services
         {
             var userToLogin = _userRepository
                 .GetAll()
+                .Include(u => u.Photos)
                 .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == dto.Email);
 
@@ -99,12 +102,16 @@ namespace Service.Services
                 throw new Exception();//to be corrected
             }
 
+            string ProfilePhoto = "/"+userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
+
             var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
                         new Claim(ClaimTypes.Name, userToLogin.Email),//need update to Name
                         new Claim(ClaimTypes.Email, userToLogin.Email),
                         new Claim(ClaimTypes.Role, userToLogin.Role.Name.ToString()),
+                        new Claim("ProfilePhotoPath", ProfilePhoto),
+                        new Claim("FullName", userToLogin.FirstName +" "+ userToLogin.LastName)
                     };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -127,6 +134,50 @@ namespace Service.Services
     
             _userRepository.UpdateAndSaveChanges(userToSave);
             _userRepository.SaveChanges();
+        }
+
+        public MyUserDto? MyUser(string email)
+        {
+            var users = _userRepository.GetAll().ToList();
+            User? user = _userRepository.GetAll()
+                .Include(x => x.Photos)
+                .Include(x => x.Role)
+                .Include(x => x.Messages)
+                .Where(x => x.Email == email)
+                .FirstOrDefault();
+            if (user == null)
+            {
+                return null;
+            }
+
+            MyUserDto myUserDto = new MyUserDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                DateOfBirth = user.DateOfBirth,
+                Email = user.Email,
+                RoleName = user.Role.Name,
+
+
+                ProfilePhoto = user.Photos.Where(p => p.IsProfilePicture==true).Select(p => p.Path).FirstOrDefault(),
+                Photos = user.Photos.Where(p => p.IsProfilePicture == false).Select(p => p.Path).ToList(),
+            };
+
+            myUserDto.ProfilePhoto = CheckProfile(myUserDto.ProfilePhoto);
+
+            return myUserDto;
+        }
+
+        private string CheckProfile(string? path)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                path = "noProfile.jpg";
+            }
+
+            return path;
         }
     }
 }

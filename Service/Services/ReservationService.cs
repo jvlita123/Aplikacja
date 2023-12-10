@@ -23,6 +23,12 @@ namespace Service.Services
             return reservations;
         }
 
+        public List<Reservation> GetReservationsByStatus(string status)
+        {
+            List<Reservation> reservations = _reservationRepository.GetAll().Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Where(x => x.Status.Name == status).ToList();
+            return reservations;
+        }
+
         public List<Reservation> GetConfirmed(User usr)
         {
             List<Reservation> allUserReservations = GetUserReservations(usr);

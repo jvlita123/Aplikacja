@@ -84,7 +84,8 @@ namespace Service.Services
             {
                 return users;
             }
-            var messages = _messageRepository.GetAll().Where(x => x.UserId2 == id || x.UserId == id).ToList();
+
+            var messages = _messageRepository.GetAll().Include(x=>x.User1.Photos).Include(x=>x.User2.Photos).Where(x => x.UserId2 == id || x.UserId == id).ToList();
 
             var user2Ids = GetUserMessages(id).Select(x => x.UserId).ToList();
             var user1Ids = GetSentMessages(id).Select(x => x.UserId2).ToList();
@@ -93,10 +94,12 @@ namespace Service.Services
 
             foreach (var userId in distinctUserIds)
             {
-                var user = _userRepository.GetById(userId);
+                User user = _userRepository.GetAll().Include(x=>x.Photos).Include(x => x.Role)
+                .Include(x => x.Messages).Where(x=>x.Id == userId).FirstOrDefault();
                 if (user != null)
                 {
                     users.Add(user);
+
                 }
             }
 
@@ -105,22 +108,9 @@ namespace Service.Services
 
         public List<Message> GetConversation(int firstUserId, int secondUserId)
         {
-            List<Message> recMessages = _messageRepository.GetAll().Where(x => (x.UserId == firstUserId && x.UserId2 == secondUserId)).ToList();
-            List<Message> sentMessages = _messageRepository.GetAll().Where(x => (x.UserId == secondUserId && x.UserId2 == firstUserId)).ToList();
+            List<Message> messages = _messageRepository.GetAll().Where(x => (x.UserId == firstUserId && x.UserId2 == secondUserId) || (x.UserId == secondUserId && x.UserId2 == firstUserId)).ToList();
 
-            foreach (var message in recMessages)
-            {
-                message.User1 = _userRepository.GetById(firstUserId);
-                message.User2 =_userRepository.GetById(secondUserId);
-            }
-            foreach (var message in sentMessages)
-            {
-                message.User1 = _userRepository.GetById(secondUserId);
-                message.User2 = _userRepository.GetById(firstUserId);
-            }
-            var distinctUserIds = sentMessages.Union(recMessages).ToList();
-
-            return distinctUserIds;
+            return messages;
         }
     }
 }

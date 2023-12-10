@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            overflow: hidden; /* Zablokowanie przewijania strony */
+            overflow: hidden; 
         }
 
         .mask-custom {
@@ -26,8 +26,6 @@
             background-clip: padding-box;
             box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
         }
-
-        /* Pozostałe style */
 
     </style>
 </head>
@@ -78,7 +76,6 @@
                 <ul class="list-unstyled text-white">
                     <div id="conversationContainer" style="display: none;">
                         @Html.Partial("GetConversation")
-                        <!-- Tu będzie wyświetlony partial view konwersacji -->
                     </div>
                     <li class="mb-3">
                         <div class="form-outline form-white">
@@ -121,23 +118,22 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    $('.message-row').on('click', function () {
-    var userId = $(this).data('user-id'); // ID użytkownika do konwersacji
+    var userId = $(this).data('user-id');
     
     if (userId) {
         $.ajax({
-            url: '/Message/GetConversation', // Zastąp 'ControllerName' nazwą Twojego kontrolera
+            url: '/Message/GetConversation', 
             type: 'GET',
             data: { id: userId },
             success: function (data) {
-                $('#conversationContainer').html(data); // 'conversationContainer' to miejsce na konwersację w Twoim widoku
-                $('#conversationContainer').show(); // Pokazujemy kontener po załadowaniu konwersacji
+                $('#conversationContainer').html(data); 
+                $('#conversationContainer').show(); 
             },
             error: function () {
                 alert('Wystąpił błąd podczas pobierania konwersacji.');
             }
         });
     } else {
-        // Dodatkowe działania lub informacje, jeśli użytkownik nie został wybrany
         console.log('Proszę wybrać użytkownika.');
     }
 });
@@ -145,16 +141,13 @@
             $('#sendMessageForm').on('submit', function (e) {
                 e.preventDefault();
 
-                // Pobierz dane z formularza
                 var formData = $(this).serialize();
 
-                // Wyślij żądanie AJAX
                 $.ajax({
                     url: '/Message/SendMessage',
                     type: 'POST',
                     data: formData,
                     success: function (data) {
-                        // Zaktualizuj zawartość konwersacji
                         $('#conversationContainer').html(data);
                     },
                     error: function () {

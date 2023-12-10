@@ -1,12 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Rozpoznawanie Twarzy i Filtry</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/clmtrackr.js"></script>
 </head>
 <body>
-    <h1>Rozpoznawanie Twarzy i Filtry</h1>
     <div style="display: flex;">
         <div style="position: relative;">
             <video id="inputVideo" width="400" height="300" autoplay></video>
@@ -14,14 +12,14 @@
         </div>
         <div style="margin-left: 20px;">
             <button onclick="applyFilter('eyeliner')">Eyeliner</button>
-            <button onclick="applyFilter('lips')">Usta</button>
-            <!-- Dodaj więcej przycisków dla innych filtrów -->
+            <button onclick="applyFilter('lips')">Lip</button>
+            <button onclick="applyFilter('shadoweye')">ShadowEye</button>
             <div>
                 <label for="lineWidthRange">Grubość linii:</label>
                 <input type="range" id="lineWidthRange" min="1" max="10" value="2" onchange="updateLineWidth(this.value)">
             </div>
             <div>
-                <label for="colorPicker">Kolor:</label>
+                <label for="colorPicker">Kolor linii:</label>
                 <input type="color" id="colorPicker" value="#ff0000" onchange="updateColor(this.value)">
             </div>
             <div>
@@ -32,6 +30,10 @@
                 <label for="extensionRange">Wydłużenie linii:</label>
                 <input type="range" id="extensionRange" min="0" max="50" value="20" onchange="updateExtension(this.value)">
             </div>
+            <div>
+                <label for="shadowRadius">shadow</label>
+                <input type="range" id="shadowRadius" min="0" max="50" value="20" onchange="updateShadowRadius(this.value)">
+            </div>
         </div>
     </div>
 
@@ -41,13 +43,13 @@
         var cc = canvasInput.getContext('2d');
         var ctracker = new clm.tracker();
 
-        var currentFilter = ''; // Aktualnie wybrany filtr
+        var currentFilter = '';
         var currentLineWidth = 2;
         var currentColor = '#ff0000';
         var currentAlpha = 0.5;
         var currentExtension = 10;
+        var currentShadowRadius = 0;
 
-        // Inicjalizacja clmtrackr i rozpoczęcie śledzenia twarzy
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function (stream) {
                 videoInput.srcObject = stream;
@@ -61,14 +63,12 @@
 
         function drawLoop() {
             requestAnimationFrame(drawLoop);
-            cc.lineWidth = 0.2; // Ustaw grubość linii
+            cc.lineWidth = 0.2; 
             cc.clearRect(0, 0, canvasInput.width, canvasInput.height);
             var positions = ctracker.getCurrentPosition();
             if (positions) {
                 ctracker.draw(canvasInput);
-                // Sprawdź, czy aktualny filtr jest wybrany i zastosuj go do obszaru oczu
                 if (currentFilter === 'eyeliner') {
-                        // Indeksy punktów odpowiadających oczom na twarzy
                         var leftEyeIndices0 = [23, 23];
                         var leftEyeIndices1 = [23, 63];
                         var leftEyeIndices2 = [63, 24];
@@ -79,13 +79,13 @@
                         var rightEyeIndices2 = [68, 29];
                         var rightEyeIndices3 = [29, 67];
                         var rightEyeIndices4 = [67, 28];
+                        var rightEyeIndices5 = [28, 28];
 
-                        // Funkcja pomocnicza do rysowania obszaru powieki
                     function drawEyelid(points, lineWidth, color, alpha, currentExtension) {
                             cc.beginPath();
                             cc.moveTo(positions[points[0]][0], positions[points[0]][1]);
                             for (var i = 1; i < points.length; i++) {
-                                if (positions[points[i]]) { // Dodaj warunek sprawdzający, czy punkt istnieje
+                                if (positions[points[i]]) { 
                                 cc.lineTo(positions[points[i]][0] - currentExtension, positions[points[i]][1]);
                                 }
                             }
@@ -96,7 +96,7 @@
                         cc.lineWidth = lineWidth;
                         cc.globalAlpha = alpha;
                         cc.stroke();
-                        cc.globalAlpha = 1; // reset global alpha
+                        cc.globalAlpha = 1;
                      }
 
                     drawEyelid(leftEyeIndices0, currentLineWidth + 3, currentColor, currentAlpha,currentExtension);
@@ -108,6 +108,7 @@
                     drawEyelid(rightEyeIndices2, currentLineWidth+1, currentColor, currentAlpha, 0);
                     drawEyelid(rightEyeIndices3, currentLineWidth+2, currentColor, currentAlpha, 0);
                     drawEyelid(rightEyeIndices4, currentLineWidth+3, currentColor, currentAlpha, 0);
+                    drawEyelid(rightEyeIndices5, currentLineWidth+3, currentColor, currentAlpha,-currentExtension);
                     }
                  else if (currentFilter === 'lips') {
                     var leftUpperMouth1 = [44, 45];
@@ -137,7 +138,7 @@
                         cc.lineWidth = lineWidth;
                         cc.globalAlpha = alpha;
                         cc.stroke();
-                        cc.globalAlpha = 1; // reset global alpha
+                        cc.globalAlpha = 1; 
                     }
 
                     drawMouth(leftUpperMouth1, currentLineWidth, currentColor, currentAlpha);
@@ -154,6 +155,32 @@
                     drawMouth(leftBottomUpperMouth5, currentLineWidth, currentColor, currentAlpha);
                     drawMouth(leftBottomUpperMouth6, currentLineWidth, currentColor, currentAlpha);
                 }
+                else if (currentFilter === 'shadoweye') {
+                    function drawLeftShadowEye() {
+                        cc.shadowBlur = 10;
+                        cc.lineWidth = 3;
+                        cc.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+
+                        cc.beginPath();
+                        cc.moveTo(positions[23][0]-2, positions[23][1]); 
+                        cc.quadraticCurveTo(positions[27][0], positions[27][1] - 17 - currentShadowRadius, positions[25][0], positions[25][1]);
+                        cc.stroke();
+                    }
+                    function drawRightShadowEye() {
+                        cc.shadowBlur = 10;
+                        cc.lineWidth = 3;
+                        cc.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+
+                        cc.beginPath();
+                        cc.moveTo(positions[28][0] + 2, positions[28][1]); 
+                        cc.quadraticCurveTo(positions[32][0], positions[32][1] - 17 - currentShadowRadius, positions[30][0], positions[30][1]);
+                        cc.stroke();
+                    }
+                    drawLeftShadowEye();
+                    drawRightShadowEye();
+                }
+
+
             }
         }
 
@@ -176,6 +203,12 @@
         function updateExtension(value) {
             currentExtension = parseInt(value);
         }
+
+        function updateShadowRadius(value) {
+            currentShadowRadius = parseInt(value);
+        }
+
+
     </script>
 </body>
 </html>

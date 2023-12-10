@@ -45,17 +45,106 @@ namespace Data
                 .HasForeignKey(m => m.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<Photo>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Photo__3214EC07C3C1BADB");
+
+                entity.ToTable("Photo");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.Path)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User).WithMany(p => p.Photos)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Photo__UserId__540C7B00");
+            });
+
+            modelBuilder.Entity<Attendance>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Attendan__3214EC071993B37F");
+
+                entity.ToTable("Attendance");
+
+                entity.HasOne(d => d.Course).WithMany(p => p.Attendances)
+                    .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Attendanc__Cours__40058253");
+
+                entity.HasOne(d => d.Cycle).WithMany(p => p.Attendances)
+                    .HasForeignKey(d => d.CycleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Attendanc__Cycle__40F9A68C");
+
+                entity.HasOne(d => d.User).WithMany(p => p.Attendances)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Attendanc__UserI__41EDCAC5");
+            });
+
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.User2)
                 .WithMany()
                 .HasForeignKey(m => m.UserId2)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<Reservation>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07DCC357FB");
+
+                entity.ToTable("Reservation");
+
+                entity.Property(e => e.End).HasColumnType("datetime");
+                entity.Property(e => e.PrimaryColor)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.SecondaryColor)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.Start).HasColumnType("datetime");
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Service).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.ServiceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Reservati__Servi__5BAD9CC8");
+
+                entity.HasOne(d => d.Status).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.StatusId)
+                    .HasConstraintName("FK__Reservati__Statu__5CA1C101");
+
+                entity.HasOne(d => d.User).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Reservati__UserI__5AB9788F");
+            });
+
+            modelBuilder.Entity<Status>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Status__3214EC07694FE6B5");
+
+                entity.ToTable("Status");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Cycle>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Cycles__3214EC078C29BF1D");
 
                 entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.Title)
                     .HasMaxLength(255)
                     .IsUnicode(false);
                 entity.Property(e => e.EndDate).HasColumnType("datetime");

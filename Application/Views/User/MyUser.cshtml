@@ -1,0 +1,240 @@
+﻿@model Data.Dto_s.MyUserDto;
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" asp-append-version="true" />
+</head>
+<style>
+    .profile-image{
+        width: 60px;
+        height: 60px;
+        margin-left: 5px;
+        border-radius: 100%
+    }
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Change Profile Photo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm" asp-controller="User" asp-action="ChangeCurrentUserProfilePicture" method="post" enctype="multipart/form-data">
+                    <input type="file" name="photo" id="fileInput" />
+                    <input type="hidden" name="id" value="@Model.Id" /> <!-- ID użytkownika -->
+                    <input type="submit" value="Upload" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="uploadBtn">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+<div class="row informationUser">
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title d-inline-block">My account</h4>
+                @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
+                {
+                    <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
+                        <span class="login-status online"></span>
+                }
+                else
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="profile-image inline-block" alt="Profile">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                    </svg>
+                }
+                <p class="card-description"> Personal info </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">First Name</label>
+                            <div class="col-sm-9">
+                            <p class="card-description">@Model.FirstName</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Last Name</label>
+                            <div class="col-sm-9">
+                            <p class="card-description">@Model.LastName</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <div class="col-sm-9">
+                                <select class="form-control">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Date of Birth</label>
+                            <div class="col-sm-9">
+                            <p class="card-description">@Model.DateOfBirth</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Phone Number</label>
+                            <div class="col-sm-9">
+                            <p class="card-description">@Model.PhoneNumber</p>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                            <p class="card-description">@Model.Email</p>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <button id="editLink" class="btn-outline-primary btn btn-fw">Edit</button>
+                    </div>
+                </div>
+          </div>
+    </div>
+</div>
+</div>
+
+<div id="editFields" style="display:none">
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">My account</h4>
+                @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
+                {
+                    <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
+                    <span class="login-status online"></span>
+                }
+                else
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="profile-image inline-block" alt="Profile">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                    </svg>
+                }
+            <form class="form-sample" asp-controller="User" asp-action="EditUser">
+                <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+                <p class="card-description"> Edit personal info </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">First Name</label>
+                            <div class="col-sm-9">
+                                <input asp-for="FirstName" value="@Model.FirstName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Last Name</label>
+                            <div class="col-sm-9">
+                                <input asp-for="LastName" value="@Model.LastName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <div class="col-sm-9">
+                                <select class="form-control">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Date of Birth</label>
+                            <div class="col-sm-9">
+                                <input asp-for="DateOfBirth" value="@Model.DateOfBirth" class="form-control" placeholder="dd/mm/yyyy" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Phone Number</label>
+                            <div class="col-sm-9">
+                                <input asp-for="PhoneNumber" value="@Model.PhoneNumber" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                                <input asp-for="Email" value="@Model.Email" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <button type="submit" class="btn-outline-primary btn btn-fw" >Save</button>
+                    </div>
+                </div>
+            </form>
+                <button class="btn-outline-primary btn btn-fw backBtn" style="float:right; margin:2px;">Back</button>
+        </div>
+    </div>
+ </div>
+</div>
+
+
+
+    <script>
+        $(document).ready(function () {
+        $('.row .informationUser').show(); 
+
+            $('#editLink').on('click', function () {
+            $('.informationUser').hide();
+            $('#editFields').show(); 
+            });
+        $('.img-radius').on('click', function () {
+            $('#imageModal').modal('show');
+        });
+
+        $('#uploadBtn').on('click', function () {
+            $('#imageModal').modal('hide'); 
+        });
+
+        $('.backBtn').on('click', function () {
+            $('#editFields').hide(); 
+            $('.informationUser').show(); 
+        });
+
+
+        $('#fileInput').on('change', function () {
+            var file = this.files[0];
+        });
+
+        });
+    </script>

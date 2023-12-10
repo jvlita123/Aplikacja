@@ -8,32 +8,48 @@
     <link rel="stylesheet" href="~/css/courses/course.css" />
 </head>
 
-<button class="newCourseButton btn btn-info" ">
-    add new course
-</button>
-        <div class="courses-wrapper">
+ <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class=" bg-gradient-primary text-white me-2">
+                </span> Courses
+            <button class="newCourseButton btn button-styled" ">
+                add new course
+            </button>
+            </h3>
+        </div>
+        <div class="row">
         @foreach (var item in Model)
         {
-            <div class="course-card">
-                <h3>@item.Title</h3>
-                <p>@item.Description</p>
-                <ul>
-                    @foreach (var cycle in item.Cycles)
-                    {
-                      <button class="deleteCycleButton btn btn-danger" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
-                      <li>@cycle.Description - @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")</li>
-                      </button>
-                    }
-                <div class="button-container">
-                    <button class="newEnrollmentButton btn btn-info" data-course-id="@item.Id">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card card-img-holder text-white">
+                    <div class="card-body">
+                        <h4 class="font-weight-normal mb-3">
+                            <div class="btn-primary getCourseButton" data-course-id="@item.Id">
+                                @item.Title 
+                            </div>
+                        </h4>
+                        <h2 class="mb-5">
+                        @foreach (var cycle in item.Cycles.OrderBy(x => x.StartDate))
+                        {
+                            <button class="deleteCycleButton btn button-styled" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
+                                @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
+                            </button>
+                        }
+                        </h2>
+                    </div>
+                    <div class="btn-group">
+                    <button class="newEnrollmentButton  button-styled btn" data-course-id="@item.Id">
                         Enroll
                     </button>
-                    <button class="addCycleButton btn btn-info" data-course-id="@item.Id">Add New Cycle</button>
+                    <button class="addCycleButton  button-styled btn" data-course-id="@item.Id">Add New Cycle</button>
+                    </div>
                 </div>
-                </ul>
             </div>
         }
-        </div>
+      </div>
+</div>
+
 
 <div id="newEnrollmentModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -81,21 +97,20 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Pobieranie najnowszej wersji Bootstrapa -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script>
-    let newCycles = []; // Przechowuje lokalnie nowe cykle
+    let newCycles = []; 
 
     $('.addCycleButton').on('click', function () {
-        var courseId = $(this).data('course-id'); // Pobierz courseId z atrybutu data
-        $('#newCycleModal').modal('show'); // Wyświetl modal po załadowaniu formularza cyklu
+        var courseId = $(this).data('course-id');
+        $('#newCycleModal').modal('show');
         $.ajax({
             url: '/Cycles/NewCycle',
             type: 'GET',
             data: { id: courseId },
             success: function (data) {
-                $('#newCycleContent').html(data); // Tutaj dodaj zwracaną zawartość do modala
+                $('#newCycleContent').html(data); 
             }
         });
     });
@@ -104,20 +119,24 @@
         var courseId = $(this).data('course-id');
         $('#newEnrollmentModal').modal('show');
         $.ajax({
-            url: '/Enrollment/NewEnrollment', // Sprawdź, czy ta ścieżka jest poprawna
+            url: '/Enrollment/NewEnrollment', 
             type: 'GET',
-            data: { id: courseId }, // Przekazanie ID kursu
+            data: { id: courseId }, 
             success: function (data) {
                 $('#newEnrollmentContext').html(data);
             }
         });
     });
 
+    $('.getCourseButton').on('click', function () {
+        var courseId = $(this).data('course-id');
+        window.location.href = '/Courses/GetCourse/' + courseId;
+    });
 
     $('.newCourseButton').on('click', function () {
         $('#newCycleModal').modal('show');
         $.ajax({
-            url: '/Courses/NewCourse', // Sprawdź, czy ta ścieżka jest poprawna
+            url: '/Courses/NewCourse', 
             type: 'GET',
             success: function (data) {
                 $('#newCycleContent').html(data);
@@ -126,19 +145,19 @@
     });
 
     $('.deleteCycleButton').on('click', function () {
-        var cycleId = $(this).data('cycle-id'); // Pobierz identyfikator cyklu z atrybutu data
+        var cycleId = $(this).data('cycle-id'); 
         $('#deleteConfirmationModal').modal('show');
-        $('#confirmDeleteBtn').data('cycle-id', cycleId); // Przekaż identyfikator cyklu do przycisku potwierdzenia usuwania
+        $('#confirmDeleteBtn').data('cycle-id', cycleId);
     });
 
     $('#confirmDeleteBtn').on('click', function () {
-        var cycleId = $(this).data('cycle-id'); // Pobierz identyfikator cyklu z przycisku potwierdzenia usuwania
+        var cycleId = $(this).data('cycle-id');
         $.ajax({
             url: '/Cycles/DeleteCycle',
             type: 'POST',
             data: { cycleId: cycleId },
             success: function (data) {
-                $('#deleteConfirmationModal').modal('hide'); // Zamknij modal po pomyślnym usunięciu cyklu
+                $('#deleteConfirmationModal').modal('hide'); 
             }
         });
     });

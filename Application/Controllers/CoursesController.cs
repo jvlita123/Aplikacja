@@ -7,6 +7,7 @@ using Service.Services;
 using System.Collections.Generic;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Application.Controllers
 {
@@ -43,7 +44,11 @@ namespace Application.Controllers
         public IActionResult GetCourse(int id)
         {
             Course course = _coursesService.GetById(id);
-            ViewData["cycles"] = course.Cycles;
+            var cycles = course.Cycles.OrderBy(x => x.StartDate);
+            var enrolledUsers = _enrollmentService.GetEnrolledUserByCourse(id);
+
+            ViewData["cycles"] = cycles;
+            ViewData["enrolledUsers"] = enrolledUsers;
             return View(course);
         }
 

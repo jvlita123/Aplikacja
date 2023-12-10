@@ -219,9 +219,6 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
             }
         });
     },
-
-
-     
   });
 
 

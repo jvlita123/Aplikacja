@@ -1,0 +1,20 @@
+.table-responsive{
+      overflow-y: scroll;
+      height: 70vh;     
+}
+.table-responsive::-webkit-scrollbar {
+  width: 12px; 
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color: #00000026;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background-color: #f1f1f1; 
+}
+
+a.dropdown-item{
+  font-size:14px;
+  font-family:sans-serif;
+}

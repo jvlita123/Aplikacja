@@ -45,10 +45,10 @@ namespace Application.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult SendMessage(int UserId2, string text)
+        public RedirectToActionResult SendMessage(int UserId2, string Text)
         {
             User? user = _userService.GetByEmail(HttpContext.User.Identity.Name);
-            _messageService.SendMessage(user.Id, UserId2, text);
+            _messageService.SendMessage(user.Id, UserId2, Text);
 
             return RedirectToAction("GetConversation", new { id = UserId2 });
         }
@@ -85,8 +85,13 @@ namespace Application.Controllers
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             List<User> userConversation = _messageService.GetUserConversations(user.Id);
+            List<User> allAppUsers = _userService.GetAll();
             List<Message> conversation = _messageService.GetConversation(user.Id, id);
+            User user2 = _userService.GetById(id);
             ViewData["users"] = userConversation;
+            ViewData["allusers"] = allAppUsers;
+            ViewData["user2"] = user2;
+            ViewData["user1"] = user;
      
             return View(conversation);
         }

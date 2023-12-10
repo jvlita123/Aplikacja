@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
@@ -26,6 +27,13 @@ namespace Service.Services
             return cycle;
         }
 
+        public List<Cycle> GetAllOrderByDate()
+        {
+            List<Cycle> cycles = _cyclesRepository.GetAll().Include(x => x.Attendances).OrderBy(x=>x.StartDate).ToList();
+
+            return cycles;
+        }
+
         public Cycle UploadFile(string filePath, int id)
         {
             Cycle cycle = _cyclesRepository.GetAll().Where(x=>x.Id==id).FirstOrDefault() ;
@@ -41,6 +49,7 @@ namespace Service.Services
             Cycle newCycle = new Cycle();
             newCycle.Id = cycle.Id;
             newCycle.CourseId = cycle.CourseId;
+            newCycle.Title = cycle.Title;
             newCycle.Description = cycle.Description;
             newCycle.StartDate = cycle.StartDate;
             newCycle.EndDate = cycle.EndDate;

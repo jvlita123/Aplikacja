@@ -46,14 +46,22 @@ namespace Application.Controllers
         [HttpPost]
         public IActionResult NewEnrollment(int courseId, string userEmail)
         {
-            Enrollment enrollment = new Enrollment();
-            enrollment.UserId = _userService.GetAll().Where(x => x.Email == userEmail).Select(x => x.Id).FirstOrDefault();
-            enrollment.CourseId = _coursesService.GetAll().Where(x => x.Id == courseId).Select(x => x.Id).FirstOrDefault();
-            enrollment.EnrollmentDate = DateTime.Now;
-            enrollment.Cancelled = false;
+            User user = _userService.GetAll().Where(x => x.Email == userEmail).FirstOrDefault();
 
-            _enrollmentService.NewEnrollment(enrollment);
-            return RedirectToAction("GetCourse", "Courses", new { id = courseId });
+            if (_enrollmentService.IsEnrolled(user.Id, courseId) == false)
+            {
+                Enrollment enrollment = new Enrollment();
+                enrollment.UserId = _userService.GetAll().Where(x => x.Email == userEmail).Select(x => x.Id).FirstOrDefault();
+                enrollment.CourseId = _coursesService.GetAll().Where(x => x.Id == courseId).Select(x => x.Id).FirstOrDefault();
+                enrollment.EnrollmentDate = DateTime.Now;
+                enrollment.Cancelled = false;
+
+                _enrollmentService.NewEnrollment(enrollment);
+                return RedirectToAction("GetCourse", "Courses", new { id = courseId });
+            }
+
+            return View();
+
         }
 
         public ActionResult Details(int id)

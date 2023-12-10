@@ -79,12 +79,12 @@
     }); 
     
     $('#editReservationBtn').on('click', function () {
-        var reservationId = @Model.Id; // Assuming the ID can be retrieved in this context
+        var reservationId = @Model.Id; 
         $('#editModal').modal('show');
         $.ajax({
-            url: '/Reservation/EditReservation', // Check if this URL is correct
+            url: '/Reservation/EditReservation', 
             type: 'GET',
-            data: { id: reservationId }, // Pass the reservation ID
+            data: { id: reservationId }, 
             success: function (data) {
                 $('#editReservationContent').html(data);
             }
@@ -92,15 +92,13 @@
     });
 
     $('#confirmDeleteBtn').on('click', function () {
-        var reservationId = @Model.Id; // Pobierz identyfikator rezerwacji z modelu
+        var reservationId = @Model.Id;
         $.ajax({
-            url: '/Reservation/RemoveReservation', // Sprawdź poprawność ścieżki do akcji kontrolera
+            url: '/Reservation/RemoveReservation', 
             type: 'POST',
-            data: { id: reservationId }, // Przekazanie identyfikatora rezerwacji
+            data: { id: reservationId }, 
             success: function (data) {
-                // Tutaj możesz obsłużyć odpowiedź zwrotną po usunięciu rezerwacji
-                // Na przykład, odśwież stronę lub wykonaj dodatkowe działania
-                window.location.href = '/Reservation/Calendar'; // Modify the URL accordingly
+                window.location.href = '/Reservation/Calendar'; 
             }
         });
     });

@@ -1,27 +1,23 @@
-﻿/* Style dla listy kursów */
 .course-list {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-/* Style dla elementu pojedynczego kursu */
 .course-item {
-    background-color: #f7f7f7;
+    background-color: #442d2d;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgb(57 51 51 / 10%);
     width: 300px;
 }
 
-/* Style dla okienek czasowych */
 .time-windows {
     display: flex;
     gap: 10px;
     margin-top: 10px;
 }
 
-/* Style dla poszczególnego okienka czasowego */
 .time-window {
     background-color: #ffe6e6;
     border-radius: 5px;
@@ -30,12 +26,10 @@
     text-align: center;
 }
 
-/* Style dla czasu rozpoczęcia */
 .start-time {
     border-right: 1px solid #ccc;
 }
 
-/* Style dla czasu zakończenia */
 .end-time {
     padding-left: 10px;
 }

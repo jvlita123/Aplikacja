@@ -22,7 +22,7 @@ namespace Application.Controllers
 
         public ActionResult Index()
         {
-            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
+            var usr = _userService.GetAll().FirstOrDefault();
             UserReservationsDto userReservationsDto = new();
             userReservationsDto.FinishedReservations = _reservationService.GetFinished(usr);
             userReservationsDto.ConfirmedReservations = _reservationService.GetConfirmed(usr);
@@ -127,6 +127,7 @@ namespace Application.Controllers
             return RedirectToAction("Calendar");
         }
 
+        [HttpGet]
         public PartialViewResult changeReservationStatus(int id)
         {
             var StatusList = new SelectList(_statusService.GetAll().Select(x => x.Name).ToList());
@@ -141,7 +142,17 @@ namespace Application.Controllers
         public IActionResult changeReservationStatus(int id, string status)
         {
             _reservationService.changeReservationStatus(id, _statusService.GetByName(status).Id);
-            return RedirectToAction("Index");
+            return NoContent();
+        }
+
+        [HttpGet]
+        public PartialViewResult getReservationsByStatus(string status)
+        {
+            if(status == "All")
+            {
+                return PartialView(_reservationService.GetAll());
+            }
+            return PartialView(_reservationService.GetReservationsByStatus(status));
         }
     }
 }
