@@ -299,12 +299,6 @@
     <!-- partial -->
 @*</div>*@
 
-
-
-
-@await RenderSectionAsync("Scripts", required: false)
-
-
 <div class="modal" tabindex="-1" role="dialog" id="myModal1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -348,8 +342,23 @@
                 });
             }
         });
+            $('#myModal1 .form').on('submit', function (event) {
+                event.preventDefault(); // Zapobieganie domyślnej akcji formularza
+
+                // Pobieranie danych z formularza
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/Reservation/changeReservationStatus',
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        // Po zmianie statusu, odświeżanie tabeli
+                        refreshTable(selectedStatus);
+                    }
+                });
+            });
     });
-});
 
     //refresh table and select reservation status
     var selectedStatus = 'All';
@@ -381,6 +390,5 @@
             },
         });
     }
-    //refresh table and select reservation status
-
+});
 </script>

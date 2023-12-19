@@ -1,164 +1,50 @@
-﻿@model Data.Dto_s.UserReservationsDto
-<style>
-    .reservation-box {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 10px;
-        margin: 10px 0;
-        box-shadow: 2px 2px 5px #888888; 
-    }
+﻿@using Data.Entities;
+@model IEnumerable<Data.Entities.Reservation>
+@{
+    IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
+}
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Reservations</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> User </th>
+                                <th> Service </th>
 
-    .reservation-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 5px;
-        margin-bottom: 5px;
-    }
-
-    .status {
-        font-weight: bold;
-        padding: 7px;
-        border-radius: 6px;
-        color: white;
-        font-size: 0.8em;
-    }
-
-    .confirmed {
-        background-color: #9CCC65;
-    }
-
-    .finished {
-        background-color: #8A8A8A;
-    }
-
-    .cancelled {
-        background-color: #CC6666;
-    }
-
-    .pending {
-        background-color: #EAF0C9;
-    }
-
-    .date {
-        font-size: 0.8em;
-        display: flex;
-        flex-direction: column;
-        text-align: right;
-        color: #444;
-    }
-
-    .month {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .day {
-        font-size: 2.5em;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .time {
-        font-size: 1.2em;
-        margin: 0;
-    }
-</style>
-
-<h2>Pending Reservations</h2>
-        @foreach (var reservation in Model.PendingReservations)
-        {
-            <div class="reservation-box">
-                <div class="reservation-header">
-              
-            <span class="status @(reservation.Status.Name.ToLower()) changeStatus">
-                @reservation.Status.Name
-            </span>
-            <span class="reservationId" style="display:none;">@reservation.Id</span>
-
-
-                    <span class="date">
-                        <p class="month">@reservation.Start.ToString("MMMM")</p>
-                        <p class="day">@reservation.Start.ToString("dd")</p>
-                        <p class="time">@reservation.Start.ToString("HH:mm")</p>
-                    </span>
+                                <th class="" style="text-decoration:none; font-weight:normal">
+                                    <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Status
+                                    </a>
+                                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                                        @foreach (var v in statuses)
+                                        {
+                                            <a class="dropdown-item selected-status">
+                                                @v.Name
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                        <a class="dropdown-item selected-status">
+                                            All
+                                        </a>
+                                    </div>
+                                </th>
+                                <th> Start </th>
+                                <th> End </th>
+                                <th>       </th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTable">
+                        </tbody>
+                    </table>
                 </div>
-                <h4>@reservation.Title</h4>
-
-            <button id="deleteReservationBtn"  class="btn btn-danger">Delete</button>
-            <button id="editReservationBtn" class="btn btn-info">Edit</button>
-
             </div>
-        }
-
-<h2>Confirmed Reservations</h2>
-        @foreach (var reservation in Model.ConfirmedReservations)
-        {
-            <div class="reservation-box">
-                <div class="reservation-header">
-                    <span class="status @(reservation.Status.Name.ToLower())">
-                        @reservation.Status.Name
-                    </span>
-                    <span class="date">
-                        <p class="month">@reservation.Start.ToString("MMMM")</p>
-                        <p class="day">@reservation.Start.ToString("dd")</p>
-                        <p class="time">@reservation.Start.ToString("HH:mm")</p>
-                    </span>
-                </div>
-                <h4>@reservation.Title</h4>
-            </div>
-        }
-
-
-
-<h2>Finished Reservations</h2>
-        @if (Model.FinishedReservations != null)
-        {
-            @foreach (var reservation in Model.FinishedReservations)
-            {
-                <div class="reservation-box">
-                    <div class="reservation-header">
-                        <span class="status @(reservation.Status.Name.ToLower())">
-                            @reservation.Status.Name
-                        </span>
-                        <span class="date">
-                            <p class="month">@reservation.Start.ToString("MMMM")</p>
-                            <p class="day">@reservation.Start.ToString("dd")</p>
-                            <p class="time">@reservation.Start.ToString("HH:mm")</p>
-                        </span>
-                    </div>
-                    <h4>@reservation.Title</h4>
-                </div>
-            }
-
-        }
-
-
-<h2>Cancelled Reservations</h2>
-
-        @if (Model.CancelledReservations!=null)
-        {
-            @foreach (var reservation in Model.CancelledReservations)
-            {
-                <div class="reservation-box">
-                    <div class="reservation-header">
-                        <span class="status @(reservation.Status.Name.ToLower())">
-                            @reservation.Status.Name
-                        </span>                    
-                        <span class="date">
-                            <p class="month">@reservation.Start.ToString("MMMM")</p>
-                            <p class="day">@reservation.Start.ToString("dd")</p>
-                            <p class="time">@reservation.Start.ToString("HH:mm")</p>
-                        </span>
-                    </div>
-                    <h4>@reservation.Title</h4>
-                </div>
-            }
-        }
-
-
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="deleteConfirmationModal">
     <div class="modal-dialog">
@@ -190,7 +76,31 @@
     </div>
 </div>
 
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Reservation Status</h5>
+                <span aria-hidden="true">
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </span>
+            </div>
+            <div class="modal-body " id="contentReservation">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-success alert-dismissible fade" id="statusChangedMsg" role="alert" style="display: none;">
+    Status has been changed.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 
     <script>
 
@@ -228,20 +138,69 @@
             }
         });
     });
-    $('.changeStatus').on('click', function () {
-        var reservationId = $(this).closest('.reservation-box').find('.reservationId').text();
-        var statusName = $(this).text().trim(); // Pobranie nazwy statusu
-        $('#editModal').modal('show');
 
-        $.ajax({
-            url: '/Reservation/changeReservationStatus',
-            type: 'GET',
-            data: { id: reservationId},
-            success: function (data) {
-                $('#editReservationContent').html(data);
-            }
+        var selectedStatus = 'All';
+        refreshTable(selectedStatus);
+
+        $(document).on('click', '.changeReservationStatus', function () {
+            var reservationId = $(this).data('reservation-id');
+            var statusChangedMsg = $('#statusChangedMsg');
+
+        $("#myModal1").modal("show");
+            $.ajax({
+                url: '/Reservation/changeReservationStatus',
+                type: 'GET',
+                data: { id: reservationId },
+                success: function (data) {
+                    $('#contentReservation').html(data);
+                    statusChangedMsg.fadeIn().delay(3000).fadeOut();
+
+                    $('#myModal1 .form').on('submit', function (event) {
+                    event.preventDefault(); // Zapobieganie domyślnej akcji formularza
+
+                    // Pobieranie danych z formularza
+                    var formData = $(this).serialize();
+
+                    $.ajax({
+                        url: '/Reservation/changeReservationStatus',
+                        type: 'POST',
+                        data: formData,
+                        success: function (data) {
+                            // Po zmianie statusu, odświeżanie tabeli
+                            refreshTable(selectedStatus);
+                        }
+                    });
+                    });
+                }
+            });
         });
+
+    $(document).on('click', '.selected-status', function () {
+        selectedStatus = $(this).text().trim(); // Usunięcie 'var' przed 'selectedStatus'
+        refreshTable(selectedStatus);
     });
+
+        function refreshTable(selectedStatus) {
+            $.ajax({
+                url: '/Reservation/getReservationsByStatus',
+                type: 'GET',
+                data: { status: selectedStatus },
+                success: function (result) {
+                    $('#reservationsTable').html(result);
+                },
+            });
+        }
+
+        function allReservations() {
+            $.ajax({
+                url: '/Reservation/getAll',
+                type: 'GET',
+                data: { status: selectedStatus },
+                success: function (result) {
+                    $('#reservationsTable').html(result);
+                },
+            });
+        }
     </script>
 
 

@@ -22,7 +22,19 @@ namespace Application.Controllers
 
         public ActionResult Index()
         {
+            var courses = _coursesService.GetAll();
+            ViewData["courses"] = courses;
+
             return View(_attendanceService.GetAll());
+        }
+
+        public bool CheckAttendance(int userId, int cycleId, int courseId)
+        {
+            if (_attendanceService.GetAll().Where(x => x.CycleId == cycleId && x.CourseId == courseId && x.UserId == userId).FirstOrDefault() == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public PartialViewResult GetAttendancesForCycle(int id,int courseId)

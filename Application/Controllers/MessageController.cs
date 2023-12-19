@@ -84,7 +84,7 @@ namespace Application.Controllers
         public ViewResult GetConversation(int id)
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
-            List<User> userConversation = _messageService.GetUserConversations(user.Id);
+             List<User> userConversation = _messageService.GetUserConversations(user.Id);
             List<User> allAppUsers = _userService.GetAll();
             List<Message> conversation = _messageService.GetConversation(user.Id, id);
             User user2 = _userService.GetById(id);

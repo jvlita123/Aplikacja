@@ -137,6 +137,21 @@ namespace Data
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Service>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Service__3214EC0791B2BCF6");
+
+                entity.ToTable("Service");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
+
             modelBuilder.Entity<Cycle>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Cycles__3214EC078C29BF1D");

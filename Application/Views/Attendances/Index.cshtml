@@ -1,59 +1,246 @@
 ﻿@model IEnumerable<Data.Entities.Attendance>
 
 @{
-    ViewData["Title"] = "Index";
+    var courses = (IEnumerable<Data.Entities.Course>)ViewData["courses"];
 }
 
-<h1>Index</h1>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="courseDropdown" class="form-label">Wybierz kurs:</label>
+        <select class="form-select" id="courseDropdown">
+            <option value="0">Wybierz kurs</option>
+            @foreach (var course in courses)
+            {
+                <option value="@course.Id">@course.Title</option>
+            }
+        </select>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeArrive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeLeave)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cycle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeArrive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeLeave)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cycle.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="userSearch" class="form-label">Wyszukaj użytkownika:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="userSearch" placeholder="Wpisz nazwisko">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+        </div>
+        <div class="selected-users mt-2">
+            <!-- Tutaj będą wyświetlane wybrane użytkownicy jako tagi -->
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label for="cycleDropdown" class="form-label">Wybierz cykl:</label>
+        <select class="form-select" id="cycleDropdown">
+            <option value="0">Wszystkie</option>
+        </select>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Reservations</h4>
+                <div class="table-responsive">
+                    <table class="table" id="headerTableAttendance">
+                        <thead>
+                            <tr>
+                                <th> Course Member </th>
+                                <th> Days Not Met </th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendancesTable">
+                            <!-- Present -->
+                        <td>
+                            <i class="mdi mdi-bookmark-check" style="color: green;"></i>
+                        </td>
+
+                        <!-- Absent -->
+                        <td>
+                            <i class="mdi mdi-bookmark-remove" style="color: red;"></i>
+                        </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pobierz referencje do pól wyboru
+    const courseDropdown = document.getElementById('courseDropdown');
+    const cycleDropdown = document.getElementById('cycleDropdown');
+    var courseId;
+
+
+    // Funkcja do pobrania cykli dla wybranego kursu (możesz zastąpić AJAXem)
+    function getCyclesForCourse(courseId) {
+        // Tutaj podejmij działania, aby pobrać cykle dla wybranego kursu (AJAX lub inna metoda)
+        // Zwróć listę cykli
+    }
+    // Wywołanie AJAX-a po zmianie wartości w polu wyboru kursu
+    // JavaScript code to populate the select dropdown
+    $(document).ready(function () {
+        $('#courseDropdown').change(function () {
+            courseId = $(this).val();
+
+            $.ajax({
+                url: '/Cycles/GetCyclesForCourse',
+                type: 'GET',
+                data: { courseId: courseId },
+                success: function (cycles) {
+                    var dropdown = $('#cycleDropdown');
+                    console.log('Received cycles:', cycles);
+
+                    // Clear existing options except the first one (Wszystkie)
+                    dropdown.find('option:not(:first)').remove();
+
+                    // Check if cycles is an array or array-like object
+                    if (Array.isArray(cycles)) {
+                        cycles.forEach( (e) => {
+                            console.log('Cycle Title:', e.title);
+
+                            var option = $('<option></option>').attr('value', e.id).text(e.title);
+                            dropdown.append(option);
+                        });
+                    }
+                    
+
+                    // Iteruj przez cykle i dodaj je jako nagłówki tabeli
+                    if (Array.isArray(cycles)) {
+                        var dropdown = $('#cycleDropdown');
+                        var tableHeadRow = $('#headerTableAttendance thead tr');
+
+                    // Usuń poprzednie nagłówki z tabeli (jeśli istnieją)
+                        $('#headerTableAttendance th:not(:lt(2))').remove();
+
+                        cycles.forEach((e) => {
+                            var cycleHeader = $('<th></th>').text(e.title);
+                            console.log('Cycle Title:', e.title);
+
+                            tableHeadRow.append(cycleHeader);
+                        });
+                    } 
+                    else {
+                        console.error('Invalid cycles data format:', cycles);
+                        alert('An error occurred while fetching cycles.');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while fetching cycles.');
+                }
+            });
+
+            $.ajax({
+                url: '/Courses/GetCourseUsers',
+                type: 'GET',
+                data: { courseId: courseId },
+                success: function (users) {
+                    console.log('users:', users);
+
+                    var tableBody = $('#attendancesTable');
+
+                    // Wyczyść istniejące wiersze w tabeli
+                    tableBody.empty();
+
+                    // Iteruj przez użytkowników i dodaj wiersze do tabeli
+                    users.forEach((user) => {
+                        var tableRow = $('<tr></tr>');
+                        console.log('user:', user);
+
+                        // Dodaj kolumnę z obrazkiem
+                        var imageCell = $('<td></td>');
+                        if (user.photos[0] == null){
+                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/avatar_1.png').attr('alt', 'User Image');
+
+                        }
+                        else{
+                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/' + user.photos[0].path).attr('alt', 'User Image');
+                        }
+                        imageCell.append(userImage);
+                        tableRow.append(imageCell);
+
+                        // Dodaj kolumnę dla nazwy użytkownika
+                        var userNameCell = $('<td></td>').text(user.firstName+" "+user.lastName);
+                        tableRow.append(userNameCell);
+
+                        // Dodaj kolumnę dla liczby dni nieobecności
+                        var daysNotMetCell = $('<td></td>').text("-");
+                        tableRow.append(daysNotMetCell);
+
+                        // Tutaj możesz dodać więcej kolumn, jeśli masz więcej informacji o użytkownikach
+                        var tableRow = $('<tr></tr>');
+                        console.log('user:', user);
+
+                        // Dodaj kolumnę z obrazkiem
+                        var imageCell = $('<td></td>');
+                        if (user.photos[0] == null) {
+                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/avatar_1.png').attr('alt', 'User Image');
+                        } else {
+                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/' + user.photos[0].path).attr('alt', 'User Image');
+                        }
+                        imageCell.append(userImage);
+                        tableRow.append(imageCell);
+
+                        // Dodaj kolumnę dla nazwy użytkownika
+                        var userNameCell = $('<td></td>').text(user.firstName + " " + user.lastName);
+                        tableRow.append(userNameCell);
+
+                        // Iteruj przez każdy cykl
+                        var dropdown = $('#cycleDropdown');
+
+                        dropdown.find('option:not(:first)').each(function () {
+                            var cycleId = $(this).val(); // Pobranie ID cyklu
+
+                            // Tutaj możesz wywołać funkcję checkAttendance i sprawdzić obecność użytkownika w danym cyklu
+                            var userId = user.id; // Pobierz ID użytkownika z danych użytkownika
+                            
+
+                            // Wywołaj funkcję checkAttendance i zaktualizuj kolumnę z informacją o obecności
+                            $.ajax({
+                                url: '/Attendances/CheckAttendance',
+                                type: 'GET',
+                                data: { userId: userId, cycleId: cycleId, courseId: courseId },
+                                success: function (isPresent) {
+                                    var iconClass = isPresent ? "mdi mdi-bookmark-check" : "mdi mdi-bookmark-remove";
+                                    var iconColor = isPresent ? "green" : "red";
+
+                                    var attendanceCell = $('<td></td>');
+                                    var icon = $('<i></i>').addClass(iconClass).css('color', iconColor);
+                                    attendanceCell.append(icon);
+
+                                    tableRow.append(attendanceCell);
+                                },
+                                error: function () {
+                                    alert('An error occurred while fetching attendance.');
+                                }
+
+                            });
+                        });
+
+                        // Dodaj wiersz do tabeli
+                        tableBody.append(tableRow);
+                    });
+                },
+                error: function () {
+                    alert('An error occurred while fetching users.');
+                }
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        // Pobranie wybranego cycleId z listy cykli po zmianie wartości
+        $('#cycleDropdown').change(function () {
+            var selectedCycleId = $(this).val();
+            console.log('Cycle id:', selectedCycleId);
+
+            // Możesz wykorzystać selectedCycleId dalej w Twoim kodzie
+        });
+    });
+</script>

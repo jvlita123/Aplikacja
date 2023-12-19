@@ -8,11 +8,13 @@ namespace Service.Services
     {
         private readonly CoursesRepository _coursesRepository;
         private readonly EnrollmentsRepository _enrollmentRepository;
+        private readonly PhotoRepository _photoRepository;
 
-        public CoursesService(CoursesRepository coursesRepository, EnrollmentsRepository enrollmentRepository)
+        public CoursesService(CoursesRepository coursesRepository, EnrollmentsRepository enrollmentRepository, PhotoRepository photoRepository)
         {
             _coursesRepository = coursesRepository;
             _enrollmentRepository = enrollmentRepository;
+            _photoRepository = photoRepository;
         }
 
         public List<Course> GetAll()
@@ -44,6 +46,25 @@ namespace Service.Services
                 v.Cycles = GetById(v.Id).Cycles;
             }
             return courses;
+        }        
+
+        public List<User> GetCourseUsers(int courseId)
+        {
+            List<User> users = _enrollmentRepository
+                .GetAll()
+                .Where(x => x.CourseId == courseId)
+                .Select(x => new User
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    Photos = _photoRepository
+                        .GetAll()
+                        .Where(photo => photo.UserId == x.User.Id && photo.IsProfilePicture == true)
+                        .ToList()
+                })
+                .ToList();
+            return users;
         }
     }
 }

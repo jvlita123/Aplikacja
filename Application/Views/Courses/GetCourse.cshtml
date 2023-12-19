@@ -10,10 +10,20 @@
 
 <head>
     <link rel="stylesheet" href="~/css/courses/getCourse.css" />
-
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="../../assets/js/off-canvas.js"></script>
+    <script src="../../assets/js/hoverable-collapse.js"></script>
+    <script src="../../assets/js/misc.js"></script>
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/chart.js/Chart.min.js"></script>
+    <script src="~/assets/js/off-canvas.js"></script>
+    <script src="~/assets/js/hoverable-collapse.js"></script>
+    <script src="~/assets/js/misc.js"></script>
+    <script src="~/assets/js/chart.js"></script>
 </head>
 
-<section id="cd-timeline" class="cd-container">
+@*<section id="cd-timeline" class="cd-container">
         @foreach (var v in cycles)
         {
 
@@ -40,103 +50,46 @@
     </div> 
         }
 </section> 
+
+*@
+
+    <div class="col-12 "style="margin-top: 0;">
+    <div class="card">
+
+    <div class="card">
+        <div class="row d-flex justify-content-between px-3 top">
+            <div class="d-flex">
+                <h3>@Model.Title</h3>
+            </div>
+            <div class="d-flex flex-column text-sm-right">
+@*                <p class="mb-0"> <span>@Model.Description</span></p>
+*@             <p><span class="font-weight-bold">@Model.Description</span></p>
+            </div>
+        </div>
+        <!-- Add class 'active' to progress -->
+        <div class="row d-flex justify-content-center">
+            <div class="col-12">
+                <ul id="progressbar" class="text-center">
+                     @foreach (var v in cycles)
+                    {
+                            <a asp-controller="Cycles" class="progress-line" asp-action="GetCycle" asp-route-id="@v.Id">
+                            <li class=" active step0 mdi mdi-check"></li></a>
+
+                     }
+                        <li class="step0 mdi mdi-checkbox-blank-circle-outline"></li>
+                </ul>
+            </div>
+                <div id="partialViewContainer"></div>
+        </div>
+
+    </div>
+</div>
+</div>
+
 <button class="newAttendance button-styled" data-course-id="@Model.Id">
     Check Attendance
 </button>
-@*
 
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Reservations</h4>
-                <div class="button-container">
-                    <button class="newAttendance button-styled" data-course-id="@Model.Id">
-                        Check Attendance
-                    </button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th> User </th>
-                                <th class="" style="text-decoration:none; font-weight:normal">
-                                    <a class="nav-link dropdown-toggle" id="courseDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Course Day
-                                    </a>
-                                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="courseDropdown">
-                                        @foreach (var v in cycles)
-                                        {
-                                            <a class="dropdown-item selected-day" data-cycle-attendance-id="@v.Id">
-                                                @v.StartDate - @v.EndDate
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                        }
-                                    </div>
-                                </th>
-                                <th>
-                                    Present
-                                </th>
-                                
-                                <th> Absent </th>
-                                <th>
-                                    Time arrived
-                                </th>
-                                <th> Time Leaved </th>
-
-                            </tr>
-                        </thead>
-
-                        <tbody id="reservationsTable" >
-                            @foreach (var v in enrolledUsers)
-                            {
-                                <tr data-user-id="@v.Id">
-                                    @if (v.Photos.Where(x => x.IsProfilePicture == true).Count() > 0)
-                                    {
-                                        <td >
-                                            <img src="~/images/@v.Photos.Where(x => x.IsProfilePicture == true).First().Path" class="me-2" alt="User-Profile-Image">
-                                            @v.FirstName @v.LastName
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <img src="~/assets/images/faces/face1.jpg" class="me-2" alt="image">
-                                            @v.FirstName @v.LastName
-                                        </td>
-                                    }
-                                    <td>  
-
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-check-success">
-                                            <label class="form-check-label">
-                                                <input id="saas"type="checkbox" class="form-check-input" checked>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-check-danger">
-                                            <label class="form-check-label">
-                                                <input  id="assd"type="checkbox" class="form-check-input">
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <input type="time" class="form-control" placeholder="dd/mm/yyyy" />
-                                    </td>
-                                    <td>
-                                        <input type="time" class="form-control" placeholder="dd/mm/yyyy" />
-                                    </td>
-                                    </tr>
-                                  }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>*@
 
 @foreach (var v in cycles)
 {
@@ -165,8 +118,6 @@
     </div>
 </div>
 
-
-
     <h4>Course</h4>
     <dl class="row">
         <dt class = "col-sm-2">
@@ -188,41 +139,41 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+    // Nasłuchiwanie na kliknięcie w link
+   // $(document).ready(function () {
+    $(document).on('click', '.progress-line', function (e) {
+        e.preventDefault(); // Zapobiega domyślnej akcji przekierowania po kliknięciu
+
+        var url = $(this).attr('href'); // Pobiera adres URL z atrybutu href
+        $.get(url, function (data) {
+            // Po pobraniu zawartości partial view, umieść ją w kontenerze
+            $('#partialViewContainer').html(data);
+        });
+    });
 
     var courseId = $('.newAttendance').data('course-id');
-    var cycleId = '' // Można zostawić pustą wartość początkową
+    var cycleId = '' 
 
-    $('.cycle-attendance').on('click',function(){
 
             var cycleAttendanceId = $(this).data('selected-cycle-attendance');
-            courseIdd = $('.newAttendance').data('course-id'); // Aktualizacja courseId
+            courseId = $('.newAttendance').data('course-id'); 
 
             $.ajax({
-                url: '/Attendances/GetAttendancesForCycle', // Ścieżka do akcji, która zwraca Partial View z listą obecności
+                url: '/Attendances/GetAttendancesForCycle', 
                 type: 'GET',
-                data: { id: cycleAttendanceId, courseId: courseIdd }, // Dostarcz odpowiednie dane do partial view
+                data: { id: cycleAttendanceId, courseId: courseId }, 
                 success: function (result) {
-                    // Wstawienie partial view w odpowiednie miejsce na stronie
                     $('.attendancesList').html(result);
                 },
                 error: function () {
-                    // Obsługa błędu
                 }
             });
-    })
         $('.dropdown-item').on('click', function () {
-            // Pobierz wartość data-cycle-attendance-id wybranego elementu
              cycleId = $(this).data('cycle-attendance-id');
-
-            // Zaktualizuj wybrany element w rozwijanej liście
             $('#courseDropdown').text($(this).text());
-
-            // Tutaj możesz wykonać dodatkowe czynności, jeśli to konieczne, na podstawie wybranego elementu
-            // ...
         });
         
 
-    });
+   // });
 
 </script>

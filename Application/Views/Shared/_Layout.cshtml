@@ -229,11 +229,37 @@
                             <i class="mdi mdi-calendar-clock menu-icon"></i>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                            <span class="menu-title">Reservations</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-medical-bag menu-icon"></i>
+                        </a>
+                        <div class="collapse" id="general-pages">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Index"> Reservations </a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                            <span class="menu-title">Services</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-medical-bag menu-icon"></i>
+                        </a>
+                        <div class="collapse" id="general-pages">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="AddService"> Add Service </a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="Index"> Services </a></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </nav>
             <!-- Body Render -->
             <div class="main-panel">
                 <div class="content-wrapper">
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     @RenderBody()
                 </div>
                 <footer class="footer">

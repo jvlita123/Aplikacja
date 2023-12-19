@@ -22,14 +22,12 @@ namespace Application.Controllers
 
         public ActionResult Index()
         {
-            var usr = _userService.GetAll().FirstOrDefault();
-            UserReservationsDto userReservationsDto = new();
-            userReservationsDto.FinishedReservations = _reservationService.GetFinished(usr);
-            userReservationsDto.ConfirmedReservations = _reservationService.GetConfirmed(usr);
-            userReservationsDto.CancelledReservations = _reservationService.GetCancelled(usr);
-            userReservationsDto.PendingReservations = _reservationService.GetPending(usr);
+            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
 
-            return View(userReservationsDto);
+            var statuses = _statusService.GetAll().ToList();
+            ViewData["statuses"] = statuses;
+
+            return View(_reservationService.GetUserReservations(usr));
         }
 
         public ActionResult ShowReservation(int id)
@@ -124,7 +122,7 @@ namespace Application.Controllers
             ViewBag.StatusId = statuses;
 
             _reservationService.UpdateReservation(reservation);
-            return RedirectToAction("Calendar");
+            return View();
         }
 
         [HttpGet]

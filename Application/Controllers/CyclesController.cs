@@ -33,10 +33,15 @@ namespace Application.Controllers
         {
             return View(_cyclesService.GetAll());
         }
-
-        public IActionResult GetCycle(int id)
+        public List<Cycle> GetCyclesForCourse(int courseId)
         {
-            return View(_cyclesService.GetById(id));
+            var cycles = _cyclesService.GetAll().Where(x => x.CourseId == courseId).ToList();
+            return cycles;
+        }
+
+        public PartialViewResult GetCycle(int id)
+        {
+            return PartialView(_cyclesService.GetById(id));
         }
 
         [HttpGet]

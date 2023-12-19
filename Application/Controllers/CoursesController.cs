@@ -73,6 +73,13 @@ namespace Application.Controllers
             return View(courses);
         }
 
+        public List<User> GetCourseUsers(int courseId)
+        {
+            List<User> users = _coursesService.GetCourseUsers(courseId);
+
+            return users;
+        }
+
         public ActionResult Details(int id)
         {
             return View();
