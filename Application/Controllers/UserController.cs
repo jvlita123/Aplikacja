@@ -77,7 +77,7 @@ namespace Application.Controllers
             var cycles = _cyclesService.GetAll().OrderBy(x => x.StartDate);
             var statuses = _statusService.GetAll().ToList();
             var enrollments = _enrollmentsService.GetAll().Where(x => x.Course.Cycles.OrderBy(y => y.EndDate).First().EndDate > DateTime.Now).ToList();
-            var reservations = _reservationService.GetAll().Where(x => x.Status.Name == "Pending" || x.Status.Name == "Confirmed").ToList();
+            var reservations = _reservationService.GetAll().Where(x => x.Start >= DateTime.Now && (x.Status.Name == "Pending" || x.Status.Name == "Confirmed")).ToList();
 
             ViewData["admin"] = user;
             ViewData["users"] = users;

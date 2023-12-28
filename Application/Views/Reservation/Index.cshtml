@@ -3,18 +3,35 @@
 @{
     IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
 }
+<head>
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="../../assets/js/off-canvas.js"></script>
+    <script src="../../assets/js/hoverable-collapse.js"></script>
+    <script src="../../assets/js/misc.js"></script>
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/chart.js/Chart.min.js"></script>
+    <script src="~/assets/js/off-canvas.js"></script>
+    <script src="~/assets/js/hoverable-collapse.js"></script>
+    <script src="~/assets/js/misc.js"></script>
+    <script src="~/assets/js/chart.js"></script>
+
+</head>
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Reservations</h4>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="userSearch" placeholder="Search user">
+                    <span class="input-group-text"><i class="mdi mdi-account-search-outline"></i></span>
+                </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th> User </th>
                                 <th> Service </th>
-
                                 <th class="" style="text-decoration:none; font-weight:normal">
                                     <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                         Status
@@ -99,8 +116,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
     <script>
 
@@ -201,6 +217,24 @@
                 },
             });
         }
+
+    $('#userSearch').on('keyup', function () {
+        var searchText = $(this).val().toLowerCase(); // Pobierz wartość wprowadzoną do pola tekstowego i zmień na małe litery
+        filterTable(searchText); // Wywołaj funkcję do filtrowania tabeli
+    });
+
+    function filterTable(searchText) {
+        $('#reservationsTable tr').each(function () { // Pomijanie pierwszego wiersza (nagłówka)
+            var username = $(this).find('td:first').text().toLowerCase(); // Pobieranie nazwy użytkownika z pierwszej komórki
+
+            // Sprawdzenie, czy nazwa użytkownika pasuje do wprowadzonego tekstu
+            if (username.indexOf(searchText) === -1) {
+                $(this).hide(); // Jeśli nie pasuje, ukryj wiersz
+            } else {
+                $(this).show(); // Jeśli pasuje, pokaż wiersz
+            }
+        });
+    }
     </script>
 
 

@@ -20,8 +20,7 @@ namespace Service.Services
 
         public List<Enrollment> GetAll()
         {
-            List<Enrollment> enrollments = _enrollmentsRepository.GetAll().Include(x => x.Course).Include(x => x.User).ToList();
-
+            List<Enrollment> enrollments = _enrollmentsRepository.GetAll().Include(x => x.Course).Include(x => x.Course.Cycles).Include(x => x.User).ToList();
             return enrollments;
         }
 

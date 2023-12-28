@@ -3,26 +3,21 @@
 @{
     ViewData["Title"] = "NewEnrollment";
 }
-
-<h1>NewEnrollment</h1>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="NewEnrollment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @if (@context.HttpContext.User.IsInRole("admin"))
                { <div class="form-group">
-                    <label class="control-label"></label>
+                    <label class="control-label">Select a user to enroll in this course</label>
                     <select name="userEmail" id="userEmail" class="form-control" asp-items="ViewBag.Emails"></select>
                 </div>
             }
             else{
                 <div class="form-group">
-                    <label asp-for="User.Email" class="control-label"></label>
                     <input name="userEmail" id="userEmail" class="form-control" value ="@context.HttpContext.User.Identity.Name" type="hidden" readonly/>
                 </div>
             }
-            Book confirmation
             <div class="form-group">
                 <input name="courseId" id="courseId" class="form-control" value="@ViewBag.course"  type="hidden"readonly />
             </div>

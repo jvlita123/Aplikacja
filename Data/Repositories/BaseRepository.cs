@@ -1,4 +1,6 @@
-﻿namespace Data.Repositories
+﻿using Data.Entities;
+
+namespace Data.Repositories
 {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {

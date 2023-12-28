@@ -1,14 +1,13 @@
-﻿using Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Data
+namespace Data.Entities
 {
     public class DataContext : DbContext
     {
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
-        public DbSet<Entities.Service> Service { get; set; }
+        public DbSet<Service> Service { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Cycle> Cycles { get; set; }
@@ -39,11 +38,11 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Message>()
+/*            modelBuilder.Entity<Message>()
                 .HasOne(m => m.User1)
-                .WithMany(u => u.Messages)
+                .WithMany(u => u.messages)
                 .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull);*/
 
             modelBuilder.Entity<Photo>(entity =>
             {
@@ -63,6 +62,28 @@ namespace Data
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Photo__UserId__540C7B00");
+            });
+
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Message__3214EC073A725353");
+
+                entity.ToTable("Message");
+
+                entity.Property(e => e.Text)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User1).WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Message__UserId__503BEA1C");
+
+                entity.HasOne(d => d.User2).WithMany()
+                    .HasForeignKey(d => d.UserId2)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Message__UserId2__51300E55");
             });
 
             modelBuilder.Entity<Attendance>(entity =>
@@ -87,11 +108,11 @@ namespace Data
                     .HasConstraintName("FK__Attendanc__UserI__41EDCAC5");
             });
 
-            modelBuilder.Entity<Message>()
+/*            modelBuilder.Entity<Message>()
                 .HasOne(m => m.User2)
                 .WithMany()
                 .HasForeignKey(m => m.UserId2)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull);*/
 
             modelBuilder.Entity<Reservation>(entity =>
             {
@@ -174,8 +195,6 @@ namespace Data
             });
             base.OnModelCreating(modelBuilder);
         }
-
-
         public void AddEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {
             Set<TEntity>().Add(entity);

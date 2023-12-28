@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Controllers
 {
@@ -31,6 +33,7 @@ namespace Application.Controllers
             return View(enrollments);
         }
 
+        [Authorize]
         [HttpGet]
         public PartialViewResult NewEnrollment(int id)
         {
@@ -43,11 +46,11 @@ namespace Application.Controllers
             return PartialView();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult NewEnrollment(int courseId, string userEmail)
         {
             User user = _userService.GetAll().Where(x => x.Email == userEmail).FirstOrDefault();
-
             if (_enrollmentService.IsEnrolled(user.Id, courseId) == false)
             {
                 Enrollment enrollment = new Enrollment();
@@ -57,10 +60,15 @@ namespace Application.Controllers
                 enrollment.Cancelled = false;
 
                 _enrollmentService.NewEnrollment(enrollment);
-                return RedirectToAction("GetCourse", "Courses", new { id = courseId });
+                return RedirectToAction("Index", "Courses");
             }
+            TempData["Message"] = "You are already enrolled in this course.";
 
-            return View();
+            if (HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "admin")
+            {
+            TempData["Message"] = "This user is already enrolled in this course.";
+            }
+            return RedirectToAction("Index", "Courses");
 
         }
 

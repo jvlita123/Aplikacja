@@ -9,9 +9,9 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Description.</th>
+                            <th>Description</th>
                             <th>Service time</th>
-                            <th> </th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +52,6 @@
                                     </div>
                                 </td>
                                 </form>
-
                             </tr>
                         }
                     </tbody>
@@ -92,11 +91,9 @@
         var $row = $(this).closest('.service-info');
         var $formRow = $row.next('.hidden-form');
 
-        // Zamykanie poprzedniego aktywnego formularza edycji
         $('.hidden-form').not($formRow).hide();
         $('.service-info').not($row).show();
 
-        // Pokazywanie lub ukrywanie aktualnie klikniętego wiersza
         $formRow.toggle();
         $row.toggle();
     });
@@ -108,7 +105,7 @@
     $('.delete-link').on('click', function (e) {
         e.preventDefault();
         var itemId = $(this).data('id');
-        var $rowToDelete = $(this).closest('.service-info'); // Wiersz do usunięcia
+        var $rowToDelete = $(this).closest('.service-info');
 
         $('#deleteModal').modal('show');
 
@@ -119,7 +116,7 @@
                 data: { id: itemId },
                 success: function (response) {
                     console.log('Rekord usunięty pomyślnie');
-                    $rowToDelete.remove(); // Usunięcie wiersza z tabeli po sukcesie usuwania
+                    $rowToDelete.remove(); 
                 },
                 error: function (error) {
                     console.error('Błąd podczas usuwania rekordu', error);

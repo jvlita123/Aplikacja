@@ -103,7 +103,10 @@ namespace Service.Services
             }
 
             string ProfilePhoto = "/"+userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
-
+            if(userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault() == null)
+            {
+                ProfilePhoto = "/blang-user.png";
+            }
             var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),

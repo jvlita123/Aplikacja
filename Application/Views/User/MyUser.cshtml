@@ -26,12 +26,9 @@
                 <form id="uploadForm" asp-controller="User" asp-action="ChangeCurrentUserProfilePicture" method="post" enctype="multipart/form-data">
                     <input type="file" name="photo" id="fileInput" />
                     <input type="hidden" name="id" value="@Model.Id" />
-                    <input type="submit" value="Upload" />
+                    <input type="submit" class="btn btn-primary" id="uploadBtn"  value="Upload" />
+                    <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="uploadBtn">Upload</button>
             </div>
         </div>
     </div>
@@ -46,14 +43,10 @@
                 @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
                 {
                     <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
-                        <span class="login-status online"></span>
                 }
                 else
                 {
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="profile-image inline-block" alt="Profile">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                    </svg>
+                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" />
                 }
                 <p class="card-description"> Personal info </p>
                 <div class="row">
@@ -77,12 +70,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <label class="col-sm-3 col-form-label">Role</label>
                             <div class="col-sm-9">
-                                <select class="form-control">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
+                                <p class="card-description">@Model.RoleName</p>
                             </div>
                         </div>
                     </div>
@@ -133,10 +123,7 @@
                 }
                 else
                 {
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="profile-image inline-block" alt="Profile">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                    </svg>
+                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" />
                 }
             <form class="form-sample" asp-controller="User" asp-action="EditUser">
                 <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
@@ -162,12 +149,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <label class="col-sm-3 col-form-label">Role</label>
                             <div class="col-sm-9">
-                                <select class="form-control">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
+                                    <p class="card-description">@Model.RoleName</p>
                             </div>
                         </div>
                     </div>
@@ -226,7 +210,7 @@
             $('.informationUser').hide();
             $('#editFields').show(); 
             });
-        $('.img-radius').on('click', function () {
+        $('.profile-image').on('click', function () {
             $('#imageModal').modal('show');
         });
 
@@ -238,7 +222,12 @@
             $('#editFields').hide(); 
             $('.informationUser').show(); 
         });
-
+                $('.closeModal').on('click', function () {
+            $('#imageModal').hide();
+        });
+        $('.close').on('click', function () {
+            $('#imageModal').hide();
+        });
 
         $('#fileInput').on('change', function () {
             var file = this.files[0];

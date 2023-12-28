@@ -22,16 +22,7 @@
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="mdi mdi-menu"></span>
                 </button>
-                <div class="search-field d-none d-md-block">
-                    <form class="d-flex align-items-center h-100" action="#">
-                        <div class="input-group">
-                            <div class="input-group-prepend bg-transparent">
-                                <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                            </div>
-                            <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
-                        </div>
-                    </form>
-                </div>
+              
                 <ul class="navbar-nav navbar-nav-right">
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -45,11 +36,8 @@
                                     }
                                     else
                                     {
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" alt="User Photo">
-                                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                        </svg>
-                                        <span class="availability-status online"></span>
+                                        <img src="~/images/blank-profile.png" alt="blankuser" />
+                                        <span class="availability-status offline"></span>
                                     }
                                 </div>
                                     <div class="nav-profile-text">
@@ -180,10 +168,7 @@
                                 }
                                 else
                                 {
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" alt="Profile">
-                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                    </svg>
+                                    <img src="~/images/blank-profile.png" alt="blankuser" />
                                     <span class="login-status offline"></span>
                                 }
                             </div>
@@ -218,10 +203,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Courses" asp-action="Index">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#courses-pages" aria-expanded="false" aria-controls="courses-pages">
                             <span class="menu-title">Courses</span>
+                            <i class="menu-arrow"></i>
                             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                         </a>
+                        <div class="collapse" id="courses-pages">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index"> Courses </a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Attendances" asp-action="Index"> Attendances </a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Calendar">
@@ -242,12 +234,12 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#services-pages" aria-expanded="false" aria-controls="services-pages">
                             <span class="menu-title">Services</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
                         </a>
-                        <div class="collapse" id="general-pages">
+                        <div class="collapse" id="services-pages">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="AddService"> Add Service </a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="Index"> Services </a></li>
@@ -285,9 +277,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Sign in</h5>
+                <h5 id = "modaltitle"class="modal-title"></h5>
                 <span aria-hidden="true">
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" id="closeModal" class="btn-close" data-dismiss="modal" aria-label="Close">
                     </button>
                 </span>
             </div>
@@ -310,155 +302,30 @@
         $("#showModalBtn").on("click", function () {
             $("#myModal").modal("show");
             $.ajax({
-                url: '/Account/Login', // Sprawdź, czy ta ścieżka jest poprawna
+                url: '/Account/Login',
                 type: 'GET',
                 success: function (data) {
                     $('#editReservationContent').html(data);
+                    $('#modaltitle').html("Sign in");
+                    $('.registerBtn').show();
                 }
             });
         });
 
-        // Zarejestruj zdarzenie kliknięcia na przycisku registerBtn
         $(document).on("click", ".registerBtn", function () {
             $.ajax({
-                url: '/Account/RegisterUser', // Sprawdź, czy ta ścieżka jest poprawna
+                url: '/Account/RegisterUser',
                 type: 'GET',
                 success: function (data) {
                     $('#editReservationContent').html(data);
+                    $('#modaltitle').html("Create Your Account");
+                    $('.registerBtn').hide();
                 }
             });
+        });
+
+        $("#closeModal").on("click", function () {
+            $("#myModal").modal("hide");
         });
     });
 </script>
-
-@*
-<!DOCTYPE html>
-<html lang="en">
-
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 nav-wrapper">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Application</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between ">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Appointments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Calendar">Calendar</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="Index">My enrollemnts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MakeUpCreator" asp-action="Index">MakeUpCreator</a>
-                            </li>
-                        }
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="RegisterUser">Register</a>
-                        </li>
-                    </ul>
-                    <span class="navbar-text">
-                        <a href="~/Message/GetConversation/0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor" class="bi bi-chat-fill" viewBox="0 0 16 16">
-                                <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15" />
-                            </svg>
-                        </a>
-                    </span>
-                    @if (!@User.Identity.IsAuthenticated)
-                    {
-                        <span class="inline-text">
-                            <button class="btn btn-light" id="showModalBtn">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="rounded-circle header-profile-user" width="20" height="20" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                </svg>
-                                Sign In
-                            </button>
-                        </span>
-                    }
-                    else
-                    {
-
-
-                        <span class="inline-text">
-                            <a class="btn btn-light" asp-area="" asp-controller="Account" asp-action="Logout">
-                                Log out
-                            </a>
-                        </span>
-                    }
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="content">
-        <!-- Modal -->
-        <div class="modal" tabindex="-1" role="dialog" id="myModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Sign in</h5>
-                        <span aria-hidden="true">
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                            </button>
-                        </span>
-                    </div>
-                    <div class="modal-body " id="editReservationContent">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Register</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @RenderBody()
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - Application - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-
-</body>
-</html>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#showModalBtn").on("click", function () {
-            $("#myModal").modal("show");
-            $.ajax({
-                url: '/Account/Login', // Check if this URL is correct
-                type: 'GET',
-                success: function (data) {
-                    $('#editReservationContent').html(data);
-                }
-            });
-        });
-    });
-
-</script>*@

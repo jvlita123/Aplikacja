@@ -1,4 +1,6 @@
-﻿namespace Data.Repositories
+﻿using Data.Entities;
+
+namespace Data.Repositories
 {
     public class ServiceRepository : BaseRepository<Entities.Service>
     {

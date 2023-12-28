@@ -9,7 +9,6 @@ namespace Application.Controllers
 {
     public class MessageController : Controller
     {
-
         private readonly ReservationService _reservationService;
         private readonly UserService _userService;
         private readonly ServiceService _serviceService;

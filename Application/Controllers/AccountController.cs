@@ -33,7 +33,7 @@ namespace Application.Controllers
             {
                 _userService.RegisterUserDto(dto);
             }
-            return View();
+            return RedirectToAction("Index");
         }
 
         public PartialViewResult Login()
