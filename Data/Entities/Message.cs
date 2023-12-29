@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Data.Patterns;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public partial class Message
+public partial class Message //: ISubject
 {
     public int Id { get; set; }
 
@@ -13,6 +14,7 @@ public partial class Message
     public int UserId { get; set; }
 
     public int UserId2 { get; set; }
+    public Boolean IsNew { get; set; } = false;
 
     [NotMapped]
     [ForeignKey("UserId")]
@@ -20,36 +22,8 @@ public partial class Message
    
     [ForeignKey("UserId2")]
     public virtual User User2 { get; set; } = null!;
-}
-/*using Data.Patterns;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Data.Entities;
-
-public partial class Message : ISubject
-{
-    public int Id { get; set; }
-
-public string? Text { get; set; }
-
-public int UserId { get; set; }
-
-public int UserId2 { get; set; }
-
-public bool IsNew { get; set; }
-
-
-[ForeignKey("UserId")] // Specify the foreign key column for User1 navigation property
-public virtual User User1 { get; set; } = null!;
-
-[ForeignKey("UserId2")] // Specify the foreign key column for User2 navigation property
-public virtual User User2 { get; set; } = null!;
-
-
-/*
-    private List<IObserver> observers = new List<IObserver>();
+   /* private List<IObserver> observers = new List<IObserver>();
 
     public void Attach(IObserver observer)
     {
@@ -63,12 +37,13 @@ public virtual User User2 { get; set; } = null!;
 
     public void Notify()
     {
+        Console.WriteLine(observers);
+
         foreach (var observer in observers)
         {
+            Console.WriteLine(observer);
+
             observer.Update(this);
         }
-    }
-
+    }*/
 }
-
-*/

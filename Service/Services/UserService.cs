@@ -4,6 +4,7 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Service.Services
@@ -15,14 +16,16 @@ namespace Service.Services
         private readonly RoleRepository _roleRepository;
         private readonly ReservationRepository _reservationRepository;
         private readonly PhotoRepository _photoRepository;
+        private readonly MessageRepository _messageRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository, PhotoRepository photoRepository)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
             _reservationRepository = reservationRepository;
             _photoRepository = photoRepository;
+            _messageRepository = messageRepository;
         }
 
         public List<User> GetAll()
@@ -88,6 +91,7 @@ namespace Service.Services
                 .GetAll()
                 .Include(u => u.Photos)
                 .Include(u => u.Role)
+                .Include(u => u.Messages)
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if (userToLogin is null)
@@ -107,6 +111,11 @@ namespace Service.Services
             {
                 ProfilePhoto = "/blang-user.png";
             }
+            String newMessage = "false";
+            if(_messageRepository.GetAll().Any(x => x.UserId2 == userToLogin.Id && x.IsNew == true) )
+            {
+                newMessage = "true";
+            }
             var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
@@ -114,6 +123,7 @@ namespace Service.Services
                         new Claim(ClaimTypes.Email, userToLogin.Email),
                         new Claim(ClaimTypes.Role, userToLogin.Role.Name.ToString()),
                         new Claim("ProfilePhotoPath", ProfilePhoto),
+                        new Claim("newMessage", newMessage.ToString()),
                         new Claim("FullName", userToLogin.FirstName +" "+ userToLogin.LastName)
                     };
 

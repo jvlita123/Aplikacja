@@ -86,6 +86,20 @@ namespace Data.Entities
                     .HasConstraintName("FK__Message__UserId2__51300E55");
             });
 
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Message__3214EC073A725353");
+
+                entity.ToTable("Message");
+
+                entity.Property(e => e.IsNew).HasDefaultValueSql("((1))");
+                entity.Property(e => e.Text)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
+
             modelBuilder.Entity<Attendance>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Attendan__3214EC071993B37F");

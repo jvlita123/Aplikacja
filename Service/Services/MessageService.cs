@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text.Json.Serialization.Metadata;
@@ -50,7 +51,10 @@ namespace Service.Services
                    // User1 = firstUser,
                    //User2 = secondUser,
                     Text = text,
+                    IsNew = true
                 };
+
+                // message.Notify();
                 _messageRepository.AddAndSaveChanges(message);
               //  secondUser.Messages.Add(message);
            //     firstUser.Messages.Add(message);
@@ -109,7 +113,15 @@ namespace Service.Services
         public List<Message> GetConversation(int firstUserId, int secondUserId)
         {
             List<Message> messages = _messageRepository.GetAll().Where(x => (x.UserId == firstUserId && x.UserId2 == secondUserId) || (x.UserId == secondUserId && x.UserId2 == firstUserId)).ToList();
-
+            foreach (var message in messages)
+            {
+                if(message.UserId != firstUserId)
+                {
+                message.IsNew = false;
+                _messageRepository.Update(message);
+                _messageRepository.SaveChanges();
+                }
+            }
             return messages;
         }
     }

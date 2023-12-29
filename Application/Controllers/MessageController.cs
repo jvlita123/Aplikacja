@@ -1,9 +1,13 @@
 ﻿using Data.Entities;
+using Data.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Service.Services;
+using System.Security.Claims;
 
 namespace Application.Controllers
 {
@@ -44,13 +48,34 @@ namespace Application.Controllers
 
         [HttpPost]
         [Authorize]
-        public RedirectToActionResult SendMessage(int UserId2, string Text)
+        public async Task<RedirectToActionResult> SendMessageAsync(int UserId2, string Text)
         {
             User? user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             _messageService.SendMessage(user.Id, UserId2, Text);
+            
+            var user1 = HttpContext.User;
+
+            if (user1 != null)
+            {
+                var claimsIdentity = (ClaimsIdentity)user1.Identity;
+
+                // Usunięcie starego claimu 'newMessage', jeśli istnieje
+                var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
+                if (existingNewMessageClaim != null)
+                {
+                    claimsIdentity.RemoveClaim(existingNewMessageClaim);
+                }
+
+                // Dodanie nowego claimu 'newMessage' z nową wartością
+                claimsIdentity.AddClaim(new Claim("newMessage", "true"));
+
+                // Zaktualizowanie informacji o uwierzytelnieniu
+                await HttpContext.SignInAsync(HttpContext.User);
+            }
 
             return RedirectToAction("GetConversation", new { id = UserId2 });
         }
+
 
         [HttpGet]
         public IActionResult GetReceivedMessages()
@@ -80,13 +105,35 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        public ViewResult GetConversation(int id)
+        public async Task<ViewResult> GetConversationAsync(int id)
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
              List<User> userConversation = _messageService.GetUserConversations(user.Id);
             List<User> allAppUsers = _userService.GetAll();
             List<Message> conversation = _messageService.GetConversation(user.Id, id);
             User user2 = _userService.GetById(id);
+
+            var user1 = HttpContext.User;
+
+            if (user1 != null && !_messageService.GetAll().Any(x => x.UserId2 == user.Id && x.IsNew == true))
+            {
+                var claimsIdentity = (ClaimsIdentity)user1.Identity;
+
+                // Usunięcie starego claimu 'newMessage', jeśli istnieje
+                var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
+                if (existingNewMessageClaim != null)
+                {
+                    claimsIdentity.RemoveClaim(existingNewMessageClaim);
+                }
+
+                // Dodanie nowego claimu 'newMessage' z nową wartością
+                claimsIdentity.AddClaim(new Claim("newMessage", "false"));
+
+                // Zaktualizowanie informacji o uwierzytelnieniu
+                await HttpContext.SignInAsync(HttpContext.User);
+            }
+
+
             ViewData["users"] = userConversation;
             ViewData["allusers"] = allAppUsers;
             ViewData["user2"] = user2;
