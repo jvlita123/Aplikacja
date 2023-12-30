@@ -7,6 +7,8 @@ namespace Data.Entities
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
+        public DbSet<Reservation1> Reservation1 { get; set; }
+        public DbSet<ReservationSlots> ReservationSlots { get; set; }
         public DbSet<Service> Service { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -122,43 +124,39 @@ namespace Data.Entities
                     .HasConstraintName("FK__Attendanc__UserI__41EDCAC5");
             });
 
-/*            modelBuilder.Entity<Message>()
-                .HasOne(m => m.User2)
-                .WithMany()
-                .HasForeignKey(m => m.UserId2)
-                .OnDelete(DeleteBehavior.ClientSetNull);*/
+            /*            modelBuilder.Entity<Message>()
+                            .HasOne(m => m.User2)
+                            .WithMany()
+                            .HasForeignKey(m => m.UserId2)
+                            .OnDelete(DeleteBehavior.ClientSetNull);*/
 
-            modelBuilder.Entity<Reservation>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07DCC357FB");
+                entity.HasMany(u => u.Reservations)
+                    .WithOne(r => r.User)
+                    .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
 
-                entity.ToTable("Reservation");
+            modelBuilder.Entity<Reservation1>(entity =>
+            {
+                entity.HasOne(r => r.User)
+                    .WithMany(u => u.Reservations)
+                    .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
-                entity.Property(e => e.End).HasColumnType("datetime");
-                entity.Property(e => e.PrimaryColor)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-                entity.Property(e => e.SecondaryColor)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-                entity.Property(e => e.Start).HasColumnType("datetime");
-                entity.Property(e => e.Title)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasOne(r => r.ReservationSlot)
+                    .WithOne(rs => rs.Reservation)
+                    .HasForeignKey<ReservationSlots>(rs => rs.ReservationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
 
-                entity.HasOne(d => d.Service).WithMany(p => p.Reservations)
-                    .HasForeignKey(d => d.ServiceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Reservati__Servi__5BAD9CC8");
-
-                entity.HasOne(d => d.Status).WithMany(p => p.Reservations)
-                    .HasForeignKey(d => d.StatusId)
-                    .HasConstraintName("FK__Reservati__Statu__5CA1C101");
-
-                entity.HasOne(d => d.User).WithMany(p => p.Reservations)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Reservati__UserI__5AB9788F");
+            modelBuilder.Entity<ReservationSlots>(entity =>
+            {
+                entity.HasOne(rs => rs.Reservation)
+                    .WithOne(r => r.ReservationSlot)
+                    .HasForeignKey<ReservationSlots>(rs => rs.ReservationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Status>(entity =>
