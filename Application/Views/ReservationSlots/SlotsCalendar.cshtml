@@ -1,0 +1,69 @@
+﻿@using System.Globalization;
+@{
+    var slots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["slots"];
+    var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
+    var slotsJson = Newtonsoft.Json.JsonConvert.SerializeObject(slots);
+
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert("@TempData["ErrorMessage"]");
+    </script>
+}
+
+<div id='calendar' data-slots='@Json.Serialize(slots)'></div>
+
+<div id="ReservationSlotsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body" id="newReservationSlot">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var slotsData = @Html.Raw(slotsJson);
+        var selectedDate;
+        var events = [];
+
+        for (let slot of slotsData) {
+            var startDateTime = new Date(`${slot.Date.slice(0, 10)}T${slot.StartTime}`);
+            var endDateTime = new Date(`${slot.Date.slice(0, 10)}T${slot.EndTime}`);
+
+            events.push({
+                id: slot.Id,
+                start: startDateTime,
+                end: endDateTime,
+                title: `${slot.StartTime} - ${slot.EndTime}`
+            });
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: '2023-11-01',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: events,
+            dateClick: function (info) {
+                selectedDate = info.dateStr; // Pobranie daty z klikniętego dnia
+                $.get('/ReservationSlots/NewReservationSlot', { selectedDate: selectedDate }, function (data) {
+                    $('#ReservationSlotsModal .modal-body').html(data); // Wstawienie danych częściowego widoku do modala
+                    $('#ReservationSlotsModal').modal('show'); // Wyświetlenie modala
+                });
+            }
+        });
+
+        calendar.render();
+    });
+</script>

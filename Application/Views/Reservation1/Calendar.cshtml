@@ -1,0 +1,173 @@
+﻿@using System.Globalization;
+@{
+    var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
+    var availableSlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["availableSlots"];
+    var busySlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["busySlots"];
+    var settings = new Newtonsoft.Json.JsonSerializerSettings { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore };
+    var userReservations = (IEnumerable<Data.Entities.Reservation1>)ViewData["userReservations"];
+    var userReservationsJson = Newtonsoft.Json.JsonConvert.SerializeObject(userReservations, settings);
+}
+<style>
+    .button-disabled {
+        opacity: 0.5; 
+    }
+</style>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert("@TempData["ErrorMessage"]");
+    </script>
+}
+
+<div>
+    @foreach (var service in services)
+    {
+        <button id="@("btn_" + service.Id)" onclick="showSlots('@service.Id')">@(service.Name)</button>
+    }
+</div>
+<div id="slots-container"></div>
+<div id='calendar'></div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Nowa rezerwacja</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Tutaj zostanie wyświetlona treść zwracana przez partial view -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var selectedDate; // Zmienna przechowująca wybraną datę
+
+
+    function showSlots(serviceId) {
+        // Przekazanie wybranej daty do funkcji zwracającej sloty
+        $.ajax({
+            url: '/Reservation1/GetSlots',
+            method: 'GET',
+            dataType: 'json',
+            data: {
+                serviceId: serviceId,
+                selectedDate: selectedDate
+            },
+            success: function (response) {
+                var objAsString = JSON.stringify(response);
+                var parsedObject = JSON.parse(objAsString);
+
+                var availableSlots = parsedObject.AvailableSlots || parsedObject.availableSlots;
+                var busySlots = parsedObject.BusySlots || parsedObject.busySlots;
+
+                console.log('Dostępne sloty:', availableSlots);
+                console.log('Zajęte sloty:', busySlots);
+
+                var slotsContainer = document.getElementById('slots-container');
+                slotsContainer.innerHTML = '';
+
+                for (var i = 0; i < availableSlots.length; i++) {
+                    var slot = availableSlots[i];
+                    console.log('slot:', slot);
+                    var btn = document.createElement('button');
+                    btn.textContent = slot.startTime + ' - ' + slot.endTime;
+                    btn.onclick = function () {
+                        $.ajax({
+                            url: '/Reservation1/NewReservation',
+                            method: 'GET',
+                            data: {
+                                serviceId: serviceId, 
+                                selectedDate: selectedDate,
+                                reservationSlotsId: slot.id // Zastąp zgodnie z modelem danych
+                            },
+                            success: function (response) {
+                                $('#modalContent').html(response); // Wyświetlenie treści z partial view w modalu
+                                $('#myModal').modal('show'); // Wyświetlenie modalu
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Wystąpił błąd podczas wywoływania akcji NewReservation:', error);
+                            }
+                        });
+                    };
+                    slotsContainer.appendChild(btn);
+                }
+
+                for (var j = 0; j < busySlots.length; j++) {
+                    var busySlot = busySlots[j];
+                    console.log('slot:', busySlot);
+                    var btnBusy = document.createElement('button');
+                    btnBusy.textContent = busySlot.startTime + ' - ' + busySlot.endTime + ' (Busy)';
+                    btnBusy.classList.add('button-disabled');
+                    slotsContainer.appendChild(btnBusy);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Wystąpił błąd podczas pobierania danych:', error);
+            }
+
+        });
+          
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var userReservations = @Html.Raw(userReservationsJson);
+        var events = [];
+
+        for (let reservation of userReservations) {
+            var startDateTime = new Date(`${reservation.ReservationSlot.Date.slice(0, 10)}T${reservation.ReservationSlot.StartTime}`);
+            var endDateTime = new Date(`${reservation.ReservationSlot.Date.slice(0, 10)}T${reservation.ReservationSlot.EndTime}`);
+            console.log("start time: " + startDateTime)
+            console.log("end time: " + endDateTime)
+            events.push({
+                id: reservation.Id,
+                start: startDateTime,
+                end: endDateTime,
+                title: `${reservation.ReservationSlot.StartTime} - ${reservation.ReservationSlot.EndTime}`
+            });
+        }
+        console.log("events: " + events)
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: '2023-11-01',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: events,
+            dateClick: function (info) {
+                selectedDate = info.dateStr; 
+            },
+            eventClick: function (info) {
+                var clickedEvent = info.event;
+                var reservationId = clickedEvent.id; 
+
+                $.ajax({
+                    url: '/Reservation1/GetReservationDetails',
+                    method: 'GET',
+                    data: {
+                        reservationId: reservationId
+                    },
+                    success: function (response) {
+                        $('#modalContent').html(response); 
+                        $('#myModal').modal('show'); 
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Wystąpił błąd podczas pobierania szczegółów rezerwacji:', error);
+                    }
+                });
+            }
+
+        });
+
+        calendar.render();
+    });
+</script>

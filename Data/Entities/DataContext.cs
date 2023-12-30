@@ -138,27 +138,45 @@ namespace Data.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
+
             modelBuilder.Entity<Reservation1>(entity =>
             {
-                entity.HasOne(r => r.User)
-                    .WithMany(u => u.Reservations)
-                    .HasForeignKey(r => r.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07B1711767");
 
-                entity.HasOne(r => r.ReservationSlot)
-                    .WithOne(rs => rs.Reservation)
-                    .HasForeignKey<ReservationSlots>(rs => rs.ReservationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.ToTable("Reservation1");
+
+                entity.Property(e => e.PrimaryColor).HasMaxLength(100);
+                entity.Property(e => e.Title).HasMaxLength(255);
+
+                entity.HasOne(d => d.ReservationSlot).WithOne(p => p.Reservation)
+                    .HasForeignKey<ReservationSlots>(d => d.ReservationId)
+                    .HasConstraintName("FK__Reservati__Reser__1E6F845E");
+
+                entity.HasOne(d => d.Service).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.ServiceId)
+                    .HasConstraintName("FK__Reservati__Servi__17C286CF");
+
+                entity.HasOne(d => d.Status).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK__Reservati__Statu__18B6AB08");
+
+                entity.HasOne(d => d.User).WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK__Reservati__UserI__16CE6296");
             });
 
             modelBuilder.Entity<ReservationSlots>(entity =>
             {
-                entity.HasOne(rs => rs.Reservation)
-                    .WithOne(r => r.ReservationSlot)
-                    .HasForeignKey<ReservationSlots>(rs => rs.ReservationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-            });
+                entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC0740F61968");
 
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.HasOne(d => d.Reservation).WithOne(p => p.ReservationSlot)
+                    .HasForeignKey<Reservation1>(d => d.ReservationSlotId)
+                    .HasConstraintName("ReservationId");
+
+            });
             modelBuilder.Entity<Status>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Status__3214EC07694FE6B5");

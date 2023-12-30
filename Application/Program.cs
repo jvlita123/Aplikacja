@@ -86,7 +86,10 @@ namespace Application
             builder.Services.AddScoped<BlockService>();
             builder.Services.AddScoped<MessageRepository>();
             builder.Services.AddScoped<MessageService>();
-            builder.Services.AddScoped<MessageService>();
+            builder.Services.AddScoped<Reservation1Repository>();
+            builder.Services.AddScoped<Reservation1Service>();
+            builder.Services.AddScoped<ReservationSlotsService>();
+            builder.Services.AddScoped<ReservationSlotsRepository>();
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             builder.Services.AddMemoryCache();

@@ -1,0 +1,48 @@
+﻿@model Data.Entities.Reservation1
+
+<div>
+    <h4>Reservation Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            <strong>Title:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Primary Color:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PrimaryColor)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Service:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Service.Name)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Status:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status.Name)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Reservation Slot:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReservationSlot.Id)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>User Email:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

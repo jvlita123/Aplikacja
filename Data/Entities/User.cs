@@ -40,7 +40,7 @@ public partial class User //: INotifyPropertyChanged, IObserver
     public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
 
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    public virtual ICollection<Reservation1> Reservations { get; set; } = new List<Reservation1>();
 
     public virtual ICollection<Response> Responses { get; set; } = new List<Response>();
 
