@@ -1,10 +1,8 @@
 ﻿@using System.Globalization;
 @{
     var slots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["slots"];
-    var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
-    var slotsJson = Newtonsoft.Json.JsonConvert.SerializeObject(slots);
-
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <script>
@@ -12,7 +10,18 @@
     </script>
 }
 
-<div id='calendar' data-slots='@Json.Serialize(slots)'></div>
+<div id='calendar'>
+    @foreach (var slot in slots)
+    {
+        <div class="slot"
+             data-id="@slot.Id"
+             data-date="@($"{slot.Date.ToString("yyyy-MM-dd")}T{slot.StartTime}")"
+             data-endTime="@($"{slot.Date.ToString("yyyy-MM-dd")}T{slot.EndTime}")"
+             data-startTime="@slot.StartTime">
+            <!-- Dodaj inne potrzebne atrybuty danych -->
+        </div>
+    }
+</div>
 
 <div id="ReservationSlotsModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -29,23 +38,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var slotsData = @Html.Raw(slotsJson);
+        var slotsElements = document.querySelectorAll('.slot');
         var selectedDate;
         var events = [];
 
-        for (let slot of slotsData) {
-            var startDateTime = new Date(`${slot.Date.slice(0, 10)}T${slot.StartTime}`);
-            var endDateTime = new Date(`${slot.Date.slice(0, 10)}T${slot.EndTime}`);
+        slotsElements.forEach(slotElement => {
+            var id = slotElement.dataset.id;
+            var date = new Date(slotElement.dataset.date);
+            var endTime = new Date(slotElement.dataset.endTime);
+            var startTime = slotElement.dataset.startTime;
 
             events.push({
-                id: slot.Id,
-                start: startDateTime,
-                end: endDateTime,
-                title: `${slot.StartTime} - ${slot.EndTime}`
+                id: id,
+                start: date,
+                end: endTime,
+                title: `${startTime} - ${endTime}`
             });
-        }
+        });
 
+        var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             initialDate: '2023-11-01',

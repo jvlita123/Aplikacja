@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Data.Entities;
 
-public partial class Reservation1 : ISubject
+public partial class Reservation1 /*: ISubject*/
 {
     public int Id { get; set; }
 
@@ -20,20 +21,21 @@ public partial class Reservation1 : ISubject
 
     public int? StatusId { get; set; }
 
-    public int ReservationSlotId { get; set; } 
+    public int ReservationSlotId { get; set; }
 
-
-    public virtual Service Service { get; set; } = null!;
-
+    [ForeignKey("ServiceId")]
+    public virtual Service? Service { get; set; }
+    
+    [ForeignKey("StatusId")]
     public virtual Status? Status { get; set; }
-
+    
     [ForeignKey("ReservationSlotId")]
+    public virtual ReservationSlots? ReservationSlot { get; set; }
+  
+    [ForeignKey("UserId")]
+    public virtual User? User { get; set; }
 
-    public virtual ReservationSlots ReservationSlot { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
-
-
+/*
     #region Obserwator
 
     private List<IObserver> _observers = new List<IObserver>();
@@ -69,5 +71,5 @@ public partial class Reservation1 : ISubject
         {
             PropertyChanged(this, new PropertyChangedEventArgs(property));
         }
-    }
+    }*/
 }

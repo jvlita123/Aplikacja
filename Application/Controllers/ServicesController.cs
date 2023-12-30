@@ -12,7 +12,7 @@ namespace Application.Controllers
             _servicesService = servicesService;
         }
 
-        public ActionResult Index()
+        public IActionResult Index()
         {
             return View(_servicesService.GetAll());
         }

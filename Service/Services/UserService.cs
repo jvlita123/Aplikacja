@@ -14,16 +14,14 @@ namespace Service.Services
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly RoleRepository _roleRepository;
-        private readonly ReservationRepository _reservationRepository;
         private readonly PhotoRepository _photoRepository;
         private readonly MessageRepository _messageRepository;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher, ReservationRepository reservationRepository, RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
+        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher,RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
-            _reservationRepository = reservationRepository;
             _photoRepository = photoRepository;
             _messageRepository = messageRepository;
         }
@@ -105,7 +103,7 @@ namespace Service.Services
             {
                 throw new Exception();//to be corrected
             }
-
+            
             string ProfilePhoto = "/"+userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
             if(userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault() == null)
             {

@@ -4,11 +4,13 @@ namespace Data.Entities
 {
     public class DataContext : DbContext
     {
+
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
         public DbSet<Reservation1> Reservation1 { get; set; }
         public DbSet<ReservationSlots> ReservationSlots { get; set; }
+        public DbSet<UserReservationSlots> UserReservationSlots { get; set; }
         public DbSet<Service> Service { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -20,31 +22,32 @@ namespace Data.Entities
         public DbSet<Answer> Answer { get; set; }
         public DbSet<Response> Responses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Attendance> Attendance { get; set; }
         public DbSet<Status> Status { get; set; }
-        public DbSet<Photo> Photos { get; set; }
-        public DbSet<Block> Blocks { get; set; }
+        public DbSet<Photo> Photo { get; set; }
+        public DbSet<Block> Block { get; set; }
         public DbSet<Message> Message { get; set; }
         public DataContext()
         {
         }
-
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+
+       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer("Server=tcp:applicationserver.database.windows.net,1433;database=ApplicationDB;User ID=jvlita123;Password=admin123.;");
 
-
+/*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-/*            modelBuilder.Entity<Message>()
+*//*            modelBuilder.Entity<Message>()
                 .HasOne(m => m.User1)
                 .WithMany(u => u.messages)
                 .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);*/
+                .OnDelete(DeleteBehavior.ClientSetNull);*//*
 
             modelBuilder.Entity<Photo>(entity =>
             {
@@ -124,11 +127,11 @@ namespace Data.Entities
                     .HasConstraintName("FK__Attendanc__UserI__41EDCAC5");
             });
 
-            /*            modelBuilder.Entity<Message>()
+            *//*            modelBuilder.Entity<Message>()
                             .HasOne(m => m.User2)
                             .WithMany()
                             .HasForeignKey(m => m.UserId2)
-                            .OnDelete(DeleteBehavior.ClientSetNull);*/
+                            .OnDelete(DeleteBehavior.ClientSetNull);*//*
 
             modelBuilder.Entity<User>(entity =>
             {
@@ -224,7 +227,7 @@ namespace Data.Entities
                     .HasConstraintName("FK__Cycles__CourseId__607251E5");
             });
             base.OnModelCreating(modelBuilder);
-        }
+        }*/
         public void AddEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {
             Set<TEntity>().Add(entity);

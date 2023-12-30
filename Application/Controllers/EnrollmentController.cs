@@ -10,16 +10,14 @@ namespace Application.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private readonly ReservationService _reservationService;
         private readonly UserService _userService;
         private readonly ServiceService _serviceService;
         private readonly StatusService _statusService;
         private readonly EnrollmentsService _enrollmentService;
         private readonly CoursesService _coursesService;
 
-        public EnrollmentController(ReservationService reservationService,CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public EnrollmentController(CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
-            _reservationService = reservationService;
             _userService = userService;
             _serviceService = serviceService;
             _statusService = statusService;

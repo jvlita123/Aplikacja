@@ -1,4 +1,4 @@
-﻿using Data.Dto_s;
+﻿/*using Data.Dto_s;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -154,3 +154,4 @@ namespace Application.Controllers
         }
     }
 }
+*/

@@ -13,7 +13,6 @@ namespace Application.Controllers
 {
     public class MessageController : Controller
     {
-        private readonly ReservationService _reservationService;
         private readonly UserService _userService;
         private readonly ServiceService _serviceService;
         private readonly StatusService _statusService;
@@ -22,9 +21,8 @@ namespace Application.Controllers
         private readonly CyclesService _cyclesService;
         private readonly MessageService _messageService;
 
-        public MessageController(MessageService messageService, CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public MessageController(MessageService messageService, CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
-            _reservationService = reservationService;
             _userService = userService;
             _serviceService = serviceService;
             _statusService = statusService;

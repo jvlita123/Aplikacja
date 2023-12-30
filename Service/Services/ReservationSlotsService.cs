@@ -1,11 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
@@ -19,6 +14,21 @@ namespace Service.Services
             _userRepository = userRepository;
             _statusRepository = statusRepository;
             _reservationSlotsRepository = reservationSlotsRepository;
+
+            var reservationSlots = _reservationSlotsRepository.GetAll().Include(x => x.UserReservationSlots).ToList();
+
+            foreach (var observer in reservationSlots)
+            {
+                foreach (var v in observer.UserReservationSlots)
+                {
+                    // Retrieve user based on the ID in the already retrieved reservation slots
+                    var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == v.UserId);
+                    if (user != null)
+                    {
+                        observer.Attach(user);
+                    }
+                }
+            }
         }
 
         public List<ReservationSlots> GetAll()
@@ -42,9 +52,7 @@ namespace Service.Services
                 ReservationSlots newReservationSlots = new()
                 {
                     ServiceId = reservationSlots.ServiceId,
-                    Service = reservationSlots.Service,
                     ReservationId = reservationSlots.ReservationId,
-                    Reservation = reservationSlots.Reservation,
                     Date = reservationSlots.Date,
                     StartTime = reservationSlots.StartTime,
                     EndTime = reservationSlots.EndTime,

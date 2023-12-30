@@ -1,4 +1,4 @@
-﻿using Data.Entities;
+﻿/*using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +18,7 @@ namespace Service.Services
 
         public List<Reservation> GetAll()
         {
-            List<Reservation> reservations = _reservationRepository.GetAll().Include(x => x.Status).Include(x => x.User.Role).Include(x => x.User).ToList();
+            List<Reservation> reservations = _reservationRepository.GetAll().Include(x => x.Status).Include(x => x.User.Role).Include(x => x.User).Include(x => x.Service)ToList();
 
             return reservations;
         }
@@ -123,3 +123,4 @@ namespace Service.Services
         }
     }
 }
+*/

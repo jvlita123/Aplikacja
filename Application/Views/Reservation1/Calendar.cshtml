@@ -104,6 +104,23 @@
                     var btnBusy = document.createElement('button');
                     btnBusy.textContent = busySlot.startTime + ' - ' + busySlot.endTime + ' (Busy)';
                     btnBusy.classList.add('button-disabled');
+                    btnBusy.onclick = function () {
+                       var confirmed = confirm('Czy chcesz być powiadomiony, gdy ten termin stanie się dostępny?');
+                            if (confirmed) {
+                                $.ajax({
+                                    url: '/Reservation1/SubscribeSlot',
+                                    method: 'POST',
+                                    data: {
+                                        reservationSlotId: busySlot.id
+                                    },
+                                    success: function (response) {
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Wystąpił błąd podczas subskrybowania na niedostępny termin:', error);
+                                    }
+                                });
+                            }
+                    };
                     slotsContainer.appendChild(btnBusy);
                 }
             },

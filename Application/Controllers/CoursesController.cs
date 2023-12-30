@@ -13,7 +13,6 @@ namespace Application.Controllers
 {
     public class CoursesController : Controller
     {
-        private readonly ReservationService _reservationService;
         private readonly UserService _userService;
         private readonly ServiceService _serviceService;
         private readonly StatusService _statusService;
@@ -23,9 +22,8 @@ namespace Application.Controllers
         private IWebHostEnvironment _environment;
 
 
-        public CoursesController(IWebHostEnvironment environment,CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public CoursesController(IWebHostEnvironment environment,CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
-            _reservationService = reservationService;
             _userService = userService;
             _serviceService = serviceService;
             _statusService = statusService;
@@ -90,61 +88,5 @@ namespace Application.Controllers
             return View();
         }
 
-        // POST: CoursesController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CoursesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: CoursesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CoursesController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CoursesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

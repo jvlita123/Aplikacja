@@ -7,7 +7,6 @@ namespace Application.Controllers
 {
     public class CyclesController : Controller
     {
-        private readonly ReservationService _reservationService;
         private readonly UserService _userService;
         private readonly ServiceService _serviceService;
         private readonly StatusService _statusService;
@@ -17,9 +16,8 @@ namespace Application.Controllers
         private IWebHostEnvironment _environment;
 
 
-        public CyclesController(IWebHostEnvironment environment,CyclesService cyclesService, ReservationService reservationService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public CyclesController(IWebHostEnvironment environment,CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
-            _reservationService = reservationService;
             _userService = userService;
             _serviceService = serviceService;
             _statusService = statusService;

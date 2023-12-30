@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Service.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -13,14 +14,16 @@ namespace Application.Controllers
         private readonly ServiceService _serviceService;
         private readonly StatusService _statusService;
         private readonly ReservationSlotsService _reservationSlotsService;
+        private readonly UserReservationSlotsService _userReservationSlotsService;
 
-        public Reservation1Controller(Reservation1Service reservation1Service, ServiceService serviceService, StatusService statusService, UserService userService, ReservationSlotsService reservationSlotsService)
+        public Reservation1Controller(Reservation1Service reservation1Service, ServiceService serviceService, StatusService statusService, UserService userService, ReservationSlotsService reservationSlotsService, UserReservationSlotsService userReservationSlotsService)
         {
             _reservation1Service = reservation1Service;
             _userService = userService;
             _serviceService = serviceService;
             _statusService = statusService;
             _reservationSlotsService = reservationSlotsService;
+            _userReservationSlotsService = userReservationSlotsService;
         }
 
         public IActionResult Index()
@@ -30,7 +33,7 @@ namespace Application.Controllers
             var statuses = _statusService.GetAll().ToList();
             ViewData["statuses"] = statuses;
 
-            return View(_reservation1Service.GetUserReservations(usr));
+            return View(_reservation1Service.GetUserReservations(usr.Id));
         }
 
         public IActionResult ShowReservation(int id)
@@ -42,12 +45,12 @@ namespace Application.Controllers
 
         public IActionResult Calendar()
         {
-            
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
             var services = _serviceService.GetAll().ToList();
             var availableSlots = _reservationSlotsService.GetAll().Where(x => x.IsAvailable == true);
             var busySlots = _reservationSlotsService.GetAll().Where(x => x.IsAvailable == false);
-            var userReservations = _reservation1Service.GetUserReservations(usr);
+            int id = usr.Id;
+            var userReservations = _reservation1Service.GetUserReservations(id);
             foreach(var v in userReservations)
             {
                 v.ReservationSlot = _reservationSlotsService.GetById(v.ReservationSlotId);
@@ -79,7 +82,6 @@ namespace Application.Controllers
         public PartialViewResult GetReservationDetails(int reservationId)
         {
             Reservation1 reservation = _reservation1Service.GetAll().Where(x => x.Id == reservationId).First();
-
             return PartialView(reservation);
         }
 
@@ -115,19 +117,19 @@ namespace Application.Controllers
             return RedirectToAction("Calendar");
         }
 
-        public IActionResult RemoveReservation(Reservation1 reservation)
+/*        public IActionResult RemoveReservation(Reservation1 reservation)
         {
             Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == reservation.Id).FirstOrDefault();
             return View(ReservationToRemove);
-        }
+        }*/
 
         [HttpPost]
-        public RedirectToActionResult RemoveReservation(int id)
+        public IActionResult RemoveReservation(int id)
         {
             Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == id).FirstOrDefault();
             _reservation1Service.RemoveReservation(id);
 
-            return RedirectToAction("Calendar");
+            return NoContent();
         }
 
         [HttpGet]
@@ -147,6 +149,57 @@ namespace Application.Controllers
             _reservation1Service.changeReservationStatus(id, _statusService.GetByName(status).Id);
             return NoContent();
         }
+        public PartialViewResult EditReservation(int id)
+        {
+            Reservation1 reservation = _reservation1Service.GetAll().Where(x => x.Id == id).FirstOrDefault();
+
+            var statuses = new SelectList(_statusService.GetAll().Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToList(), "Value", "Text");
+
+            var users = new SelectList(_userService.GetAll().Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Email
+            }).ToList(), "Value", "Text");
+
+
+            ViewBag.Statuses = statuses;
+            ViewBag.Users = users;
+
+            return PartialView(reservation);
+        }
+
+        [HttpPost]
+        public IActionResult EditReservation(Reservation1 reservation)
+        {
+            _reservation1Service.UpdateReservation(reservation);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult SubscribeSlot(int reservationSlotId)
+        {
+            var usr = _userService.GetByEmail(HttpContext.User.Identity.Name);
+            UserReservationSlots userSlots = _userReservationSlotsService.AddNewUserReservationSlot(usr.Id, reservationSlotId);
+            usr.UserReservationSlots.Add(userSlots);
+            _reservationSlotsService.GetById(reservationSlotId).Attach(usr);
+            return NoContent();
+        }
+
+        [HttpGet]
+        public PartialViewResult getReservationsByStatus(string status)
+        {
+            if (status == "All")
+            {
+                var reservations = _reservation1Service.GetAll();
+                return PartialView(reservations);
+            }
+            return PartialView(_reservation1Service.GetReservationsByStatus(status));
+        }
+
 
         /*
             public PartialViewResult EditReservation(int id)

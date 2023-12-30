@@ -2,13 +2,16 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Tracing;
+using System.Text.Json.Serialization;
 
 namespace Data.Entities;
 
-public partial class User //: INotifyPropertyChanged, IObserver
+public partial class User : INotifyPropertyChanged, IObserver
 {
+    [Key]
     public int Id { get; set; }
 
     public string Email { get; set; } = null!;
@@ -27,33 +30,32 @@ public partial class User //: INotifyPropertyChanged, IObserver
 
     public int? RoleId { get; set; }
 
-    public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+    public virtual ICollection<Attendance> Attendances { get; set; }
     [NotMapped]
-    public virtual ICollection<Block> BlockBlockedUsers { get; set; } = new List<Block>();
+    public virtual ICollection<Block> BlockBlockedUsers { get; set; }
 
-    public virtual ICollection<Block> Blocks { get; set; } = new List<Block>();
+    public virtual ICollection<Block> Blocks { get; set; } 
 
-    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public virtual ICollection<Enrollment> Enrollments { get; set; } 
 
-    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
+    public virtual ICollection<Message> Messages { get; set; }
 
-    public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+    public virtual ICollection<Photo> Photos { get; set; }
 
+    public virtual ICollection<Reservation1> Reservations { get; set; }
 
-    public virtual ICollection<Reservation1> Reservations { get; set; } = new List<Reservation1>();
-
-    public virtual ICollection<Response> Responses { get; set; } = new List<Response>();
+    public virtual ICollection<Response> Responses { get; set; }
 
     public virtual Role? Role { get; set; }
 
-    public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
+    public virtual ICollection<Survey> Surveys { get; set; } 
 
-   // public event PropertyChangedEventHandler? PropertyChanged;
-/*
-    public virtual  ObservableCollection<Message> Messages { get; set; } = new ObservableCollection<Message>();
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
+
     public void Update(ISubject subject)
     {
         Console.WriteLine("Wysylamy powiadominie");
-        this.Messages.Add(new Message());
-    }*/
+    }
 }

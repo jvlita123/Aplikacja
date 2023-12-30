@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Data.Entities.Reservation1>
+@{
+
+}
+
+@foreach (var v in Model)
+{
+    <tr>
+        @if (v.User.Photos.Where(x => x.IsProfilePicture == true).Count() > 0)
+        {
+            <td>
+                <img src="~/images/@v.User.Photos.Where(x => x.IsProfilePicture == true).First().Path" class="me-2" alt="User-Profile-Image">
+                @v.User.FirstName @v.User.LastName
+            </td>
+        }
+        else
+        {
+            <td>
+                <img src="~/assets/images/faces/face1.jpg" class="me-2" alt="image">
+                @v.User.FirstName @v.User.LastName
+            </td>
+        }
+        <td> @v.Title </td>
+        <td>
+            <div data-reservation-id="@v.Id" class="changeReservationStatus">
+                @if (v.Status.Name == "Pending")
+                {
+                    <label class="badge badge-gradient-warning btn">@v.Status.Name</label>
+
+                }
+                else if (v.Status.Name == "Confirmed")
+                {
+                    <label class="badge badge-gradient-success btn">@v.Status.Name</label>
+
+                }
+                else
+                {
+                    <label class="badge badge-gradient-light btn">@v.Status.Name</label>
+                }
+            </div>
+        </td>
+        <td> @v.ReservationSlot.Date, @v.ReservationSlot.StartTime </td>
+        <td> @v.ReservationSlot.Date, @v.ReservationSlot.EndTime </td>
+    </tr>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entities;
 
 public partial class Photo
 {
+    [Key]
     public int Id { get; set; }
 
     public int UserId { get; set; }
@@ -17,5 +20,6 @@ public partial class Photo
 
     public DateTime? Date { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    [ForeignKey("UserId")]
+    public virtual User User { get; set; }
 }

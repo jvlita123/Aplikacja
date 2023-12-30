@@ -28,10 +28,12 @@ namespace Application
             });
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                });
 
-
-            builder.Services.AddControllersWithViews();
             //builder.Services.AddFluentValidation(); 
             builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
@@ -49,8 +51,8 @@ namespace Application
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<RoleRepository>();
-            builder.Services.AddScoped<ReservationRepository>();
-            builder.Services.AddScoped<ReservationService>();
+          //  builder.Services.AddScoped<ReservationRepository>();
+         //   builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<ServiceRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserRepository>();
@@ -90,6 +92,8 @@ namespace Application
             builder.Services.AddScoped<Reservation1Service>();
             builder.Services.AddScoped<ReservationSlotsService>();
             builder.Services.AddScoped<ReservationSlotsRepository>();
+            builder.Services.AddScoped<UserReservationSlotsRepository>();
+            builder.Services.AddScoped<UserReservationSlotsService>();
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             builder.Services.AddMemoryCache();

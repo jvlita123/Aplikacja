@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Data.Entities;
 
@@ -24,6 +25,7 @@ public partial class Reservation
     public string? SecondaryColor { get; set; }
 
     public int? StatusId { get; set; }
+    [JsonIgnore]
 
     public virtual Service Service { get; set; } = null!;
 
