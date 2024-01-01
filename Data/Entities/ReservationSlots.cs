@@ -1,4 +1,5 @@
 ﻿
+using Data.Dto_s;
 using Data.Patterns;
 using System;
 using System.Collections.ObjectModel;
@@ -70,8 +71,7 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
     {
         foreach (var user in UserReservationSlots)
         {
-            // Tu dodaj logikę, która wywoła odpowiednią metodę powiadamiającą użytkownika
-            user.User.Update(this); // Metoda Update powinna być odpowiednio zaimplementowana w klasie User
+            user.User.Update(this); 
         }
     }
 

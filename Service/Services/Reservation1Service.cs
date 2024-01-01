@@ -73,16 +73,19 @@ namespace Service.Services
 
         public void RemoveReservation(int id)
         {
-            var slots = _reservationSlotsRepository.GetAll().Where(x => x.ReservationId == id);
-            foreach ( var slot in slots)
-            {
-                slot.IsAvailable = true;
-                _reservationSlotsRepository.Update(slot);
-            }
-                _reservationSlotsRepository.SaveChanges();
+            var resSlotId = _reservation1Repository.GetById(id).ReservationSlotId;
+            int slotId = _reservationSlotsRepository.GetAll().Where(x => x.Id == resSlotId).First().Id;
 
             _reservation1Repository.RemoveById(id);
             _reservation1Repository.SaveChanges();
+
+            List<ReservationSlots> slots = _reservationSlotsRepository.GetAll().Where(x => x.Id == slotId).ToList();
+            foreach ( ReservationSlots slot in slots)
+            {
+                slot.IsAvailable = true;
+            }
+            _reservationSlotsRepository.UpdateRangeAndSaveChanges(slots);
+
         }
         public void UpdateReservation(Reservation1 updatedReservation)
         {

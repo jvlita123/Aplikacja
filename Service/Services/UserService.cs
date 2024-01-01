@@ -2,6 +2,7 @@
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -16,15 +17,30 @@ namespace Service.Services
         private readonly RoleRepository _roleRepository;
         private readonly PhotoRepository _photoRepository;
         private readonly MessageRepository _messageRepository;
+        private readonly IHttpContextAccessor _context;
 
-        public UserService(UserRepository userRepository, IPasswordHasher<User> passwordHasher,RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
+        public UserService(IHttpContextAccessor context, UserRepository userRepository,IPasswordHasher<User> passwordHasher,RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
             _photoRepository = photoRepository;
             _messageRepository = messageRepository;
+            _context = context;
+
+
+            var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
+
+            foreach (var v in _userRepository.GetAll().Include(u => u.Role))
+            {
+                v.NotifyUserEvent += (user, message) =>
+                {
+                    NotificationService.HandleUserNotificationAsync(user, message, _messageRepository, adminUser, _context);
+                };
+            }
+
         }
+
 
         public List<User> GetAll()
         {

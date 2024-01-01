@@ -1,11 +1,8 @@
 ﻿using Data.Patterns;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.Tracing;
-using System.Text.Json.Serialization;
 
 namespace Data.Entities;
 
@@ -34,9 +31,9 @@ public partial class User : INotifyPropertyChanged, IObserver
     [NotMapped]
     public virtual ICollection<Block> BlockBlockedUsers { get; set; }
 
-    public virtual ICollection<Block> Blocks { get; set; } 
+    public virtual ICollection<Block> Blocks { get; set; }
 
-    public virtual ICollection<Enrollment> Enrollments { get; set; } 
+    public virtual ICollection<Enrollment> Enrollments { get; set; }
 
     public virtual ICollection<Message> Messages { get; set; }
 
@@ -48,14 +45,19 @@ public partial class User : INotifyPropertyChanged, IObserver
 
     public virtual Role? Role { get; set; }
 
-    public virtual ICollection<Survey> Surveys { get; set; } 
+    public virtual ICollection<Survey> Surveys { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
 
+    public event Action<User, string>? NotifyUserEvent; // Event do informowania o potrzebie powiadomienia użytkownika
+
     public void Update(ISubject subject)
     {
-        Console.WriteLine("Wysylamy powiadominie");
+
+        NotifyUserEvent?.Invoke(this, "Zaszła zmiana w slocie. Proszę sprawdzić.");
+
     }
+
 }

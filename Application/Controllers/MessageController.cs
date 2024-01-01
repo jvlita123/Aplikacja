@@ -57,7 +57,6 @@ namespace Application.Controllers
             {
                 var claimsIdentity = (ClaimsIdentity)user1.Identity;
 
-                // Usunięcie starego claimu 'newMessage', jeśli istnieje
                 var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
                 if (existingNewMessageClaim != null)
                 {

@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
@@ -20,7 +21,7 @@ namespace Data.Repositories
 
         public User GetUserByEmail(string email)
         {
-            User user = _dataContext.User.Where(u => u.Email == email).FirstOrDefault();
+            User user = _dataContext.User.Include(x=>x.Messages).Where(u => u.Email == email).FirstOrDefault();
 
             return user;
         }

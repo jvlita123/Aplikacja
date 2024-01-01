@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -11,11 +12,15 @@ namespace Service.Services
     {
         private readonly MessageRepository _messageRepository;
         private readonly UserRepository _userRepository;
+        private readonly IHttpContextAccessor _context;
 
-        public MessageService(MessageRepository messageRepository, UserRepository userRepository)
+        public MessageService(MessageRepository messageRepository, UserRepository userRepository, IHttpContextAccessor context)
         {
             _messageRepository = messageRepository;
             _userRepository = userRepository;
+            _context = context;
+
+           
         }
 
         public List<Message> GetAll()
@@ -89,7 +94,7 @@ namespace Service.Services
                 return users;
             }
 
-            var messages = _messageRepository.GetAll().Include(x=>x.User1.Photos).Include(x=>x.User2.Photos).Where(x => x.UserId2 == id || x.UserId == id).ToList();
+            var messages = _messageRepository.GetAll().Include(x=>x.User2.Photos).Where(x => x.UserId2 == id || x.UserId == id).ToList();
 
             var user2Ids = GetUserMessages(id).Select(x => x.UserId).ToList();
             var user1Ids = GetSentMessages(id).Select(x => x.UserId2).ToList();

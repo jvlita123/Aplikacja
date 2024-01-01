@@ -6,7 +6,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Service.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application
 {
@@ -51,8 +53,6 @@ namespace Application
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<RoleRepository>();
-          //  builder.Services.AddScoped<ReservationRepository>();
-         //   builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<ServiceRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserRepository>();
@@ -94,12 +94,19 @@ namespace Application
             builder.Services.AddScoped<ReservationSlotsRepository>();
             builder.Services.AddScoped<UserReservationSlotsRepository>();
             builder.Services.AddScoped<UserReservationSlotsService>();
-            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddHostedService(provider =>
+            {
+                var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
 
+                return new ReminderService(scopeFactory, contextAccessor);
+            });
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
-            builder.Services.AddHttpContextAccessor();
-
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

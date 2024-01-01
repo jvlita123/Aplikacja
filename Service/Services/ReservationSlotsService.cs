@@ -21,7 +21,6 @@ namespace Service.Services
             {
                 foreach (var v in observer.UserReservationSlots)
                 {
-                    // Retrieve user based on the ID in the already retrieved reservation slots
                     var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == v.UserId);
                     if (user != null)
                     {
