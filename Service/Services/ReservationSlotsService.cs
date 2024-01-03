@@ -22,7 +22,7 @@ namespace Service.Services
                 foreach (var v in observer.UserReservationSlots)
                 {
                     var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == v.UserId);
-                    if (user != null)
+                    if (user != null && user.UserReservationSlots.Where(x=>x.Id == observer.Id).ToList().Count()>0)
                     {
                         observer.Attach(user);
                     }
@@ -36,7 +36,10 @@ namespace Service.Services
 
             return reservationSlots;
         }
-
+        public void RemoveReservationSlot(int id)
+        {
+            _reservationSlotsRepository.RemoveByIdAndSaveChanges(id);
+        }
         public ReservationSlots GetById(int id)
         {
             ReservationSlots reservationSlot = _reservationSlotsRepository.GetAll().Include(x => x.Reservation).Include(x => x.Service).Where(x => x.Id == id).FirstOrDefault();
@@ -55,7 +58,7 @@ namespace Service.Services
                     Date = reservationSlots.Date,
                     StartTime = reservationSlots.StartTime,
                     EndTime = reservationSlots.EndTime,
-                    IsAvailable = reservationSlots.IsAvailable,
+                    IsAvailable = true,
                 };
 
                 _reservationSlotsRepository.AddAndSaveChanges(newReservationSlots);
@@ -79,12 +82,6 @@ namespace Service.Services
             bool isSlotAvailable = !existingSlots.Any();
 
             return isSlotAvailable; 
-        }
-
-        public void RemoveReservationSlot(int id)
-        {
-            _reservationSlotsRepository.RemoveById(id);
-            _reservationSlotsRepository.SaveChanges();
         }
 
     }

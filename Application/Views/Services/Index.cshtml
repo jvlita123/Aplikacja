@@ -22,8 +22,16 @@
                                 <td>@item.Description</td>
                                 <td>@item.ServiceTime</td>
                                 <td>
-                                    <a class="edit-link" data-id="@item.Id" href="#">Edit</a> |
-                                    <a class="delete-link" data-id="@item.Id" href="#">Delete</a>
+                                    <a class="edit-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
+                                    <i class="mdi mdi-table-edit">
+                                        Edit
+                                    </i>
+                                    </a>
+                                    <a class="delete-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
+                                        <i class="mdi mdi-delete-forever">
+                                           Delete
+                                        </i>
+                                    </a>
                                 </td>
                             </tr>
 

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Service.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.CookiePolicy;
 
 namespace Application
 {
@@ -28,7 +29,12 @@ namespace Application
                     .WithOrigins("http://localhost:3000");
                 });
             });
-
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.HttpOnly = HttpOnlyPolicy.None;
+                options.Secure = CookieSecurePolicy.Always; // Ustawienie zawsze zabezpieczonego pliku cookie
+            });
             // Add services to the container.
             builder.Services.AddControllersWithViews()
                 .AddJsonOptions(options =>
@@ -96,11 +102,11 @@ namespace Application
             builder.Services.AddScoped<UserReservationSlotsService>();
             builder.Services.AddScoped<NotificationService>();
             builder.Services.AddHttpContextAccessor();
+        
             builder.Services.AddHostedService(provider =>
             {
                 var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
                 var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-
                 return new ReminderService(scopeFactory, contextAccessor);
             });
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

@@ -36,12 +36,12 @@ namespace Service.Services
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var coursesStartingTomorrow = _courseRepository.GetAll()
-                        .Include(c => c.Cycles).Include(x=>x.Enrollments)
+                        .Include(c => c.Cycles).Include(x=>x.Enrollments).ThenInclude(x=>x.User)
                         .Where(c => c.Cycles.Any(cycle => cycle.StartDate.Date == DateTime.Today.AddDays(1))).ToList();
 
                     foreach (var course in coursesStartingTomorrow)
                     {
-                        foreach (var v in course.Cycles.Where(cycle => cycle.StartDate.Date == DateTime.Today.AddDays(1) && cycle.IsNotificationSent == false))
+                        foreach (var v in course.Cycles.Where(cycle => cycle.StartDate.Date == DateTime.Today.AddDays(1) && cycle.IsNotificationSent == false).ToList())
                         {
 
                             var adminUser = _userRepository.GetAll().Where(x => x.Role.Name.ToLower() == "admin").FirstOrDefault();
@@ -56,12 +56,12 @@ namespace Service.Services
                                     _cycleRepository.Update(v);
                                     _cycleRepository.SaveChanges();
 
-                                    NotificationService.HandleUserNotificationAsync(user, messageText, _messageRepository, adminUser, _context);
+                                    await NotificationService.HandleUserNotificationAsync(user, messageText, _messageRepository, adminUser);
                                 }
                             }
                         }
                     }
-                    await Task.Delay(TimeSpan.FromDays(24), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                 }
             }
         }

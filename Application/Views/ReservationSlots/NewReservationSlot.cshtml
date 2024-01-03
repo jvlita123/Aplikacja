@@ -3,17 +3,14 @@
     var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
     var servicesJson = Newtonsoft.Json.JsonConvert.SerializeObject(services);
     var selectedDate = ((DateTime)ViewData["selectedDate"]).ToString("yyyy-MM-dd");
-
 }
 
-<h4>ReservationSlots</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="NewReservationSlot">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ServiceId" class="control-label"></label>
+                <label class="control-label">Service </label>
                 <select id="ServiceId" asp-for="ServiceId" class="form-control">
                     @foreach (var service in services)
                     {
@@ -22,11 +19,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <input asp-for="Date" id="selectedDate" class="form-control" value="@selectedDate" readonly type="text" />
+                <input asp-for="Date" id="selectedDate" class="form-control" value="@selectedDate" readonly type="hidden" />
             </div>
-            <div>
-                <label>Hour:</label>
-                <input type="time" id="selectedTime" />
+            <div class="form-group">
+                <label class="control-label">Hour:</label>
+                <input class="form-control" type="time" id="selectedTime" />
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
@@ -38,11 +35,6 @@
                 <input id="EndTime" asp-for="EndTime" class="form-control" readonly />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
-                </label>
-            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -50,9 +42,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 <script>
     var services = @Html.Raw(servicesJson);

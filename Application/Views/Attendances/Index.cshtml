@@ -61,15 +61,48 @@
     </div>
 </div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
 <script>
 
     $(document).ready(function () {
+
+        var courseId = $('#courseDropdown').val();
+
     const courseDropdown = document.getElementById('courseDropdown');
     const cycleDropdown = document.getElementById('cycleDropdown');
     var cyclesData; 
     var currentUserId;
+
+        var cycleId = $(this).data('cycle-id');
+        var selectedUsers = [];
+        $('input[type="checkbox"]:checked').each(function () {
+            var userIdRow = $(this).closest('tr').attr('user-id-row');
+            selectedUsers.push(userIdRow);
+        });
+
+        $.ajax({
+            url: '/Attendances/AddAttendance', 
+            type: 'POST',
+            data: { courseId: courseId, cycleId: cycleId, selectedUsers: selectedUsers }, 
+            traditional: true,
+            success: function (result) {
+                console.log('Users saved:', result);
+                var selectedValue = courseId;
+                $('#courseDropdown').val(selectedValue);
+                console.log('Userssss ssss:', result);
+
+                console.log('Przed triggerem change');
+                $('#courseDropdown').trigger('change');
+                console.log('Po triggerze change');
+
+                $('#saveButton').hide();
+                $('#cancelButton').hide();
+
+            },
+            error: function () {
+                alert('Wystąpił błąd podczas zapisu.');
+            }
+        });
 
         $('#courseDropdown').change(function () {
             courseId = $(this).val();

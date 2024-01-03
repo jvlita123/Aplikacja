@@ -123,16 +123,16 @@ namespace Application.Controllers
             var serviceDuration = service.ServiceTime;
             reservation.StatusId = 4;
 
-            _reservation1Service.NewReservation(reservation);
+            var newReservation = _reservation1Service.NewReservation(reservation);
 
-            return RedirectToAction("Calendar");
+            return Json(newReservation);
         }
 
-/*        public IActionResult RemoveReservation(Reservation1 reservation)
-        {
-            Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == reservation.Id).FirstOrDefault();
-            return View(ReservationToRemove);
-        }*/
+        /*        public IActionResult RemoveReservation(Reservation1 reservation)
+                {
+                    Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == reservation.Id).FirstOrDefault();
+                    return View(ReservationToRemove);
+                }*/
 
         [HttpPost]
         public IActionResult RemoveReservation(int id)
@@ -195,7 +195,7 @@ namespace Application.Controllers
         {
             var usr = _userService.GetByEmail(HttpContext.User.Identity.Name);
             UserReservationSlots userSlots = _userReservationSlotsService.AddNewUserReservationSlot(usr.Id, reservationSlotId);
-            usr.UserReservationSlots.Add(userSlots);
+           // usr.UserReservationSlots.Add(userSlots);
             _reservationSlotsService.GetById(reservationSlotId).Attach(usr);
             return NoContent();
         }

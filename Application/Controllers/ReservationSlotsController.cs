@@ -41,7 +41,13 @@ namespace Application.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        public PartialViewResult GetSlotDetails(int slotId)
+        {
+            ReservationSlots slot = _reservationSlotsService.GetAll().Where(x => x.Id == slotId).First();
+            return PartialView(slot);
+        }
+
         public IActionResult GetReservationSlot(int id)
         {
             var reservationSlot = _reservationSlotsService.GetById(id);
@@ -54,19 +60,15 @@ namespace Application.Controllers
             return Ok(reservationSlot);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteReservationSlot(int id)
+        [HttpPost]
+        public IActionResult RemoveReservationSlot(int slotId)
         {
-            try
-            {
-                _reservationSlotsService.RemoveReservationSlot(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Unable to delete reservation slot: {ex.Message}");
-            }
+            ReservationSlots ReservationSlotToRemove = _reservationSlotsService.GetAll().Where(x => x.Id == slotId).FirstOrDefault();
+            _reservationSlotsService.RemoveReservationSlot(slotId);
+
+            return NoContent();
         }
+
         public IActionResult SlotsCalendar()
         {
             var services = _serviceService.GetAll().ToList();

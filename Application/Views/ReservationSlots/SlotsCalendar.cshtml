@@ -3,6 +3,35 @@
     var slots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["slots"];
 }
 
+<style>
+    .button-disabled {
+        opacity: 0.5;
+    }
+
+
+    #calendar {
+        max-width: 1100px;
+        margin: 0 auto;
+        background-color: white; /* Białe tło kalendarza */
+    }
+
+    a.fc-day-header {
+        background-color: mediumpurple;
+        color: black;
+        text-decoration: none; /* Usunięcie podkreślenia */
+    }
+
+    a.fc-scroll-grid-sync-inner {
+        background-color: magenta; /* Kolor tła */
+    }
+
+    a {
+        color: black;
+        text-decoration: none; /* Usunięcie podkreślenia */
+    }
+
+</style>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <script>
@@ -16,9 +45,8 @@
         <div class="slot"
              data-id="@slot.Id"
              data-date="@($"{slot.Date.ToString("yyyy-MM-dd")}T{slot.StartTime}")"
-             data-endTime="@($"{slot.Date.ToString("yyyy-MM-dd")}T{slot.EndTime}")"
-             data-startTime="@slot.StartTime">
-            <!-- Dodaj inne potrzebne atrybuty danych -->
+             data-endTime="@($"{slot.EndTime}")"
+             data-startTime="@($"{slot.EndTime}")">
         </div>
     }
 </div>
@@ -34,19 +62,19 @@
     </div>
 </div>
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var slotsElements = document.querySelectorAll('.slot');
         var selectedDate;
         var events = [];
-
+        console.log(slotsElements)
+        console.log(selectedDate)
         slotsElements.forEach(slotElement => {
+            slotElement.getAttribute('data-endtime');
             var id = slotElement.dataset.id;
             var date = new Date(slotElement.dataset.date);
-            var endTime = new Date(slotElement.dataset.endTime);
-            var startTime = slotElement.dataset.startTime;
+            var endTime = slotElement.dataset.endtime; 
+            var startTime = slotElement.dataset.starttime;
 
             events.push({
                 id: id,
@@ -63,7 +91,7 @@
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth'
             },
             events: events,
             dateClick: function (info) {
@@ -71,6 +99,25 @@
                 $.get('/ReservationSlots/NewReservationSlot', { selectedDate: selectedDate }, function (data) {
                     $('#ReservationSlotsModal .modal-body').html(data); // Wstawienie danych częściowego widoku do modala
                     $('#ReservationSlotsModal').modal('show'); // Wyświetlenie modala
+                });
+            },
+            eventClick: function (info) {
+                var clickedEvent = info.event;
+                var slotId = clickedEvent.id;
+
+                $.ajax({
+                    url: '/ReservationSlots/GetSlotDetails',
+                    method: 'GET',
+                    data: {
+                        slotId: slotId
+                    },
+                    success: function (response) {
+                        $('#newReservationSlot').html(response);
+                        $('#ReservationSlotsModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Wystąpił błąd podczas pobierania szczegółów rezerwacji:', error);
+                    }
                 });
             }
         });
