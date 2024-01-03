@@ -61,14 +61,10 @@ namespace Service.Services
                             }
                         }
                     }
-
-                    await Task.Delay(TimeSpan.FromDays(24), stoppingToken); // Czekaj 24 godziny
+                    await Task.Delay(TimeSpan.FromDays(24), stoppingToken);
                 }
             }
         }
-
-
-
 
 
         public static void HandleUserNotification(User user, string messageText, MessageRepository _messageRepository, User admin)

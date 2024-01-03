@@ -15,6 +15,7 @@
     <script src="~/assets/js/hoverable-collapse.js"></script>
     <script src="~/assets/js/misc.js"></script>
     <script src="~/assets/js/chart.js"></script>
+
 </head>
 
 <div class="row">
@@ -94,7 +95,7 @@
 </div>
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="myModal1">
+<div class="modal fade" role="dialog" id="myModal1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -118,7 +119,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
-    <script>
+<script>
 
     const deleteReservationBtn = $('#deleteReservationBtn');
     console.log(deleteReservationBtn);
@@ -132,7 +133,7 @@
         var reservationId = 60; // Assuming the ID can be retrieved in this context
         $('#editModal').modal('show');
         $.ajax({
-            url: '/Reservation/EditReservation', // Check if this URL is correct
+            url: '/Reservation1/EditReservation', // Check if this URL is correct
             type: 'GET',
             data: { id: reservationId }, // Pass the reservation ID
             success: function (data) {
@@ -144,34 +145,34 @@
     $('#confirmDeleteBtn').on('click', function () {
         var reservationId = 60; // Pobierz identyfikator rezerwacji z modelu
         $.ajax({
-            url: '/Reservation/RemoveReservation', // Sprawdź poprawność ścieżki do akcji kontrolera
+            url: '/Reservation1/RemoveReservation', // Sprawdź poprawność ścieżki do akcji kontrolera
             type: 'POST',
             data: { id: reservationId }, // Przekazanie identyfikatora rezerwacji
             success: function (data) {
                 // Tutaj możesz obsłużyć odpowiedź zwrotną po usunięciu rezerwacji
                 // Na przykład, odśwież stronę lub wykonaj dodatkowe działania
-                window.location.href = '/Reservation/Calendar'; // Modify the URL accordingly
+                window.location.href = '/Reservation1/Calendar'; // Modify the URL accordingly
             }
         });
     });
 
-        var selectedStatus = 'All';
-        refreshTable(selectedStatus);
+    var selectedStatus = 'All';
+    refreshTable(selectedStatus);
 
-        $(document).on('click', '.changeReservationStatus', function () {
-            var reservationId = $(this).data('reservation-id');
-            var statusChangedMsg = $('#statusChangedMsg');
+    $(document).on('click', '.changeReservationStatus', function () {
+        var reservationId = $(this).data('reservation-id');
+        var statusChangedMsg = $('#statusChangedMsg');
 
         $("#myModal1").modal("show");
-            $.ajax({
-                url: '/Reservation1/changeReservationStatus',
-                type: 'GET',
-                data: { id: reservationId },
-                success: function (data) {
-                    $('#contentReservation').html(data);
-                    statusChangedMsg.fadeIn().delay(3000).fadeOut();
+        $.ajax({
+            url: '/Reservation1/changeReservationStatus',
+            type: 'GET',
+            data: { id: reservationId },
+            success: function (data) {
+                $('#contentReservation').html(data);
+                statusChangedMsg.fadeIn().delay(3000).fadeOut();
 
-                    $('#myModal1 .form').on('submit', function (event) {
+                $('#myModal1 .form').on('submit', function (event) {
                     event.preventDefault(); // Zapobieganie domyślnej akcji formularza
 
                     // Pobieranie danych z formularza
@@ -186,37 +187,37 @@
                             refreshTable(selectedStatus);
                         }
                     });
-                    });
-                }
-            });
+                });
+            }
         });
+    });
 
     $(document).on('click', '.selected-status', function () {
         selectedStatus = $(this).text().trim(); // Usunięcie 'var' przed 'selectedStatus'
         refreshTable(selectedStatus);
     });
 
-        function refreshTable(selectedStatus) {
-            $.ajax({
-                url: '/Reservation1/getReservationsByStatus',
-                type: 'GET',
-                data: { status: selectedStatus },
-                success: function (result) {
-                    $('#reservationsTable').html(result);
-                },
-            });
-        }
+    function refreshTable(selectedStatus) {
+        $.ajax({
+            url: '/Reservation1/getReservationsByStatus',
+            type: 'GET',
+            data: { status: selectedStatus },
+            success: function (result) {
+                $('#reservationsTable').html(result);
+            },
+        });
+    }
 
-        function allReservations() {
-            $.ajax({
-                url: '/Reservation1/getAll',
-                type: 'GET',
-                data: { status: selectedStatus },
-                success: function (result) {
-                    $('#reservationsTable').html(result);
-                },
-            });
-        }
+    function allReservations() {
+        $.ajax({
+            url: '/Reservation1/getAll',
+            type: 'GET',
+            data: { status: selectedStatus },
+            success: function (result) {
+                $('#reservationsTable').html(result);
+            },
+        });
+    }
 
     $('#userSearch').on('keyup', function () {
         var searchText = $(this).val().toLowerCase(); // Pobierz wartość wprowadzoną do pola tekstowego i zmień na małe litery
@@ -235,6 +236,6 @@
             }
         });
     }
-    </script>
+</script>
 
 

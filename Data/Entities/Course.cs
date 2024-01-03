@@ -11,6 +11,8 @@ public partial class Course
 
     public string? Title { get; set; }
 
+    public string? PhotoPath { get; set; } = null;
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
     public virtual ICollection<Cycle> Cycles { get; set; } = new List<Cycle>();

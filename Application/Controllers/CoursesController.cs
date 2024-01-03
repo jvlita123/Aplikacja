@@ -32,6 +32,7 @@ namespace Application.Controllers
             _cyclesService = cyclesService;
             _environment = environment;
         }
+        [Route("/Courses/Index")]
 
         public ActionResult Index()
         {
@@ -56,12 +57,33 @@ namespace Application.Controllers
             return PartialView();
         }
 
+
         [HttpPost]
-        public IActionResult NewCourse(Course course)
+        public async Task<IActionResult> NewCourse(Course course, IFormFile uploadFile)
         {
+            if (uploadFile != null && uploadFile.Length > 0)
+            {
+                var nazwaPliku = Path.GetFileName(uploadFile.FileName);
+                var ścieżkaZapisu = Path.Combine(_environment.WebRootPath, "uploads", nazwaPliku);
+
+                using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
+                {
+                    await uploadFile.CopyToAsync(strumień);
+                }
+                course.PhotoPath = nazwaPliku;
+            }
             _coursesService.NewCourse(course);
 
             return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public RedirectToActionResult DeleteCourse(int id)
+        {
+            _coursesService.RemoveCourseById(id);
+
+            return RedirectToAction("Index", "Courses");
         }
 
         public IActionResult GetUserCourses()

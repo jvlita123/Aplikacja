@@ -53,6 +53,7 @@ namespace Service.Services
             newCycle.Description = cycle.Description;
             newCycle.StartDate = cycle.StartDate;
             newCycle.EndDate = cycle.EndDate;
+            newCycle.IsNotificationSent = false;
 
             _cyclesRepository.AddAndSaveChanges(newCycle);
             return newCycle;

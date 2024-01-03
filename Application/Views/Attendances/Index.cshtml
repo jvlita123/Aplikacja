@@ -44,7 +44,6 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Reservations</h4>
                 <div class="table-responsive">
                     <table class="table" id="headerTableAttendance">
                         <thead>
@@ -61,18 +60,17 @@
         </div>
     </div>
 </div>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Bootstrap Icons (jeśli używasz) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
 <script>
-    // Pobierz referencje do pól wyboru
-    const courseDropdown = document.getElementById('courseDropdown');
-    const cycleDropdown = document.getElementById('cycleDropdown');
-    var cyclesData; // Zmienna globalna do przechowywania danych o cyklach
-    var currentUserId; // Zmienna globalna do przechowywania danych o cyklach
 
     $(document).ready(function () {
+    const courseDropdown = document.getElementById('courseDropdown');
+    const cycleDropdown = document.getElementById('cycleDropdown');
+    var cyclesData; 
+    var currentUserId;
+
         $('#courseDropdown').change(function () {
             courseId = $(this).val();
 
@@ -81,12 +79,11 @@
                 type: 'GET',
                 data: { courseId: courseId },
                 success: function (cycles) {
-                    cyclesData = cycles; // Przechowujemy cykle w zmiennej globalnej
+                    cyclesData = cycles;
 
                     var dropdown = $('#cycleDropdown');
                     console.log('Received cycles:', cycles);
 
-                    // Clear existing options except the first one (Wszystkie)
                     dropdown.find('option:not(:first)').remove();
 
 
@@ -100,13 +97,11 @@
                     }
                     
 
-                    // Iteruj przez cykle i dodaj je jako nagłówki tabeli
                     if (Array.isArray(cycles)) {
                         var dropdown = $('#cycleDropdown');
 
                         var tableHeadRow = $('#headerTableAttendance thead tr');
 
-                    // Usuń poprzednie nagłówki z tabeli (jeśli istnieją)
                         $('#headerTableAttendance th:not(:lt(2))').remove();
 
                         cycles.forEach((e) => {
@@ -138,47 +133,40 @@
                     console.log('users:', users);
                     var tableBody = $('#attendancesTable');
 
-                    // Wyczyść istniejące wiersze w tabeli
                     tableBody.empty();
 
-                    // Iteruj przez użytkowników i dodaj wiersze do tabeli
                     users.forEach((user) => {
-                        const currentUserId = user.id; // Zmienna globalna do przechowywania danych o cyklach
+                        const currentUserId = user.id; 
 
-                        // Tutaj możesz dodać więcej kolumn, jeśli masz więcej informacji o użytkownikach
                         var tableRow = $('<tr></tr>');
 
                         console.log('user:', user);
                         tableRow.attr('user-id-row', user.id);
 
-                        // Dodaj kolumnę z obrazkiem
                         var imageCell = $('<td></td>');
                         if (user.photos[0] == null) {
-                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/blank-user.png').attr('alt', 'User Image');
+                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/blank-profile.png').attr('alt', 'User Image');
                         } else {
                             var userImage = $('<img>').attr('src', 'https://localhost:44367/images/' + user.photos[0].path).attr('alt', 'User Image');
                        
                         }
                         var userNameCell = $('<p></p>').text(user.firstName + " " + user.lastName).css({
-                            'margin-left': '10px', // Ustawienie marginesu z lewej strony dla tekstu
-                            'display': 'inline-block' // Ustawienie inline-block, aby tekst był w jednej linii z obrazkiem
+                            'margin-left': '10px',
+                            'display': 'inline-block' 
                         });
 
                         imageCell.append(userImage);
                         imageCell.append(userNameCell);
                         tableRow.append(imageCell);
 
-                        // Dodaj kolumnę dla liczby dni nieobecności
                         var daysNotMetCell = $('<td></td>').text("-");
                         tableRow.append(daysNotMetCell);
 
 
-                        var thElements = $('#headerTableAttendance th[data-cycle-id-th]').get(); // Pobranie elementów i zamiana na tablicę
-
+                        var thElements = $('#headerTableAttendance th[data-cycle-id-th]').get(); 
 
                         function processCycle(thElements, index = 0) {
                             if (index >= thElements.length) {
-                                // Zakończ, gdy wszystkie elementy zostaną przetworzone
                                 tableBody.append(tableRow);
                                 return;
                             }
@@ -194,7 +182,6 @@
                             console.log('USER ID from th:', user.id);
 
                             fillCell(user.id, cycleId, courseId, attendanceCell, function () {
-                                // Po zakończeniu żądania AJAX, wykonaj rekurencyjnie dla następnego elementu
                                 processCycle(thElements, index + 1);
                             });
                         }
@@ -217,18 +204,16 @@
 
                                     tableRow.append(cell);
 
-                                    callback(); // Wywołanie funkcji zwrotnej po zakończeniu
+                                    callback();
                                 },
                                 error: function () {
                                     alert('An error occurred while fetching attendance.');
-                                    callback(); // Wywołanie funkcji zwrotnej po zakończeniu (nawet w przypadku błędu)
+                                    callback(); 
                                 }
                             });
                         }
 
-                        // Rozpoczęcie procesu dla thElements
                         processCycle(thElements);
-                        // Dodaj wiersz do tabeli
                         tableBody.append(tableRow);
                     });
                 },
@@ -239,9 +224,6 @@
             });
         });
       
-
-
-    // Obsługa kliknięcia przycisku SAVE
     $(document).on('click', '#saveButton', function () {
         var cycleId = $(this).data('cycle-id');
         var selectedUsers = [];
@@ -251,37 +233,32 @@
         });
 
         $.ajax({
-            url: '/Attendances/AddAttendance', // Podmień 'Controller' i 'Action' odpowiednio
+            url: '/Attendances/AddAttendance', 
             type: 'POST',
-            data: { courseId: courseId, cycleId: cycleId, selectedUsers: selectedUsers }, // Przekazanie wybranych ID użytkowników
-            traditional: true, // Użyj tradycyjnego sposobu serializacji danych
+            data: { courseId: courseId, cycleId: cycleId, selectedUsers: selectedUsers }, 
+            traditional: true,
             success: function (result) {
-                // Obsługa sukcesu
                 console.log('Users saved:', result);
                 var selectedValue = courseId;
                 $('#courseDropdown').val(selectedValue);
+                console.log('Userssss ssss:', result);
 
-                // Wywołanie zdarzenia change ręcznie
+                console.log('Przed triggerem change');
                 $('#courseDropdown').trigger('change');
+                console.log('Po triggerze change');
 
-                // Ukryj przycisk SAVE po zapisaniu
                 $('#saveButton').hide();
-                        $('#cancelButton').hide();
+                $('#cancelButton').hide();
 
             },
             error: function () {
-                // Obsługa błędu
                 alert('Wystąpił błąd podczas zapisu.');
             }
         });
     });
 
-    // Obsługa kliknięcia przycisku CANCEL
     $(document).on('click', '#cancelButton', function () {
-        // Usunięcie klasy highlight-column ze wszystkich komórek
         $('#attendancesTable td').removeClass('highlight-column');
-
-        // Ukrycie checkboxów
         $('input[type="checkbox"]').hide();
         $('#saveButton').hide();
         $('#cancelButton').hide();
@@ -293,11 +270,7 @@
             var cycleId = $(this).data('cycle-id-th');
             var tableCells = $('#attendancesTable tr td[data-cycle-id-colrow="' + cycleId + '"]');
             console.log('Cycle id:', cycleId);
-
-            // Usunięcie klasy highlight-column ze wszystkich komórek
             $('#attendancesTable td').removeClass('highlight-column');
-
-            // Ukrycie checkboxów
             $('input[type="checkbox"]').hide();
 
             tableCells.each(function () {
@@ -311,51 +284,45 @@
 
             tableCells.addClass('highlight-column');
 
-            // Dodanie przycisku SAVE
             var saveButton = $('<button>').text('SAVE').attr({
                 id: 'saveButton',
                 class: 'btn btn-primary'
             });
 
-            // Przypisanie ID cyklu do atrybutu data
             saveButton.attr('data-cycle-id', cycleId);
 
-            // Dodanie przycisku CANCEL
             var cancelButton = $('<button>').text('CANCEL').attr({
                 id: 'cancelButton',
                 class: 'btn btn-secondary'
             });
 
-            $('#saveContainer').empty().append(saveButton, cancelButton); // Dodanie obu przycisków do kontenera
+            $('#saveContainer').empty().append(saveButton, cancelButton); 
         });
 
     $('#cycleDropdown').change(function () {
         var selectedCycleId = $(this).val();
 
         if (selectedCycleId === "0") {
-            // Jeśli wybrano "Wszystkie", pokaż wszystkie kolumny i komórki związane z cyklami
             $('#headerTableAttendance th[data-cycle-id-th]').show();
             $('#attendancesTable td[data-cycle-id-colrow]').show();
         } else {
-            // Ukryj kolumny związane z cyklami (th) niepasującymi do wybranego cyklu
             $('#headerTableAttendance th[data-cycle-id-th]').each(function () {
                 var cycleIdForColumn = $(this).attr('data-cycle-id-th');
 
                 if (cycleIdForColumn !== selectedCycleId) {
-                    $(this).hide(); // Ukryj kolumnę związana z innym cyklem
+                    $(this).hide(); 
                 } else {
-                    $(this).show(); // Pokaż kolumnę związana z wybranym cyklem
+                    $(this).show(); 
                 }
             });
 
-            // Ukryj komórki związane z cyklami (td) niepasującymi do wybranego cyklu
             $('#attendancesTable td[data-cycle-id-colrow]').each(function () {
                 var cycleIdForCell = $(this).attr('data-cycle-id-colrow');
 
                 if (cycleIdForCell !== selectedCycleId) {
-                    $(this).hide(); // Ukryj komórkę związana z innym cyklem
+                    $(this).hide();
                 } else {
-                    $(this).show(); // Pokaż komórkę związana z wybranym cyklem
+                    $(this).show(); 
                 }
             });
         }
@@ -363,36 +330,26 @@
 
 
     $('#userSearch').on('input', function () {
-        var searchText = $(this).val().toLowerCase(); // Pobierz tekst z pola wyszukiwania i zmień na małe litery
-
-        // Iteruj przez wiersze tabeli
+        var searchText = $(this).val().toLowerCase(); 
         $('#attendancesTable tr').each(function () {
-            var userName = $(this).find('td:first-child p').text().toLowerCase(); // Pobierz tekst z pierwszej kolumny (nazwa użytkownika) i zmień na małe litery
-
-            // Sprawdź, czy nazwa użytkownika pasuje do wpisanego tekstu
+            var userName = $(this).find('td:first-child p').text().toLowerCase(); 
             if (userName.includes(searchText)) {
-                $(this).show(); // Jeśli pasuje, pokaż wiersz tabeli
+                $(this).show(); 
             } else {
-                $(this).hide(); // Jeśli nie pasuje, ukryj wiersz tabeli
+                $(this).hide();
             }
         });
-    });
-    });
+                });
 
-    var sortDirection = 1; // 1 dla rosnącego, -1 dla malejącego
+    var sortDirection = 1; 
 
-    $(document).ready(function () {
-        // Obsługa kliknięcia w pierwszą kolumnę tabeli
         $('#filterButton').click(function () {
-            // Pobierz wszystkie wiersze z tabeli i zamień je na tablicę
             var rows = $('#attendancesTable tr').get();
 
-            // Sortuj tablicę zgodnie z zawartością pierwszej kolumny (imię i nazwisko użytkownika)
             rows.sort(function (a, b) {
                 var textA = $(a).find('td:first-child p').text().toUpperCase();
                 var textB = $(b).find('td:first-child p').text().toUpperCase();
 
-                // Porównaj imiona i nazwiska zgodnie z aktualnym kierunkiem sortowania
                 if (textA < textB) {
                     return -1 * sortDirection;
                 } else if (textA > textB) {
@@ -401,17 +358,16 @@
                 return 0;
             });
 
-            // Wyczyść tabelę
             $('#attendancesTable').empty();
 
-            // Zaktualizuj tabelę z posortowanymi wierszami
             $.each(rows, function (index, row) {
                 $('#attendancesTable').append(row);
             });
 
-            // Zmiana kierunku sortowania na przeciwny (jeśli był wcześniej rosnący, teraz będzie malejący i vice versa)
             sortDirection = -1 * sortDirection;
         });
+
+
     });
 
 </script>

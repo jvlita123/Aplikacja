@@ -23,7 +23,7 @@
         <form asp-action="changeReservationStatus" class="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input name="id" id="id" class="form-control" value="@ViewBag.ReservationId" />
+                <input name="id" id="id" class="form-control" type ="hidden" value="@ViewBag.ReservationId" />
             </div>
             <div class="form-group">
                 <label name="status" status="status" class="control-label"></label>

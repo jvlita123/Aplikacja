@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -26,6 +27,7 @@ namespace Application.Controllers
             _userReservationSlotsService = userReservationSlotsService;
         }
 
+        [Route("/Reservation1/Index")]
         public IActionResult Index()
         {
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
@@ -85,6 +87,15 @@ namespace Application.Controllers
             return PartialView(reservation);
         }
 
+        [HttpGet]
+        public PartialViewResult getReservationsByStatus(string status)
+        {
+            if (status == "All")
+            {
+                return PartialView(_reservation1Service.GetAll());
+            }
+            return PartialView(_reservation1Service.GetReservationsByStatus(status));
+        }
 
         [HttpGet]
         public PartialViewResult NewReservation(int serviceId, DateTime selectedDate, int reservationSlotsId)
@@ -189,16 +200,6 @@ namespace Application.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        public PartialViewResult getReservationsByStatus(string status)
-        {
-            if (status == "All")
-            {
-                var reservations = _reservation1Service.GetAll();
-                return PartialView(reservations);
-            }
-            return PartialView(_reservation1Service.GetReservationsByStatus(status));
-        }
 
 
         /*

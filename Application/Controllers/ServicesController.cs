@@ -11,6 +11,7 @@ namespace Application.Controllers
         {
             _servicesService = servicesService;
         }
+        [Route("/Services/IndexServices")]
 
         public IActionResult Index()
         {

@@ -19,6 +19,7 @@ namespace Application.Controllers
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
         }
+        [Route("/Attendances/Index")]
 
         public ActionResult Index()
         {

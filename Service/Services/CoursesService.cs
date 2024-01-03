@@ -37,10 +37,15 @@ namespace Service.Services
 
             return newCourse;
         }
+        public void RemoveCourseById(int id)
+        {
+            _coursesRepository.RemoveById(id);
+            _coursesRepository.SaveChanges();
+        }
 
         public List<Course> GetUserCourses(int id)
         {
-            List<Course> courses = _enrollmentRepository.GetAll().Include(x=>x.User).Include(x=>x.Course).Select(x=>x.Course).Distinct().ToList();
+            List<Course> courses = _coursesRepository.GetAll().Include(x=>x.Cycles).Include(x => x.Enrollments).ThenInclude(x=>x.User).Where(x => x.Enrollments.Where(x=>x.UserId==id).Count()>0).ToList();
             foreach(var v in courses)
             {
                 v.Cycles = GetById(v.Id).Cycles;

@@ -1,42 +1,44 @@
 ﻿@model IEnumerable<Data.Entities.Course>
-
+@inject IHttpContextAccessor context;
 @{
-    ViewData["Title"] = "GetUserCourses";
-    var cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["cycles"];
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/courses/course.css" />
-</head>
-
-<div class="course-list">
-
-        <div class="courses-wrapper">
-            @foreach (var item in Model)
-            {
-                <div class="btn getCourseButton" data-course-id="@item.Id">
-                    <div class="course-card">
-                        <h3>@item.Title</h3>
-                        <p>@item.Description</p>
-                        <ul>
-                            @foreach (var cycle in item.Cycles)
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">My Courses</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Enrollment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
                             {
-                                <button class="deleteCycleButton btn button-styled" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
-                                    @cycle.Description - @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
-                                </button>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>                                    
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Enrollments.Where(x=>x.User.Email == context.HttpContext.User.Identity.Name).First().EnrollmentDate)
+                                    </td>
+                                    <td class="btn btn-info" >
+                                        <a style="text-decoration:none;" asp-action="GetCourse" asp-route-id="@item.Id">Details</a>
+                                    </td>
+                                </tr>
                             }
-                        </ul>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
-            }
+            </div>
         </div>
+    </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script>
-    $('.getCourseButton').on('click', function () {
-        var courseId = $(this).data('course-id');
-        window.location.href = '/Courses/GetCourse/' + courseId;
-    });
-</script>

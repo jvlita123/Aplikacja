@@ -12,7 +12,6 @@
 </head>
 <body>
     <div class="container-scroller">
-        <!-- partial:../../partials/_navbar.html -->
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" href="~/index.html"><img src="~/assets/images/logo.svg" alt="logo" /></a>
@@ -196,38 +195,40 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#courses-pages" aria-expanded="false" aria-controls="courses-pages">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#courses-pages" aria-expanded="false" aria-controls="courses-pages">
                             <span class="menu-title">Courses</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                         </a>
                         <div class="collapse" id="courses-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index"> Courses </a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Attendances" asp-action="Index"> Attendances </a></li>
+                                <li class="nav-item"><a class="nav-link" href="~/Courses/Index/">Courses</a></li>
+                                <li class="nav-item"><a class="nav-link" href="~/Courses/GetUserCourses/">My Courses</a></li>
+                                <li class="nav-item"><a class="nav-link" href="~/Attendances/Index/">Attendances</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Calendar">
-                            <span class="menu-title">Calendar</span>
-                            <i class="mdi mdi-calendar-clock menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+                       <a class="nav-link" href="~/Reservation1/Index/">
                             <span class="menu-title">Reservations</span>
-                            <i class="menu-arrow"></i>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
                         </a>
-                        <div class="collapse" id="general-pages">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#calendars-pages" aria-expanded="false" aria-controls="calendars-pages">
+                            <span class="menu-title">Calendar</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-calendar-clock menu-icon"></i>
+                        </a>
+                        <div class="collapse" id="calendars-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Index"> Reservations </a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Reservation1" asp-action="Calendar"> Reservations Calendar </a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="ReservationSlots" asp-action="SlotsCalendar"> Slots Calendar </a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#services-pages" aria-expanded="false" aria-controls="services-pages">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#services-pages" aria-expanded="false" aria-controls="services-pages">
                             <span class="menu-title">Services</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
@@ -235,7 +236,7 @@
                         <div class="collapse" id="services-pages">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="AddService"> Add Service </a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="Index"> Services </a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-area="" asp-controller="Services" asp-action="IndexServices"> Services </a></li>
                             </ul>
                         </div>
                     </li>

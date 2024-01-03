@@ -27,7 +27,7 @@ namespace Service.Services
 
         public List<Reservation1> GetReservationsByStatus(string status)
         {
-            List<Reservation1> reservations = _reservation1Repository.GetAll()./*Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Include(x => x.ReservationSlot).*/Where(x => x.Status.Name == status).ToList();
+            List<Reservation1> reservations = _reservation1Repository.GetAll().Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Include(x => x.ReservationSlot).Where(x => x.Status.Name == status).ToList();
             return reservations;
         }
 
