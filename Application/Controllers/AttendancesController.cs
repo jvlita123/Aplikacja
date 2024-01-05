@@ -19,9 +19,11 @@ namespace Application.Controllers
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
         }
+
         public ActionResult Index()
         {
             var courses = _coursesService.GetAll();
+
             ViewData["courses"] = courses;
 
             return View(_attendanceService.GetAll());
@@ -36,7 +38,7 @@ namespace Application.Controllers
             return true;
         }
 
-        public PartialViewResult GetAttendancesForCycle(int id,int courseId)
+        public PartialViewResult GetAttendancesForCycle(int id, int courseId)
         {
             var enrolledUsers = _enrollmentService.GetEnrolledUserByCourse(courseId);
             var cycles = _coursesService.GetById(courseId).Cycles.OrderBy(x => x.StartDate);
@@ -45,17 +47,13 @@ namespace Application.Controllers
             ViewData["cycles"] = cycles;
             ViewData["enrolledUsers"] = enrolledUsers;
             ViewData["course"] = course;
+
             if(_attendanceService.GetAll().Where(x => x.CycleId == id).Count() <= 0)
             {
                 return PartialView(new List<Attendance>());  
             }
             
             return PartialView(_attendanceService.GetAll().Where(x => x.CycleId == id));
-        }
-
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         public PartialViewResult AddAttendance()
@@ -78,44 +76,6 @@ namespace Application.Controllers
                 attendance.TimeLeave = new TimeSpan(2, 14, 18); 
 
                 _attendanceService.addAttendance(attendance);
-            }
-        }
-
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Service.Services
                 foreach (var v in observer.UserReservationSlots)
                 {
                     var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == v.UserId);
-                    if (user != null && user.UserReservationSlots.Where(x=>x.Id == observer.Id).ToList().Count()>0)
+                    if (user != null && user.UserReservationSlots.Where(x => x.Id == observer.Id).ToList().Count() > 0)
                     {
                         observer.Attach(user);
                     }
@@ -72,16 +72,16 @@ namespace Service.Services
         private bool IsSlotAvailable(ReservationSlots newSlot)
         {
             var existingSlots = _reservationSlotsRepository
-                .GetAll()
-                .Where(existingSlot =>
-                    existingSlot.Date == newSlot.Date &&
-                    existingSlot.Id != newSlot.Id && 
-                    newSlot.StartTime < existingSlot.EndTime && newSlot.EndTime > existingSlot.StartTime)
-                .ToList();
+            .GetAll()
+            .Where(existingSlot =>
+                existingSlot.Date == newSlot.Date &&
+                newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime <= existingSlot.StartTime &&
+                newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime)
+            .ToList();
 
             bool isSlotAvailable = !existingSlots.Any();
 
-            return isSlotAvailable; 
+            return isSlotAvailable;
         }
 
     }

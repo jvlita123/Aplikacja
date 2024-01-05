@@ -109,20 +109,6 @@
 	  <None Include="wwwroot\assets\vendors\mdi\fonts\materialdesignicons-webfont.ttf" />
 	  <None Include="wwwroot\assets\vendors\mdi\fonts\materialdesignicons-webfont.woff" />
 	  <None Include="wwwroot\assets\vendors\mdi\fonts\materialdesignicons-webfont.woff2" />
-	  <None Include="wwwroot\pages\charts\chartjs.html" />
-	  <None Include="wwwroot\pages\forms\basic_elements.html" />
-	  <None Include="wwwroot\pages\icons\mdi.html" />
-	  <None Include="wwwroot\pages\samples\blank-page.html" />
-	  <None Include="wwwroot\pages\samples\error-404.html" />
-	  <None Include="wwwroot\pages\samples\error-500.html" />
-	  <None Include="wwwroot\pages\samples\login.html" />
-	  <None Include="wwwroot\pages\samples\register.html" />
-	  <None Include="wwwroot\pages\tables\basic-table.html" />
-	  <None Include="wwwroot\pages\ui-features\buttons.html" />
-	  <None Include="wwwroot\pages\ui-features\typography.html" />
-	  <None Include="wwwroot\partials\_footer.html" />
-	  <None Include="wwwroot\partials\_navbar.html" />
-	  <None Include="wwwroot\partials\_sidebar.html" />
 	</ItemGroup>
 
 	<ItemGroup>

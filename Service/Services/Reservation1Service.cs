@@ -56,6 +56,7 @@ namespace Service.Services
                 Service = reservation.Service,
                 ReservationSlot = reservation.ReservationSlot,
                 ReservationSlotId = reservation.ReservationSlotId,
+               UserPhotoPath = reservation.UserPhotoPath,
                 Title = reservation.Title,
             };
             _reservation1Repository.AddAndSaveChanges(newReservation);

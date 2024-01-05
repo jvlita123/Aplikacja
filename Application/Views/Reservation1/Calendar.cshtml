@@ -1,19 +1,11 @@
-﻿@{
-    var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
-    var availableSlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["availableSlots"];
-    var busySlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["busySlots"];
-    var settings = new Newtonsoft.Json.JsonSerializerSettings { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore };
-    var userReservations = (IEnumerable<Data.Entities.Reservation1>)ViewData["userReservations"];
-    var userReservationsJson = Newtonsoft.Json.JsonConvert.SerializeObject(userReservations, settings);
+﻿@using Data.Entities;
+@using System.Collections;
+@{
+    IEnumerable<Data.Entities.Service> services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
+    IEnumerable<Data.Entities.ReservationSlots> availableSlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["availableSlots"];
+    IEnumerable<Data.Entities.ReservationSlots> busySlots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["busySlots"];
+    IEnumerable<Data.Entities.Reservation1> userReservations = (IEnumerable<Data.Entities.Reservation1>)ViewData["userReservations"];
 }
-
-<head>
-    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
-    <script src="~/assets/js/off-canvas.js"></script>
-    <script src="~/assets/js/hoverable-collapse.js"></script>
-    <script src="~/assets/js/misc.js"></script>
-</head>
-
 
 <style>
     .button-disabled {
@@ -31,52 +23,109 @@
         flex-direction: column;
         align-items: center;
     }
+    .busy-slots {
+        opacity: 0.5;
+        background-color: lightgray;
+    }
+
     #calendar {
         max-width: 1100px;
         margin: 0 auto;
-        background-color: white; /* Białe tło kalendarza */
+        background-color: white; 
     }
 
     a.fc-day-header {
         background-color: mediumpurple;
         color: black;
-        text-decoration: none; /* Usunięcie podkreślenia */
+        text-decoration: none; 
     }
 
     a.fc-scroll-grid-sync-inner {
-        background-color: magenta; /* Kolor tła */
+        background-color: magenta;
     }
 
     a {
         color: black;
-        text-decoration: none; /* Usunięcie podkreślenia */
+        text-decoration: none;
     }
 
     button {
-        border-radius: 5px; /* Zaokrąglenie krawędzi */
-        padding: 5px 10px; /* Wewnętrzny padding */
-        background-color: magenta; /* Kolor tła */
-        color: white; /* Kolor tekstu */
-        border: none; /* Usunięcie obramowania */
-        margin: 5px; /* Margines */
+        border-radius: 5px; 
+        padding: 5px 10px;
+        background-color: magenta;
+        color: white; 
+        border: none;
+        margin: 5px; 
     }
 </style>
 
-
 @if (TempData["ErrorMessage"] != null)
 {
-    <script>
-        alert("@TempData["ErrorMessage"]");
-    </script>
+  <script>
+      alert("@TempData["ErrorMessage"]");
+  </script>
 }
 
-<div class="buttons-container">
+<table id="eventsTable" style="display: none;">
+    @for (int i = 0; i < userReservations.Count(); i++)
+    {
+        <tr>
+            <td>@userReservations.ElementAt(i).Id</td>
+            <td>@userReservations.ElementAt(i).Title</td>
+            <td>@userReservations.ElementAt(i).ReservationSlot.StartTime.ToString()</td>
+            <td>@userReservations.ElementAt(i).ReservationSlot.EndTime.ToString()</td>
+            <td>@userReservations.ElementAt(i).PrimaryColor</td>
+        </tr>
+    }
+</table>
+<table id="availableSlots" style="display: none;">
+    @for (int i = 0; i < availableSlots.Count(); i++)
+        {
+            <tr>
+            <td>@availableSlots.ElementAt(i).Id</td>
+            <td>@availableSlots.ElementAt(i).StartTime</td>
+            <td>@availableSlots.ElementAt(i).EndTime</td>
+            <td>@availableSlots.ElementAt(i).Service.Id</td>
+            <td>@availableSlots.ElementAt(i).Date</td>
+            </tr>
+        }
+    </table>
+<table id="busySlots" style="display: none;">
+    @for (int i = 0; i < busySlots.Count(); i++)
+    {
+        <tr>
+            <td>@busySlots.ElementAt(i).Id</td>
+            <td>@busySlots.ElementAt(i).StartTime</td>
+            <td>@busySlots.ElementAt(i).EndTime</td>
+            <td>@busySlots.ElementAt(i).Service.Id</td>
+            <td>@busySlots.ElementAt(i).Date</td>
+        </tr>
+    }
+</table>
+
+<div id="servicesButtons">
     @foreach (var service in services)
     {
-        <button id="@("btn_" + service.Id)" onclick="showSlots('@service.Id')">@(service.Name)</button>
+        ArrayList v = new ArrayList();
+        @foreach(var reservationSlot in service.ReservationSlots)
+        {
+            v.Add(new
+            {
+                id = reservationSlot.Id,
+                isavailable = reservationSlot.IsAvailable, 
+                starttime = reservationSlot.StartTime.ToString(), 
+                endtime = reservationSlot.EndTime.ToString()
+            });
+        }
+        var reservationSlotsJson = Newtonsoft.Json.JsonConvert.SerializeObject(v);
+        <button onclick="setSelectedServiceId('@service.Id')">
+            @service.Name
+        </button>
     }
 </div>
-<div class="buttons-container2" id="slots-container"></div>
+
+<div id="slotsButtons">
+</div>
 <div id='calendar'></div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -92,146 +141,8 @@
 </div>
 
 
+<script src="~/js/calendar1.js"></script>
 <script>
-    var selectedDate; // Zmienna przechowująca wybraną datę
-    function showSlots(serviceId) {
-        // Przekazanie wybranej daty do funkcji zwracającej sloty
-        $.ajax({
-            url: '/Reservation1/GetSlots',
-            method: 'GET',
-            dataType: 'json',
-            data: {
-                serviceId: serviceId,
-                selectedDate: selectedDate
-            },
-            success: function (response) {
-                var objAsString = JSON.stringify(response);
-                var parsedObject = JSON.parse(objAsString);
-
-                var availableSlots = parsedObject.AvailableSlots || parsedObject.availableSlots;
-                var busySlots = parsedObject.BusySlots || parsedObject.busySlots;
-
-                console.log('Dostępne sloty:', availableSlots);
-                console.log('Zajęte sloty:', busySlots);
-
-                var slotsContainer = document.getElementById('slots-container');
-                slotsContainer.innerHTML = '';
-
-                for (var i = 0; i < availableSlots.length; i++) {
-                    var slot = availableSlots[i];
-                    console.log('slot:', slot);
-                    var btn = document.createElement('button');
-                    btn.textContent = slot.startTime + ' - ' + slot.endTime;
-                    btn.onclick = function () {
-                        $.ajax({
-                            url: '/Reservation1/NewReservation',
-                            method: 'GET',
-                            data: {
-                                serviceId: serviceId, 
-                                selectedDate: selectedDate,
-                                reservationSlotsId: slot.id // Zastąp zgodnie z modelem danych
-                            },
-                            success: function (response) {
-                                $('#modalContent').html(response); // Wyświetlenie treści z partial view w modalu
-                                $('#myModal').modal('show'); // Wyświetlenie modalu
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Wystąpił błąd podczas wywoływania akcji NewReservation:', error);
-                            }
-                        });
-                    };
-                    slotsContainer.appendChild(btn);
-                }
-
-                for (var j = 0; j < busySlots.length; j++) {
-                    var busySlot = busySlots[j];
-                    console.log('slot:', busySlot);
-                    var btnBusy = document.createElement('button');
-                    btnBusy.textContent = busySlot.startTime + ' - ' + busySlot.endTime + ' (Busy)';
-                    btnBusy.classList.add('button-disabled');
-                    btnBusy.onclick = function () {
-                       var confirmed = confirm('Czy chcesz być powiadomiony, gdy ten termin stanie się dostępny?');
-                            if (confirmed) {
-                                $.ajax({
-                                    url: '/Reservation1/SubscribeSlot',
-                                    method: 'POST',
-                                    data: {
-                                        reservationSlotId: busySlot.id
-                                    },
-                                    success: function (response) {
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Wystąpił błąd podczas subskrybowania na niedostępny termin:', error);
-                                    }
-                                });
-                            }
-                    };
-                    slotsContainer.appendChild(btnBusy);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Wystąpił błąd podczas pobierania danych:', error);
-            }
-
-        });
-          
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var userReservations = @Html.Raw(userReservationsJson);
-        var events = [];
-
-        for (let reservation of userReservations) {
-            var startDateTime = new Date(`${reservation.ReservationSlot.Date.slice(0, 10)}T${reservation.ReservationSlot.StartTime}`);
-            var endDateTime = new Date(`${reservation.ReservationSlot.Date.slice(0, 10)}T${reservation.ReservationSlot.EndTime}`);
-            console.log("start time: " + startDateTime)
-            console.log("end time: " + endDateTime)
-            events.push({
-                id: reservation.Id,
-                start: startDateTime,
-                end: endDateTime,
-                title: `${reservation.ReservationSlot.StartTime} - ${reservation.ReservationSlot.EndTime}`
-            });
-        }
-        console.log("events: " + events)
-
-        var calendarEl = document.getElementById('calendar');
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            headerToolbar: {
-                left: 'prevYear,prev,next,nextYear today',
-                center: 'title',
-                right: 'dayGridMonth,dayGridWeek'
-            },
-            initialDate: '2023-12-12',
-            navLinks: true, // can click day/week names to navigate views
-            dayMaxEvents: true, // allow "more" link when too many events
-            events: events,
-            dateClick: function (info) {
-                selectedDate = info.dateStr; 
-            },
-            eventClick: function (info) {
-                var clickedEvent = info.event;
-                var reservationId = clickedEvent.id; 
-
-                $.ajax({
-                    url: '/Reservation1/GetReservationDetails',
-                    method: 'GET',
-                    data: {
-                        reservationId: reservationId
-                    },
-                    success: function (response) {
-                        $('#modalContent').html(response); 
-                        $('#myModal').modal('show'); 
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Wystąpił błąd podczas pobierania szczegółów rezerwacji:', error);
-                    }
-                });
-            }
-
-        });
-
-        calendar.render();
-    });
+    var elementsWithDataDate = document.querySelectorAll('[data-date]');
+    console.log(elementsWithDataDate)
 </script>

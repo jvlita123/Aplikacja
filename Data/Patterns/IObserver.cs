@@ -8,7 +8,7 @@ namespace Data.Patterns
 {
         public interface IObserver
         {
-            void Update(ISubject subject);
+            void Update(ISubject subjects);
         }
 }
 

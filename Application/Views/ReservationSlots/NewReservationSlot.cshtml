@@ -1,7 +1,6 @@
 ﻿@model Data.Entities.ReservationSlots
 @{
     var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
-    var servicesJson = Newtonsoft.Json.JsonConvert.SerializeObject(services);
     var selectedDate = ((DateTime)ViewData["selectedDate"]).ToString("yyyy-MM-dd");
 }
 
@@ -11,10 +10,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Service </label>
-                <select id="ServiceId" asp-for="ServiceId" class="form-control">
+                <select id="ServiceId" asp-for="ServiceId" class="form-control" onchange="handleServiceChange(this)">
                     @foreach (var service in services)
                     {
-                        <option value="@service.Id">@service.Name</option>
+                        <option value="@service.Id" data-service-time="@service.ServiceTime">@service.Name</option>
                     }
                 </select>
             </div>
@@ -22,16 +21,16 @@
                 <input asp-for="Date" id="selectedDate" class="form-control" value="@selectedDate" readonly type="hidden" />
             </div>
             <div class="form-group">
-                <label class="control-label">Hour:</label>
+                <label class="control-label">Hour: </label>
                 <input class="form-control" type="time" id="selectedTime" />
             </div>
             <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
+                <label class="control-label">Start: </label>
                 <input id="StartTime" asp-for="StartTime" class="form-control" readonly />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
+                <label class="control-label">End: </label>
                 <input id="EndTime" asp-for="EndTime" class="form-control" readonly />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
@@ -42,13 +41,17 @@
     </div>
 </div>
 
-
 <script>
-    var services = @Html.Raw(servicesJson);
+    let serviceTime;
 
-    $('#ServiceId').change(function () {
-        selectedService = services.find(s => s.Id == $('#ServiceId').val());
-    });
+    function handleServiceChange(selectElement) {
+        var selectedValue = selectElement.value;
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        serviceTime = selectedOption.getAttribute('data-service-time');
+
+        console.log("Selected value: " + selectedValue);
+        console.log("Service time: " + serviceTime);
+    }
 
     var selectedDateInput = document.getElementById('selectedDate');
     var selectedTimeInput = document.getElementById('selectedTime');
@@ -58,13 +61,14 @@
     $('#selectedTime').change(function () {
         var selectedTime = selectedTimeInput.value;
         var serviceId = $('#ServiceId').val();
-        var selectedService = services.find(s => s.Id == serviceId);
-        var serviceTime = selectedService.ServiceTime.split(':').map(Number);
+        console.log("Service time: " + serviceTime);
+        var serviceTime1 = serviceTime.split(':').map(Number);
+        console.log("serviceTime1111: " + serviceTime);
 
         var startTime = selectedTime;
 
         var [selectedHours, selectedMinutes] = selectedTime.split(':').map(Number);
-        var [serviceHours, serviceMinutes] = selectedService.ServiceTime.split(':').map(Number);
+        var [serviceHours, serviceMinutes] = serviceTime1;
 
         var endHours = selectedHours + serviceHours;
         var endMinutes = selectedMinutes + serviceMinutes;

@@ -96,10 +96,14 @@
             events: events,
             dateClick: function (info) {
                 selectedDate = info.dateStr; // Pobranie daty z klikniętego dnia
-                $.get('/ReservationSlots/NewReservationSlot', { selectedDate: selectedDate }, function (data) {
-                    $('#ReservationSlotsModal .modal-body').html(data); // Wstawienie danych częściowego widoku do modala
-                    $('#ReservationSlotsModal').modal('show'); // Wyświetlenie modala
-                });
+                $.ajax({
+                    url: '/ReservationSlots/NewReservationSlot',
+                    type: 'GET',
+                    data: { selectedDate: selectedDate },
+                    success: function (data) {
+                        $('#ReservationSlotsModal .modal-body').html(data); // Wstawienie danych częściowego widoku do modala
+                        $('#ReservationSlotsModal').modal('show'); // Wyświetlenie modala                    }
+                    }});
             },
             eventClick: function (info) {
                 var clickedEvent = info.event;

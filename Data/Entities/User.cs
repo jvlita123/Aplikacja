@@ -28,6 +28,7 @@ public partial class User : INotifyPropertyChanged, IObserver
     public int? RoleId { get; set; }
 
     public virtual ICollection<Attendance> Attendances { get; set; }
+
     [NotMapped]
     public virtual ICollection<Block> BlockBlockedUsers { get; set; }
 
@@ -47,17 +48,18 @@ public partial class User : INotifyPropertyChanged, IObserver
 
     public virtual ICollection<Survey> Surveys { get; set; }
 
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
 
-    public event Action<User, string>? NotifyUserEvent; // Event do informowania o potrzebie powiadomienia użytkownika
+    public event Action<User, string>? NotifyUserEvent; 
 
     public void Update(ISubject subject)
     {
-
-        NotifyUserEvent?.Invoke(this, "Zaszła zmiana w slocie. Proszę sprawdzić.");
-
+        if(subject is ReservationSlots ReservationSlots)
+        {
+        NotifyUserEvent?.Invoke(this, ReservationSlots.Date.ToShortDateString() + " " + ReservationSlots.StartTime.ToString("hh\\:mm tt") + " - " + ReservationSlots.EndTime.ToString("hh\\:mm tt"));
+        }
     }
-
 }

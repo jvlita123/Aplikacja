@@ -102,7 +102,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> GetConversationAsync(int id)
+        public async Task<ViewResult> GetConversation(int id)
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             List<User> userConversation = _messageService.GetUserConversations(user.Id);

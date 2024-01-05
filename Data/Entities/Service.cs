@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
-namespace Data.Entities;
+﻿namespace Data.Entities;
 
 public partial class Service
 {
@@ -15,4 +11,7 @@ public partial class Service
     public TimeSpan? ServiceTime { get; set; }
 
     public virtual ICollection<Reservation1> Reservations { get; set; } = new List<Reservation1>();
+
+    public virtual ICollection<ReservationSlots> ReservationSlots { get; set; } = new HashSet<ReservationSlots>();
+
 }

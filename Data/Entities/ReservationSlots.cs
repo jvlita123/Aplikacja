@@ -1,12 +1,7 @@
-﻿
-using Data.Dto_s;
-using Data.Patterns;
-using System;
+﻿using Data.Patterns;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using System.Threading.Channels;
 
 namespace Data.Entities;
 
@@ -15,6 +10,7 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
     public int Id { get; set; }
 
     public int ServiceId { get; set; }
+
     public int? ReservationId { get; set; }
 
     public DateTime Date { get; set; }
@@ -24,6 +20,7 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
     public TimeSpan EndTime { get; set; }
 
     private bool _isAvailable;
+
     public bool IsAvailable
     {
         get { return _isAvailable; }
@@ -31,23 +28,23 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
         {
             if (_isAvailable != value)
             {
-                _isAvailable = value;
-                NotifyPropertyChanged(nameof(IsAvailable)); // Powiadom o zmianie w IsAvailable
-                Notify(); // Powiadom obserwatorów
+                NotifyPropertyChanged(nameof(IsAvailable));
+                Notify(); 
             }
+                _isAvailable = value;
         }
     }
 
-    // public bool IsAvailable { get; set; }
-
     [ForeignKey("ServiceId")]
     public virtual Service Service { get; set; } = null!;
+
     [ForeignKey("ReservationId")]
     public virtual Reservation1? Reservation { get; set; }
+
     public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
-
+    
     public List<IObserver> _observers = new List<IObserver>();
-
+  
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void NotifyPropertyChanged(string propertyName)

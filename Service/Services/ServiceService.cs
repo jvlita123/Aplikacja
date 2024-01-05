@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
@@ -12,7 +13,7 @@ namespace Service.Services
         }
         public List<Data.Entities.Service> GetAll()
         {
-            List<Data.Entities.Service> services = _serviceRepository.GetAll().ToList();
+            List<Data.Entities.Service> services = _serviceRepository.GetAll().Include(x => x.ReservationSlots).ToList();
 
             return services;
         }

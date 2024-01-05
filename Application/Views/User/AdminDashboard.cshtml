@@ -8,7 +8,6 @@
     IEnumerable<Cycle> cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["allCycles"];
     IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
     IEnumerable<Enrollment> enrollments = (IEnumerable<Data.Entities.Enrollment>)ViewData["enrollments"];
-    IEnumerable<Reservation> reservations = (IEnumerable<Data.Entities.Reservation>)ViewData["reservations"];
 }
 <link rel="stylesheet" href="~/css/AdminDashboard.css" />
 
@@ -45,8 +44,8 @@
                         <h4 class="font-weight-normal mb-3">
                             Upcoming Appointments <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                         </h4>
-                        <h2 class="mb-5">@reservations.Count()</h2>
-                    </div>
+@*                        <h2 class="mb-5">@reservations.Count()</h2>
+*@                    </div>
                 </div>
             </div>
             <div class="col-md-4 stretch-card grid-margin">

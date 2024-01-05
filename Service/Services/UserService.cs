@@ -73,7 +73,7 @@ namespace Service.Services
 
         public User GetById(int id)
         {
-            User user = _userRepository.GetAll().Where(x=>x.Id==id).FirstOrDefault();
+            User user = _userRepository.GetAll().Include(x=>x.Photos).Where(x=>x.Id==id).FirstOrDefault();
 
             return user;
         }
@@ -145,7 +145,7 @@ namespace Service.Services
             string ProfilePhoto = "/"+userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
             if(userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault() == null)
             {
-                ProfilePhoto = "/blang-user.png";
+                ProfilePhoto = "/blank-profile.png";
             }
             String newMessage = "false";
             if(_messageRepository.GetAll().Any(x => x.UserId2 == userToLogin.Id && x.IsNew == true) )
