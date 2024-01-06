@@ -15,6 +15,7 @@
     .buttons-container {
         display: flex;
         justify-content: center;
+        align-items: center;
     }
 
     .buttons-container2 {
@@ -72,8 +73,8 @@
         <tr>
             <td>@userReservations.ElementAt(i).Id</td>
             <td>@userReservations.ElementAt(i).Title</td>
-            <td>@userReservations.ElementAt(i).ReservationSlot.StartTime.ToString()</td>
-            <td>@userReservations.ElementAt(i).ReservationSlot.EndTime.ToString()</td>
+            <td>@userReservations.ElementAt(i).ReservationSlot.Date.Add(userReservations.ElementAt(i).ReservationSlot.StartTime)</td>
+            <td>@userReservations.ElementAt(i).ReservationSlot.Date.Add(userReservations.ElementAt(i).ReservationSlot.EndTime)</td>
             <td>@userReservations.ElementAt(i).PrimaryColor</td>
         </tr>
     }
@@ -87,6 +88,7 @@
             <td>@availableSlots.ElementAt(i).EndTime</td>
             <td>@availableSlots.ElementAt(i).Service.Id</td>
             <td>@availableSlots.ElementAt(i).Date</td>
+            <td>@availableSlots.ElementAt(i).IsAvailable</td>
             </tr>
         }
     </table>
@@ -99,11 +101,12 @@
             <td>@busySlots.ElementAt(i).EndTime</td>
             <td>@busySlots.ElementAt(i).Service.Id</td>
             <td>@busySlots.ElementAt(i).Date</td>
+            <td>@busySlots.ElementAt(i).IsAvailable</td>
         </tr>
     }
 </table>
 
-<div id="servicesButtons">
+<div id="servicesButtons" class="buttons-container">
     @foreach (var service in services)
     {
         ArrayList v = new ArrayList();
@@ -124,7 +127,7 @@
     }
 </div>
 
-<div id="slotsButtons">
+<div id="slotsButtons" class="buttons-container">
 </div>
 <div id='calendar'></div>
 
@@ -132,7 +135,6 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body" id="modalContent">
             </div>

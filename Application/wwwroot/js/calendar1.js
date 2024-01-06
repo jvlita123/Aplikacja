@@ -16,6 +16,7 @@ let busySlotsTable = document.getElementById("busySlots");
 let trElems = eventsTable.getElementsByTagName("tr");
 for (let tr of trElems) {
     let tdElems = tr.getElementsByTagName("td");
+    console.log(tdElems);
     let eventObj = {
         id: tdElems[0].innerText,
         title: tdElems[1].innerText,
@@ -35,6 +36,7 @@ for (let tr of trAvailableSlots) {
         end: tdElems[2].innerText,
         service: tdElems[3].innerText,
         date: new Date(tdElems[4].innerText),
+        isavailable: tdElems[5].innerText
     };
     availableSlotsArr.push(eventObj);
 }
@@ -48,24 +50,36 @@ for (let tr of trbusySlots) {
         end: tdElems[2].innerText,
         service: tdElems[3].innerText,
         date: new Date(tdElems[4].innerText),
+        isavailable: tdElems[5].innerText
     };
     busySlotsArr.push(eventObj);
 }
-
 function showSchedule(serviceId, serviceName, serviceTime, reservationSlots) {
     var slots = reservationSlots;
     var existingSlotsContainer = document.querySelector('#slotsButtons');
+    var existingSlotsContainer1 = document.querySelector('#slotsButtons');
+
+    console.log(existingSlotsContainer);
+    existingSlotsContainer.innerHTML = '';
 
     for (var i = 0; i < slots.length; i++) {
         var slot = slots[i];
+        console.log('Tworzenie przycisku dla slotu', slot);
 
         var slotElement = document.createElement('button');
         slotElement.textContent = slot.start + ' - ' + slot.end;
 
-        if (slot.isavailable === false) {
+        if (slot.isavailable === 'False') {
             slotElement.classList.add('button-disabled');
-        }
-        else {
+             slotElement.onclick = (function(reservationSlotId) {
+                return function() {
+                    var confirmed = confirm('This date is already booked. Would you like to receive a notification when it becomes available?');
+                    if (confirmed) {
+                        SubscribeToSlot(reservationSlotId);
+                     }
+                }
+            })(slot.id);
+        } else {
             var formattedDate = slot.date.toLocaleDateString('en-GB'); // Formatowanie daty
             slotElement.onclick = (function(serviceId, formattedDate, slotId) {
                 return function() {
@@ -73,10 +87,22 @@ function showSchedule(serviceId, serviceName, serviceTime, reservationSlots) {
                 }
             })(selectedServiceId, formattedDate, slot.id);
         }
-        existingSlotsContainer.appendChild(slotElement);
+        existingSlotsContainer1.append(slotElement);
     }
+    document.replace(existingSlotsContainer, existingSlotsContainer1);
 }
-
+function SubscribeToSlot(reservationSlotId) {
+    $.ajax({
+        type: "POST",
+        url: "/Reservation1/SubscribeSlot",
+        data: {
+            reservationSlotId: reservationSlotId
+        },
+        success: function (response) {
+            console.log("Subscription successful!");
+        },
+    });
+}
 function NewReservation(serviceId, selectedDate, reservationSlotsId) {
     console.log(serviceId);
     console.log(selectedDate);
@@ -91,8 +117,8 @@ function NewReservation(serviceId, selectedDate, reservationSlotsId) {
             reservationSlotsId: reservationSlotsId
         },
         success: function (response) {
-            $('#modalContent').html(response); // Wstrzyknięcie częściowego widoku do modala
-            $('#myModal').modal('show'); // Wyświetlenie modala
+            $('#modalContent').html(response);
+            $('#myModal').modal('show'); 
         },
         error: function (error) {
             console.error("Wystąpił błąd:", error);
@@ -104,7 +130,7 @@ function setSelectedServiceId(serviceId) {
     selectedServiceId = serviceId;
 
     var v = document.getElementsByClassName("fc-scrollgrid-sync-inner");
-    var tdElements = document.querySelectorAll('td.fc-day'); // Pobranie elementów td
+    var tdElements = document.querySelectorAll('[data-date]');
 
     for (var i = 0; i < tdElements.length; i++) {
         if (tdElements[i].classList.contains("busy-slots")) {
@@ -113,12 +139,11 @@ function setSelectedServiceId(serviceId) {
     }
 
     for (var i = 0; i < tdElements.length; i++) {
-        var date = tdElements[i].getAttribute('data-date'); // Pobranie wartości atrybutu data-date
+        var date = tdElements[i].getAttribute('data-date'); 
         var formattedDate = date.split('-').reverse().join('/');
 
-        var slotsForDate = availableSlotsArr.filter(slot => {
-            return slot.date.toLocaleDateString('en-GB') === formattedDate && slot.service === selectedServiceId;
-        });
+        var slotsForDate = availableSlotsArr.filter(slot =>  slot.date.toLocaleDateString('en-GB') === formattedDate && slot.service === selectedServiceId
+        );
 
         if (!(slotsForDate.length > 0)) {
             tdElements[i].classList.add("busy-slots");
@@ -144,27 +169,23 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
         console.log("Available slots array: ", availableSlotsArr);
         console.log("Busy slots array: ", busySlotsArr);
 
-        let availableSlotsForSelectedDate = availableSlotsArr.filter(slot => {
-            return slot.date.toLocaleDateString('en-GB') === info.date.toLocaleDateString('en-GB');
-        });
+        let availableSlotsForSelectedDate = availableSlotsArr.filter(  slot =>  slot.date.toLocaleDateString('en-GB') === info.date.toLocaleDateString('en-GB') && slot.service === selectedServiceId
+        );
 
-        let busySlotsForSelectedDate = busySlotsArr.filter(slot => {
-            return slot.date.toLocaleDateString('en-GB') === info.date.toLocaleDateString('en-GB');
-        });
+        let busySlotsForSelectedDate = busySlotsArr.filter(
+            slot =>  slot.date.toLocaleDateString('en-GB') === info.date.toLocaleDateString('en-GB') && slot.service === selectedServiceId
+        );
 
         console.log(availableSlotsForSelectedDate);
         console.log(busySlotsForSelectedDate);
-
-        showSchedule(selectedServiceId, 'Service Name', 'Service Time', availableSlotsForSelectedDate);
-        showSchedule(selectedServiceId, 'Service Name', 'Service Time', busySlotsForSelectedDate);
+        let combinedSlotsForSelectedDate = availableSlotsForSelectedDate.concat(busySlotsForSelectedDate);
+        showSchedule(selectedServiceId, 'Service Name', 'Service Time', combinedSlotsForSelectedDate);
     },
     eventClick: function (info) {
         let eventId = info.event.id;
     },
 
 });
-
-
 
 console.log(eventsArr);
 calendar.render();
