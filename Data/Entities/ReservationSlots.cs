@@ -66,9 +66,10 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
 
     public void Notify()
     {
+        ReservationSlots thisSlot = this;
         foreach (var user in UserReservationSlots)
         {
-            user.User.Update(this); 
+            user.User.Update(thisSlot); 
         }
     }
 

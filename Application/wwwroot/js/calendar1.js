@@ -182,7 +182,16 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
         showSchedule(selectedServiceId, 'Service Name', 'Service Time', combinedSlotsForSelectedDate);
     },
     eventClick: function (info) {
-        let eventId = info.event.id;
+        let eventId = info.event.id; 
+        $.ajax({
+            url: '/Reservation1/ShowReservation', 
+            method: 'GET',
+            data: { id: eventId },
+            success: function (data) {
+                $('#modalContent').html(data);
+                $('#myModal').modal('show');
+            }
+        });
     },
 
 });
