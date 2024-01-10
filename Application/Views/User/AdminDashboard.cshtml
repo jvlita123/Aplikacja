@@ -1,5 +1,6 @@
 ﻿@using Data.Dto_s;
 @using Data.Entities;
+@inject IHttpContextAccessor context;
 @{
     ViewData["Title"] = "AdminDashboard";
     MyUserDto user = (Data.Dto_s.MyUserDto)ViewData["admin"];
@@ -8,6 +9,7 @@
     IEnumerable<Cycle> cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["allCycles"];
     IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
     IEnumerable<Enrollment> enrollments = (IEnumerable<Data.Entities.Enrollment>)ViewData["enrollments"];
+    IEnumerable<Reservation1> reservations = (IEnumerable<Data.Entities.Reservation1>)ViewData["reservations"];
 }
 <link rel="stylesheet" href="~/css/AdminDashboard.css" />
 
@@ -25,8 +27,8 @@
                 </ul>
             </nav>
         </div>
-        <div class="row">
-            <div class="col-md-4 stretch-card grid-margin">
+    <div class="row" style="background-color: rgba(0, 128, 0, 0.0);">
+    <div class="col-md-4 stretch-card grid-margin">
                 <div class="card bg-gradient-danger card-img-holder text-white">
                     <div class="card-body">
                     <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
@@ -44,8 +46,8 @@
                         <h4 class="font-weight-normal mb-3">
                             Upcoming Appointments <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                         </h4>
-@*                        <h2 class="mb-5">@reservations.Count()</h2>
-*@                    </div>
+                        <h2 class="mb-5">@reservations.Count()</h2>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4 stretch-card grid-margin">
@@ -60,243 +62,77 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 grid-margin">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Reservations</h4>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th> User </th>
-                                        <th> Service </th>
 
-                                    <th class="" style="text-decoration:none; font-weight:normal">
-                                        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Status
-                                        </a>
-                                        <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                                        @foreach(var v in statuses){
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Reservations</h4>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="userSearch" placeholder="Search user">
+                    <span class="input-group-text"><i class="mdi mdi-account-search-outline"></i></span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> User </th>
+                                <th> Service </th>
+                                <th class="" style="text-decoration:none; font-weight:normal">
+                                    <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Status
+                                    </a>
+                                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                                        @foreach (var v in statuses)
+                                        {
                                             <a class="dropdown-item selected-status">
-                                               @v.Name
+                                                @v.Name
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                         }
+                                        }
                                         <a class="dropdown-item selected-status">
                                             All
                                         </a>
-                                        </div>
-                                    </th>
-                                        <th> Start </th>
-                                        <th> End </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reservationsTable">
+                                    </div>
+                                </th>
+                                <th> Inspiration </th>
+                                <th> Result </th>
+                                <th> Start </th>
+                                <th> End </th>
+                                <th>     </th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+<div id="imagemodal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Recent Updates</h4>
-                        <div class="d-flex">
-                            <div class="d-flex align-items-center me-4 text-muted font-weight-light">
-                                <i class="mdi mdi-account-outline icon-sm me-2"></i>
-                                <span>jack Menqu</span>
-                            </div>
-                            <div class="d-flex align-items-center text-muted font-weight-light">
-                                <i class="mdi mdi-clock icon-sm me-2"></i>
-                                <span>October 3rd, 2018</span>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-6 pe-1">
-                                <img src="assets/images/dashboard/img_1.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
-                                <img src="assets/images/dashboard/img_4.jpg" class="mw-100 w-100 rounded" alt="image">
-                            </div>
-                            <div class="col-6 ps-1">
-                                <img src="assets/images/dashboard/img_2.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
-                                <img src="assets/images/dashboard/img_3.jpg" class="mw-100 w-100 rounded" alt="image">
-                            </div>
-                        </div>
-                        <div class="d-flex mt-5 align-items-top">
-                            <img src="assets/images/faces/face3.jpg" class="img-sm rounded-circle me-3" alt="image">
-                            <div class="mb-0 flex-grow">
-                                <h5 class="me-2 mb-2">School Website - Authentication Module.</h5>
-                                <p class="mb-0 font-weight-light">It is a long established fact that a reader will be distracted by the readable content of a page.</p>
-                            </div>
-                            <div class="ms-auto">
-                                <i class="mdi mdi-heart-outline text-muted"></i>
-                            </div>
-                        </div>
+            <img id="modalImage" src="" alt="Large Image" />
+            @if (context.HttpContext.User.IsInRole("admin"))
+            {
+                <form method="post" enctype="multipart/form-data" asp-controller="Reservation1" id="uploadphoto" asp-action="UploadFile1">
+                    <div class="mb-3">
+                        <input class="form-control" type="file" name="uploadFile" id="uploadFile" />
                     </div>
-                </div>
-            </div>
+                    <input class="reservationIdUploadPhoto" type="hidden" name="id" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-upload"></i> Send File
+                    </button>
+                </form>
+            }
+            <a class="downloadhref btn btn-success" download>
+                <i class="mdi mdi-download"></i> Download File
+            </a>
         </div>
-        <div class="row">
-            <div class="col-md-7 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Project Status</h4>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th> # </th>
-                                        <th> Name </th>
-                                        <th> Due Date </th>
-                                        <th> Progress </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> 1 </td>
-                                        <td> Herman Beck </td>
-                                        <td> May 15, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> 2 </td>
-                                        <td> Messsy Adam </td>
-                                        <td> Jul 01, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> 3 </td>
-                                        <td> John Richards </td>
-                                        <td> Apr 12, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> 4 </td>
-                                        <td> Peter Meggik </td>
-                                        <td> May 15, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> 5 </td>
-                                        <td> Edward </td>
-                                        <td> May 03, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> 5 </td>
-                                        <td> Ronald </td>
-                                        <td> Jun 05, 2015 </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title text-white">Todo</h4>
-                        <div class="add-items d-flex">
-                            <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
-                            <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn" id="add-task">Add</button>
-                        </div>
-                        <div class="list-wrapper">
-                            <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-                                <li>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox"> Meeting with Alisa
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                <li class="completed">
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox" checked> Call John
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                <li>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox"> Create invoice
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                <li>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox"> Print Statements
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                <li class="completed">
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox" checked> Prepare for presentation
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                                <li>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input class="checkbox" type="checkbox"> Pick up kids from school
-                                        </label>
-                                    </div>
-                                    <i class="remove mdi mdi-close-circle-outline"></i>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <!-- content-wrapper ends -->
-    <!-- partial:partials/_footer.html -->
-    <footer class="footer">
-        <div class="container-fluid d-flex justify-content-between">
-            <span class="text-muted d-block text-center text-sm-start d-sm-inline-block">Copyright © bootstrapdash.com 2021</span>
-            <span class="float-none float-sm-end mt-1 mt-sm-0 text-end"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin template</a> from Bootstrapdash.com</span>
-        </div>
-    </footer>
-    <!-- partial -->
-@*</div>*@
+    </div>
+</div>
 
 <div class="modal" tabindex="-1" role="dialog" id="myModal1">
     <div class="modal-dialog" role="document">
@@ -319,69 +155,82 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    $(document).ready(function () {
-        $(document).on('click', '.changeReservationStatus', function () {
+
+    var selectedStatus = 'All';
+    refreshTable(selectedStatus);
+
+    $(document).on('click', '.changeReservationStatus', function () {
         var reservationId = $(this).data('reservation-id');
         var statusChangedMsg = $('#statusChangedMsg');
 
         $("#myModal1").modal("show");
         $.ajax({
-            url: '/Reservation/changeReservationStatus',
+            url: '/Reservation1/changeReservationStatus',
             type: 'GET',
             data: { id: reservationId },
             success: function (data) {
                 $('#contentReservation').html(data);
                 statusChangedMsg.fadeIn().delay(3000).fadeOut();
 
-                $('#myModal1 form').on('submit', function (event) {
-                    $("#myModal1").modal("hide");
-                    refreshTable();
+                $('#myModal1 .form').on('submit', function (event) {
+                    event.preventDefault();
+
+                    var formData = $(this).serialize();
+
+                    $.ajax({
+                        url: '/Reservation1/changeReservationStatus',
+                        type: 'POST',
+                        data: formData,
+                        success: function (data) {
+                            refreshTable(selectedStatus);
+                        }
+                    });
                 });
             }
         });
-            $('#myModal1 .form').on('submit', function (event) {
-                event.preventDefault(); // Zapobieganie domyślnej akcji formularza
-
-                // Pobieranie danych z formularza
-                var formData = $(this).serialize();
-
-                $.ajax({
-                    url: '/Reservation/changeReservationStatus',
-                    type: 'POST',
-                    data: formData,
-                    success: function (data) {
-                        // Po zmianie statusu, odświeżanie tabeli
-                        refreshTable(selectedStatus);
-                    }
-                });
-            });
     });
 
-    //refresh table and select reservation status
-    var selectedStatus = 'All';
-    refreshTable();
-    
-    $('.selected-status').on('click', function () {
+    $(document).on('click', '.reservationphotos', function () {
+        var photoPath = $(this).data('photo-path');
+        var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').attr('src', photoPath);
+        $('.downloadhref').attr('href', photoPath);
+        $('#uploadphoto').css({ 'display': 'none' })
+        $('#imagemodal').modal('show');
+    });
+
+    $(document).on('click', '.uploadphoto', function () {
+        var photoPath = $(this).data('photo-path');
+        var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').attr('src', photoPath);
+        $('.downloadhref').attr('href', photoPath);
+        $('#uploadphoto').css({ 'display': 'block' })
+        $('.reservationIdUploadPhoto').attr('value', reservatioinId);
+        $('#imagemodal').modal('show');
+    });
+
+    $(document).on('click', '.selected-status', function () {
         selectedStatus = $(this).text().trim();
-        refreshTable();
-     });
-    
-    function refreshTable(){
-    $.ajax({
-        url: '/Reservation/getReservationsByStatus',
-        type: 'GET',
-        data: { status: selectedStatus },
-        success: function (result) {
-            $('#reservationsTable').html(result);
-        },
+        refreshTable(selectedStatus);
     });
+
+    function refreshTable(selectedStatus) {
+        $.ajax({
+            url: '/Reservation1/getReservationsByStatus',
+            type: 'GET',
+            data: { status: selectedStatus },
+            success: function (result) {
+                $('#reservationsTable').html(result);
+                highlightTomorrowRows()
+            },
+        });
     }
 
     function allReservations() {
         $.ajax({
-            url: '/Reservation/getAll',
+            url: '/Reservation1/getAll',
             type: 'GET',
             data: { status: selectedStatus },
             success: function (result) {
@@ -389,5 +238,45 @@
             },
         });
     }
-});
+
+    $('#userSearch').on('keyup', function () {
+        var searchText = $(this).val().toLowerCase();
+        filterTable(searchText);
+    });
+
+
+    function filterTable(searchText) {
+        $('#reservationsTable tr').each(function () {
+            var username = $(this).find('td:first').text().toLowerCase();
+            if (username.indexOf(searchText) === -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    }
+    function highlightTomorrowRows() {
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var dd = String(tomorrow.getDate()).padStart(2, '0');
+    var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    var yyyy = tomorrow.getFullYear();
+    var tomorrowFormatted = yyyy + '-' + mm + '-' + dd;
+
+        $('#reservationsTable tr').each(function () {
+        console.log(this);
+        var startDate = $(this).find('td').eq(5).text().trim();
+        var date = new Date(startDate);
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, '0');
+        var day = String(date.getDate()).padStart(2, '0');
+        date = year + '-' + day + '-' + month;
+
+        console.log('startDate', date);
+        console.log('tommortow', tomorrowFormatted);
+        if (date === tomorrowFormatted) {
+                $(this).css('background-color', 'rgba(255, 0, 0, 0.1)');
+            }
+    });
+    }
 </script>

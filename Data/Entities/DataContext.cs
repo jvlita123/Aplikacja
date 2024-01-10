@@ -33,7 +33,7 @@ namespace Data.Entities
             : base(options)
         {
         }
-
+       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
              => optionsBuilder.UseSqlServer("Server=tcp:applicationserver.database.windows.net,1433;database=ApplicationDB;User ID=jvlita123;Password=admin123.;");
 

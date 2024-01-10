@@ -1,4 +1,6 @@
-﻿namespace Data.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
 
 public partial class Enrollment
 {
@@ -14,7 +16,9 @@ public partial class Enrollment
 
     public string? CancellationReason { get; set; }
 
+    [ForeignKey("CourseId")]
     public virtual Course Course { get; set; } = null!;
 
+    [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 }

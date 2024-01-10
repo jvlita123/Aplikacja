@@ -88,6 +88,15 @@ namespace Service.Services
             _reservationSlotsRepository.UpdateRangeAndSaveChanges(slots);
 
         }
+        public Reservation1 UploadFile(string filePath, int id)
+        {
+            Reservation1 reservation = _reservation1Repository.GetAll().Where(x => x.Id == id).FirstOrDefault();
+            reservation.AdminPhotoPath = filePath;
+
+            _reservation1Repository.Update(reservation);
+            _reservation1Repository.SaveChanges();
+            return reservation;
+        }
         public void UpdateReservation(Reservation1 updatedReservation)
         {
             Reservation1 reservationToSave = _reservation1Repository.GetById(updatedReservation.Id);

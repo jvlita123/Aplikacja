@@ -1,9 +1,5 @@
 ﻿@model IEnumerable<Data.Entities.Course>
 
-<head>
-    <link rel="stylesheet" href="~/css/courses/course.css" />
-</head>
-
 
 <div class="row" style="padding:15px">
     <div class="col-md-12">
@@ -21,7 +17,7 @@
             <div class="col mb-4">
                 <div class="card h-100">
                     <div class="card-img-holder getCourseButton" data-course-id="@item.Id">
-                        <img style=""src="/uploads/@item.PhotoPath.ToString()" alt="@item.Title"  />
+                        <img style="" src="/uploads/@item.PhotoPath?.ToString()" alt="@item.Title"  />
                         <div class="course-label">Course</div>
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -90,14 +86,14 @@
 </div>
 
 
-<div class="modal fade" id="deleteConfirmationModal">
+<div class="modal fade" id="deleteConfirmationModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Are you sure you want to delete this?</h5>
+                <h5 class="modal-title">Are you sure you want to delete this course?</h5>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this?</p>
+                <p>Are you sure you want to delete this course?</p>
             </div>
             <div class="modal-footer">
                 <button id="confirmDeleteBtn" class="btn btn-danger" data-dismiss="modal">Yes</button>
@@ -107,9 +103,6 @@
     </div>
 </div>
 
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
     let newCycles = []; 
 
@@ -156,9 +149,23 @@
     });
 
     $('.deleteCycleButton').on('click', function () {
-        var cycleId = $(this).data('cycle-id'); 
+        var cycleId = $(this).data('cycle-id');
+        $('#deleteConfirmationModal').find('p').text('Are you sure you want to delete this cycle?');
+        $('#deleteConfirmationModal').find('h5').text('Are you sure you want to delete this cycle?');
         $('#deleteConfirmationModal').modal('show');
         $('#confirmDeleteBtn').data('cycle-id', cycleId);
+        $('#confirmDeleteBtn').on('click', function () {
+            var cycleId = $(this).data('cycle-id');
+            $.ajax({
+                url: '/Cycles/DeleteCycle',
+                type: 'POST',
+                data: { cycleId: cycleId },
+                success: function (data) {
+                    $('#deleteConfirmationModal').modal('hide');
+                    $(`.cycle-button[data-cycle-id="${cycleId}"]`).remove();
+                }
+            });
+        });
     });
 
     $('.deleteCourseButton').on('click', function () {
@@ -179,18 +186,6 @@
         });
     });
 
-    $('#confirmDeleteBtn').on('click', function () {
-        var cycleId = $(this).data('cycle-id');
-        $.ajax({
-            url: '/Cycles/DeleteCycle',
-            type: 'POST',
-            data: { cycleId: cycleId },
-            success: function (data) {
-                $('#deleteConfirmationModal').modal('hide');
-                $(`.cycle-button[data-cycle-id="${cycleId}"]`).remove();
-            }
-        });
-    });
     $(document).ready(function () {
         var message = '@TempData["Message"]';
         if (message !== '') {
@@ -198,6 +193,7 @@
             $('#alertModal').modal('show');
         }
     });
+
     $('.closeBtn').on('click', function () {
         $('#newCycleModal').modal('hide');
         $('#alertModal').modal('hide');+

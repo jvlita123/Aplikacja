@@ -119,23 +119,40 @@ namespace Application.Controllers
                 }
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> UploadFile1(IFormFile uploadFile, int id)
+        {
+            if (uploadFile != null && uploadFile.Length > 0)
+            {
+                var nazwaPliku = Path.GetFileName(uploadFile.FileName);
+                var ścieżkaZapisu = Path.Combine(_environment.WebRootPath, "uploads", nazwaPliku);
+
+                using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
+                {
+                    await uploadFile.CopyToAsync(strumień);
+                }
+
+                var file = nazwaPliku;
+                _reservation1Service.UploadFile(file, id);
+            }
+            return RedirectToAction("Index");
+
+        }
 
         [HttpPost]
         public IActionResult NewReservation(Reservation1 reservation, string userEmail, IFormFile uploadFile)
         {
             UploadFile(uploadFile);
             string nazwaPliku = Path.GetFileName(uploadFile.FileName);
+
             reservation.UserPhotoPath = nazwaPliku;
             reservation.UserId = _userService.GetAll().Where(x => x.Email == userEmail).Select(x => x.Id).FirstOrDefault();
             reservation.ServiceId = _serviceService.GetAll().Where(x => x.Name == reservation.Title).Select(x => x.Id).FirstOrDefault();
             reservation.StatusId = 4;
 
-            var service = _serviceService.GetAll().Where(x => x.Name == reservation.Title).FirstOrDefault();
-            var serviceDuration = service.ServiceTime;
-
             var newReservation = _reservation1Service.NewReservation(reservation);
 
-            return NoContent();
+            return RedirectToAction("Calendar");
         }
 
 
@@ -171,7 +188,10 @@ namespace Application.Controllers
         {
             var usr = _userService.GetByEmail(HttpContext.User.Identity.Name);
             UserReservationSlots userSlots = _userReservationSlotsService.AddNewUserReservationSlot(usr.Id, reservationSlotId);
-            _reservationSlotsService.GetById(reservationSlotId).Attach(usr);
+            if (userSlots == null)
+            {
+                return null;
+            }
             return NoContent();
         }
     }

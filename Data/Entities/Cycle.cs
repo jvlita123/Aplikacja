@@ -1,4 +1,6 @@
-﻿namespace Data.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
 
 public partial class Cycle
 {
@@ -18,7 +20,8 @@ public partial class Cycle
     public bool IsNotificationSent { get; set; }
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
-
+   
+    [ForeignKey("CourseId")]
     public virtual Course? Course { get; set; }
 
     public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();

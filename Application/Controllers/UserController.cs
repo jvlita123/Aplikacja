@@ -9,7 +9,6 @@ namespace Application.Controllers
     public class UserController : Controller
     {
         private UserService _userService;
-        private RoleService _roleService;
         private PhotoService _photoService;
         private CyclesService _cyclesService;
         private CoursesService _coursesService;
@@ -18,10 +17,9 @@ namespace Application.Controllers
         private StatusService _statusService;
         private IWebHostEnvironment _environment;
 
-        public UserController(IWebHostEnvironment environment,StatusService statusService, Reservation1Service reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, RoleService roleService, PhotoService photoService)
+        public UserController(IWebHostEnvironment environment,StatusService statusService, Reservation1Service reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, PhotoService photoService)
         {
             _userService = userService;
-            _roleService = roleService;
             _photoService = photoService;
             _environment = environment;
             _coursesService = coursesService;
@@ -76,10 +74,10 @@ namespace Application.Controllers
             var courses = _coursesService.GetAll();
             var cycles = _cyclesService.GetAll().OrderBy(x => x.StartDate);
             var statuses = _statusService.GetAll().ToList();
-            var enrollments = _enrollmentsService.GetAll().Where(x => x.Course.Cycles.OrderBy(y => y.EndDate).First().EndDate > DateTime.Now).ToList();
+            var enrollments = _enrollmentsService.GetAll().Where(x => x.Course.Cycles?.OrderBy(y => y.EndDate).FirstOrDefault()?.EndDate > DateTime.Now).ToList();
 
             var currentDate = DateTime.Now.Date;
-            var reservations = _reservationService.GetAll().Where(x => x.ReservationSlot.Date + x.ReservationSlot.StartTime >= currentDate &&(x.Status.Name == "Pending" || x.Status.Name == "Confirmed")).ToList();
+            var reservations = _reservationService.GetAll().Where(x => x.ReservationSlot?.Date + x.ReservationSlot?.StartTime >= currentDate &&(x.Status?.Name == "Pending" || x.Status?.Name == "Confirmed")).ToList();
 
             ViewData["admin"] = user;
             ViewData["users"] = users;
@@ -113,6 +111,5 @@ namespace Application.Controllers
 
             return RedirectToAction("MyUser", "User");
         }
-
     }
 }

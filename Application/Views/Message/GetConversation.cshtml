@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<Data.Entities.Message>
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    ViewData["Title"] = "";
     var userId = 0;
     var users = (IEnumerable<Data.Entities.User>)ViewData["users"];
     var allusers = (IEnumerable<Data.Entities.User>)ViewData["allusers"];
@@ -17,7 +16,6 @@
     <div class="list-container message-list">
         <div class="message-row section-title no-padding">
             <h2>Latest Chats</h2>
-
             <div class="form-group">
                 <label for="selectUser">Select a user:</label>
                 <select class="form-control" id="selectUser">
@@ -28,10 +26,8 @@
                     }
                 </select>
                 <div id="selectedUser"></div>
-
             </div>
-
-
+            <div class="usersContainerList">
             @foreach (var item in users)
             {
                 <a href="@item.Id" class="message-row">
@@ -54,13 +50,13 @@
                     </div>
                 </a>
             }
+            </div>
         </div>
-       
     </div>
 
 <div class="list-container message-list wide">
-        @if (user2 != null)
-        {
+         @if (user2 != null)
+         {
             <div class="message-row section-title with-padding">
                 <div class="image-wrapper rounded">
 
@@ -70,8 +66,8 @@
                 }
                 else
                 {
-                        <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" height="40" width="40" />
-                    }
+                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" height="40" width="40" />
+                }
                 </div>
                 <h4 class="f-w-600"> @user2.FirstName @user2.LastName</h4>
             </div>
@@ -135,27 +131,27 @@
             </div>
 
             <div class="textbox-wrapper">
-                    <form asp-action="SendMessage"  class="form-inline">
-                      <input type="text" asp-for="@newMessage.Text" name="Text" class="form-control d-inline-block" placeholder="Type a message...">
-                       <input type="hidden" asp-for="@newMessage.UserId2" name="UserId2" id="UserId2" class="form-sample d-inline-block" value="@user2.Id" />
-                      <button type="submit" class="btn btn-gradient-primary mb-2 d-inline-block">Send <i class="bi bi-send-fill"></i></button>
-                    </form>
-             </div>
-    }
-
+                <form asp-action="SendMessage" class="form-inline">
+                    <textarea asp-for="@newMessage.Text" name="Text" class="form-control d-inline-block"
+                              placeholder="Type a message..." style="resize: vertical; max-height: 200px; max-width: 73%;"
+                              ></textarea>
+                    <input type="hidden" asp-for="@newMessage.UserId2" name="UserId2" id="UserId2" class="form-sample d-inline-block" value="@user2.Id" />
+                    <button type="submit" class="btn btn-gradient-primary mb-2 d-inline-block">Send <i class="bi bi-send-fill"></i></button>
+                </form>
+            </div>
+         }
+    </div>
 </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     var chatWrapper = document.querySelector('.list-container.message-list.wide .chat-wrapper');
+    chatWrapper.scrollTop = chatWrapper.scrollHeight;
 </script>
 <script>
     $(document).ready(function () {
         $('#selectUser').on('change', function () {
             var userId = $(this).val();
             if (userId !== '') {
-
                 window.location.href = "/Message/GetConversation/" + userId; 
             }
         });

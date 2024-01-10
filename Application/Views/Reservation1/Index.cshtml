@@ -1,24 +1,10 @@
 ﻿@model IEnumerable<Data.Entities.Reservation1>
 @using Data.Entities;
+@inject IHttpContextAccessor context;
 @{
     IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
 }
-<head>
-    <link rel="stylesheet" href="~/assets/css/style.css" />
-    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
-    <script src="../../assets/js/off-canvas.js"></script>
-    <script src="../../assets/js/hoverable-collapse.js"></script>
-    <script src="../../assets/js/misc.js"></script>
-    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
-    <script src="~/assets/vendors/chart.js/Chart.min.js"></script>
-    <script src="~/assets/js/off-canvas.js"></script>
-    <script src="~/assets/js/hoverable-collapse.js"></script>
-    <script src="~/assets/js/misc.js"></script>
-    <script src="~/assets/js/chart.js"></script>
 
-</head>
-
-<div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
@@ -50,9 +36,11 @@
                                         </a>
                                     </div>
                                 </th>
+                                <th> Inspiration </th>
+                                <th> Result </th>
                                 <th> Start </th>
                                 <th> End </th>
-                                <th>       </th>
+                                <th>     </th>
                             </tr>
                         </thead>
                         <tbody id="reservationsTable">
@@ -62,7 +50,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <div class="modal fade" id="deleteConfirmationModal">
     <div class="modal-dialog">
@@ -82,14 +69,27 @@
     </div>
 </div>
 
-<div id="editModal" class="modal fade" role="dialog">
+<div id="imagemodal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body" id="editReservationContent">
-            </div>
+                <img id="modalImage" src="" alt="Large Image" />
+            @if (context.HttpContext.User.IsInRole("admin"))
+            {                
+            <form method="post" enctype="multipart/form-data" asp-controller="Reservation1" id="uploadphoto" asp-action="UploadFile1">
+                    <div class="mb-3">
+                        <input class="form-control" type="file" name="uploadFile" id="uploadFile" />
+                    </div>
+                    <input class="reservationIdUploadPhoto" type="hidden" name="id" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-upload"></i> Send File
+                    </button>
+                </form>
+            }
+                <a class="downloadhref btn btn-success" download>
+                    <i class="mdi mdi-download"></i> Download File
+                </a>
         </div>
     </div>
 </div>
@@ -100,10 +100,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Change Reservation Status</h5>
-                <span aria-hidden="true">
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                    </button>
-                </span>
             </div>
             <div class="modal-body " id="contentReservation">
             </div>
@@ -116,46 +112,9 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <link href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-
 <script>
-
-    const deleteReservationBtn = $('#deleteReservationBtn');
-    console.log(deleteReservationBtn);
-
-
-    $('#deleteReservationBtn').on('click', function () {
-        $('#deleteConfirmationModal').modal('show');
-    });
-
-    $('#editReservationBtn').on('click', function () {
-        var reservationId = 60; // Assuming the ID can be retrieved in this context
-        $('#editModal').modal('show');
-        $.ajax({
-            url: '/Reservation1/EditReservation', // Check if this URL is correct
-            type: 'GET',
-            data: { id: reservationId }, // Pass the reservation ID
-            success: function (data) {
-                $('#editReservationContent').html(data);
-            }
-        });
-    });
-
-    $('#confirmDeleteBtn').on('click', function () {
-        var reservationId = 60; // Pobierz identyfikator rezerwacji z modelu
-        $.ajax({
-            url: '/Reservation1/RemoveReservation', // Sprawdź poprawność ścieżki do akcji kontrolera
-            type: 'POST',
-            data: { id: reservationId }, // Przekazanie identyfikatora rezerwacji
-            success: function (data) {
-                // Tutaj możesz obsłużyć odpowiedź zwrotną po usunięciu rezerwacji
-                // Na przykład, odśwież stronę lub wykonaj dodatkowe działania
-                window.location.href = '/Reservation1/Calendar'; // Modify the URL accordingly
-            }
-        });
-    });
-
     var selectedStatus = 'All';
     refreshTable(selectedStatus);
 
@@ -173,9 +132,8 @@
                 statusChangedMsg.fadeIn().delay(3000).fadeOut();
 
                 $('#myModal1 .form').on('submit', function (event) {
-                    event.preventDefault(); // Zapobieganie domyślnej akcji formularza
+                    event.preventDefault(); 
 
-                    // Pobieranie danych z formularza
                     var formData = $(this).serialize();
 
                     $.ajax({
@@ -183,8 +141,8 @@
                         type: 'POST',
                         data: formData,
                         success: function (data) {
-                            // Po zmianie statusu, odświeżanie tabeli
                             refreshTable(selectedStatus);
+                            $("#myModal1").modal("hide");
                         }
                     });
                 });
@@ -192,8 +150,27 @@
         });
     });
 
+    $(document).on('click', '.reservationphotos', function () {
+        var photoPath = $(this).data('photo-path');
+        var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').attr('src', photoPath);
+        $('.downloadhref').attr('href', photoPath);
+        $('#uploadphoto').css({'display': 'none'})
+        $('#imagemodal').modal('show');
+    });
+
+    $(document).on('click', '.uploadphoto', function () {
+        var photoPath = $(this).data('photo-path');
+        var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').attr('src', photoPath);
+        $('.downloadhref').attr('href', photoPath);
+        $('#uploadphoto').css({ 'display': 'block' })
+        $('.reservationIdUploadPhoto').attr('value', reservatioinId);
+        $('#imagemodal').modal('show');
+    });
+
     $(document).on('click', '.selected-status', function () {
-        selectedStatus = $(this).text().trim(); // Usunięcie 'var' przed 'selectedStatus'
+        selectedStatus = $(this).text().trim(); 
         refreshTable(selectedStatus);
     });
 
@@ -204,6 +181,7 @@
             data: { status: selectedStatus },
             success: function (result) {
                 $('#reservationsTable').html(result);
+                highlightTomorrowRows();
             },
         });
     }
@@ -220,19 +198,42 @@
     }
 
     $('#userSearch').on('keyup', function () {
-        var searchText = $(this).val().toLowerCase(); // Pobierz wartość wprowadzoną do pola tekstowego i zmień na małe litery
-        filterTable(searchText); // Wywołaj funkcję do filtrowania tabeli
+        var searchText = $(this).val().toLowerCase();
+        filterTable(searchText); 
     });
 
+   
     function filterTable(searchText) {
-        $('#reservationsTable tr').each(function () { // Pomijanie pierwszego wiersza (nagłówka)
-            var username = $(this).find('td:first').text().toLowerCase(); // Pobieranie nazwy użytkownika z pierwszej komórki
-
-            // Sprawdzenie, czy nazwa użytkownika pasuje do wprowadzonego tekstu
+        $('#reservationsTable tr').each(function () { 
+            var username = $(this).find('td:first').text().toLowerCase(); 
             if (username.indexOf(searchText) === -1) {
-                $(this).hide(); // Jeśli nie pasuje, ukryj wiersz
+                $(this).hide(); 
             } else {
-                $(this).show(); // Jeśli pasuje, pokaż wiersz
+                $(this).show(); 
+            }
+        });
+    }
+    function highlightTomorrowRows() {
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var dd = String(tomorrow.getDate()).padStart(2, '0');
+        var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        var yyyy = tomorrow.getFullYear();
+        var tomorrowFormatted = yyyy + '-' + mm + '-' + dd;
+
+        $('#reservationsTable tr').each(function () {
+            console.log(this);
+            var startDate = $(this).find('td').eq(5).text().trim();
+            var date = new Date(startDate);
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var day = String(date.getDate()).padStart(2, '0');
+            date = year + '-' + day + '-' + month;
+
+            console.log('startDate', date);
+            console.log('tommortow', tomorrowFormatted);
+            if (date === tomorrowFormatted) {
+                $(this).css('background-color', 'rgba(255, 0, 0, 0.1)');
             }
         });
     }

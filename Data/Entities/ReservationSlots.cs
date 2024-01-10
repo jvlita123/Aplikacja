@@ -1,11 +1,12 @@
 ﻿using Data.Patterns;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public partial class ReservationSlots : ISubject, INotifyPropertyChanged
+public partial class ReservationSlots : ISubject
 {
     public int Id { get; set; }
 
@@ -26,12 +27,16 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
         get { return _isAvailable; }
         set
         {
-            if (_isAvailable != value)
+            if (value == true)
             {
-                NotifyPropertyChanged(nameof(IsAvailable));
+                _isAvailable = value;
                 Notify(); 
             }
-                _isAvailable = value;
+            else
+            {
+             _isAvailable = value;
+                Notify();
+            }
         }
     }
 
@@ -45,13 +50,6 @@ public partial class ReservationSlots : ISubject, INotifyPropertyChanged
     
     public List<IObserver> _observers = new List<IObserver>();
   
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void NotifyPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
     #region Observer
 
     public void Attach(IObserver observer)

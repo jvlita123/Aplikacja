@@ -13,8 +13,6 @@ namespace Service.Services
 {
     public class ReminderService : BackgroundService
     {
-
-
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IHttpContextAccessor _context;
 
@@ -51,12 +49,11 @@ namespace Service.Services
                                 {
                                     var messageText = $"Tomorrow will be the next course day: {v.Title} for the course '{course.Title}'";
 
-
                                     v.IsNotificationSent = true;
                                     _cycleRepository.Update(v);
                                     _cycleRepository.SaveChanges();
 
-                                    await NotificationService.HandleUserNotificationAsync(user, messageText, _messageRepository, adminUser);
+                                    await NotificationService.HandleUserNotification(user, messageText, _messageRepository, adminUser);
                                 }
                             }
                         }

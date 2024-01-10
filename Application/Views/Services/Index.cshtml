@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<Data.Entities.Service>
-
-<div class="row">
+<style>
+    .table td:nth-child(2) {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+</style>
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -67,7 +71,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

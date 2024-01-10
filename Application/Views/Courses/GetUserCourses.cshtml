@@ -1,8 +1,22 @@
 ﻿@model IEnumerable<Data.Entities.Course>
 @inject IHttpContextAccessor context;
-@{
-}
 
+<style>
+    td{
+        max-width:270px;
+        align-items:center;
+        align-content:center;
+    }
+    .table td:nth-child(2) {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    .table td:nth-child(1) {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+</style>
+  
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
@@ -30,8 +44,8 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Enrollments.Where(x=>x.User.Email == context.HttpContext.User.Identity.Name).First().EnrollmentDate)
                                     </td>
-                                    <td class="btn btn-info" >
-                                        <a style="text-decoration:none;" asp-action="GetCourse" asp-route-id="@item.Id">Details</a>
+                                    <td class="align-middle text-center">
+                                        <a style="text-decoration:none; float:center; display:block;" asp-action="GetCourse" asp-route-id="@item.Id">Details</a>
                                     </td>
                                 </tr>
                             }

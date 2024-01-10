@@ -9,12 +9,14 @@ namespace Service.Services
         private readonly CoursesRepository _coursesRepository;
         private readonly EnrollmentsRepository _enrollmentRepository;
         private readonly PhotoRepository _photoRepository;
+        private readonly CyclesRepository _cyclesRepository;
 
-        public CoursesService(CoursesRepository coursesRepository, EnrollmentsRepository enrollmentRepository, PhotoRepository photoRepository)
+        public CoursesService(CoursesRepository coursesRepository, EnrollmentsRepository enrollmentRepository, PhotoRepository photoRepository, CyclesRepository cyclesRepository)
         {
             _coursesRepository = coursesRepository;
             _enrollmentRepository = enrollmentRepository;
             _photoRepository = photoRepository;
+            _cyclesRepository = cyclesRepository;
         }
 
         public List<Course> GetAll()
@@ -39,6 +41,7 @@ namespace Service.Services
         }
         public void RemoveCourseById(int id)
         {
+            _cyclesRepository.RemoveRangeAndSaveChanges(_cyclesRepository.GetAll().Where(x => x.CourseId == id).ToList());
             _coursesRepository.RemoveById(id);
             _coursesRepository.SaveChanges();
         }

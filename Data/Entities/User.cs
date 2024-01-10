@@ -27,31 +27,30 @@ public partial class User : INotifyPropertyChanged, IObserver
 
     public int? RoleId { get; set; }
 
-    public virtual ICollection<Attendance> Attendances { get; set; }
-
-    [NotMapped]
-    public virtual ICollection<Block> BlockBlockedUsers { get; set; }
-
-    public virtual ICollection<Block> Blocks { get; set; }
-
-    public virtual ICollection<Enrollment> Enrollments { get; set; }
-
-    public virtual ICollection<Message> Messages { get; set; }
-
-    public virtual ICollection<Photo> Photos { get; set; }
-
-    public virtual ICollection<Reservation1> Reservations { get; set; }
-
-    public virtual ICollection<Response> Responses { get; set; }
-
     public virtual Role? Role { get; set; }
 
-    public virtual ICollection<Survey> Surveys { get; set; }
+    public virtual ICollection<Attendance>? Attendances { get; set; }
 
+    [NotMapped]
+    public virtual ICollection<Block>? BlockBlockedUsers { get; set; }
+
+    public virtual ICollection<Block>? Blocks { get; set; }
+
+    public virtual ICollection<Enrollment>? Enrollments { get; set; }
+
+    public virtual ICollection<Message>? Messages { get; set; }
+
+    public virtual ICollection<Photo>? Photos { get; set; }
+
+    public virtual ICollection<Reservation1>? Reservations { get; set; }
+
+    public virtual ICollection<Response>? Responses { get; set; }
+
+    public virtual ICollection<Survey>? Surveys { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
+    public virtual ObservableCollection<UserReservationSlots>? UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
 
     public event Action<User, string>? NotifyUserEvent; 
 
@@ -59,7 +58,17 @@ public partial class User : INotifyPropertyChanged, IObserver
     {
         if(subject is ReservationSlots ReservationSlots)
         {
-        NotifyUserEvent?.Invoke(this, ReservationSlots.Date.ToShortDateString() + " " + ReservationSlots.StartTime.ToString("hh\\:mm tt") + " - " + ReservationSlots.EndTime.ToString("hh\\:mm tt"));
+            ReservationSlots reservationSlots = (ReservationSlots)subject;
+            string message;
+            if (reservationSlots.IsAvailable == true)
+            {
+            message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is available again.";
+            }
+            else
+            {
+            message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is unavailable again.";
+            }
+            NotifyUserEvent?.Invoke(this, message);
         }
     }
 }

@@ -26,15 +26,18 @@ namespace Service.Services
         
         public UserReservationSlots AddNewUserReservationSlot(int userId, int reservationSlotId)
         {
-            UserReservationSlots newUserReservationSlots = new()
+            if(!(_userReservationSlotsRepository.GetAll().Where(x => x.UserId == userId && x.ReservationSlotsId == reservationSlotId).ToList().Count() > 0))
             {
-                UserId = userId,
-                ReservationSlotsId = reservationSlotId,
-            };
-            _userReservationSlotsRepository.Add(newUserReservationSlots);
-            _userReservationSlotsRepository.SaveChanges();
-            return newUserReservationSlots;
-
+                UserReservationSlots newUserReservationSlots = new()
+                {
+                    UserId = userId,
+                    ReservationSlotsId = reservationSlotId,
+                };
+                _userReservationSlotsRepository.Add(newUserReservationSlots);
+                _userReservationSlotsRepository.SaveChanges();
+                return newUserReservationSlots;
+            }
+            return null;
         }
     }
 }

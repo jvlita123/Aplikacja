@@ -13,10 +13,10 @@ public partial class Message
 
     public Boolean IsNew { get; set; } = false;
 
-    [NotMapped]
     [ForeignKey("UserId")]
     public virtual User User1 { get; set; } = null!;
    
-    [ForeignKey("UserId2")]
+    [NotMapped]
+  //  [ForeignKey("UserId2")]
     public virtual User User2 { get; set; } = null!;
 }

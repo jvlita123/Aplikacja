@@ -120,20 +120,25 @@
         margin-bottom: 5px;
         margin-top: 5px; 
     }
+.usersContainerList{
+    height: 66vh;
+    overflow-y:auto;
+    overflow-x:auto;
+}
 
-    .list-container.message-list.wide ::-webkit-scrollbar {
+    ::-webkit-scrollbar {
         width: 8px;
         background-color: #9d289d05;
         border-radius: 2px 2px 2px 2px;
     }
 
-    .list-container.message-list.wide ::-webkit-scrollbar-thumb {
+     ::-webkit-scrollbar-thumb {
         background-color: #d184ff0f; /* Kolor paska przewijania */
         border-radius: 2px 2px 2px 2px;
         height: 100px;
     }
 
-        .list-container.message-list.wide::-webkit-scrollbar-thumb:hover {
+      ::-webkit-scrollbar-thumb:hover {
             background-color: #d184ff24; /* Kolor paska przewijania po najechaniu myszką */
         }
 
@@ -185,7 +190,9 @@
             border-radius: 22px 0 22px 22px;
             box-shadow: rgb(105 14 127 / 2%) 0px 7px 29px 0px;
         }
-
+.message-wrapper{
+    max-width:90%;
+}
     .list-container.message-list.wide .textbox-wrapper {
         width: 100%;
         padding: 0;
@@ -264,7 +271,11 @@ h2 {
     margin-left: 5px;
     border-radius: 20px;
 }
-
+    .message-text {
+   word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
 .btn-gradient-primary {
     margin-top: 6px;
     padding-left: 15px;

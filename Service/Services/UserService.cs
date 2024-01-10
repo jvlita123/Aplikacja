@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Security.Claims;
 
 namespace Service.Services
@@ -20,7 +19,7 @@ namespace Service.Services
         private readonly MessageRepository _messageRepository;
         private readonly IHttpContextAccessor _context;
 
-        public UserService(IHttpContextAccessor context, UserRepository userRepository,IPasswordHasher<User> passwordHasher,RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
+        public UserService(IHttpContextAccessor context, UserRepository userRepository, IPasswordHasher<User> passwordHasher, RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
@@ -29,40 +28,35 @@ namespace Service.Services
             _messageRepository = messageRepository;
             _context = context;
 
-
             var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
 
-            foreach (var v in _userRepository.GetAll().Include(u => u.Role).Include(x=>x.Messages).ToList())
+            foreach (var v in _userRepository.GetAll().Include(u => u.Role).Include(x => x.Messages).ToList())
             {
                 v.NotifyUserEvent += (user, message) =>
                 {
-                    NotificationService.HandleUserNotificationAsync(user, message, _messageRepository, adminUser);
+                    NotificationService.HandleUserNotification(user, message, _messageRepository, adminUser);
                 };
-                
             }
-                    var user1 = _context.HttpContext?.User;
+            var user1 = _context.HttpContext?.User;
 
-                    if (user1.Identity.Name != null)
-                    {
+            if (user1.Identity.Name != null)
+            {
                 User userLogged = _userRepository.GetUserByEmail(user1.Identity.Name);
-                if (_messageRepository.GetAll().Any(x => x.UserId2 == userLogged.Id && x.IsNew == true)) 
-                { 
+                if (_messageRepository.GetAll().Any(x => x.UserId2 == userLogged.Id && x.IsNew == true))
+                {
 
-                            var claimsIdentity = (ClaimsIdentity)user1.Identity;
+                    var claimsIdentity = (ClaimsIdentity)user1.Identity;
 
-                            var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
-                            if (existingNewMessageClaim != null)
-                            {
-                                claimsIdentity.RemoveClaim(existingNewMessageClaim);
-                            }
-                            claimsIdentity.AddClaim(new Claim("newMessage", "true"));
-                            _context.HttpContext.SignInAsync(_context.HttpContext.User);
+                    var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
+                    if (existingNewMessageClaim != null)
+                    {
+                        claimsIdentity.RemoveClaim(existingNewMessageClaim);
                     }
-
+                    claimsIdentity.AddClaim(new Claim("newMessage", "true"));
+                    _context.HttpContext.SignInAsync(_context.HttpContext.User);
+                }
             }
-
         }
-
 
         public List<User> GetAll()
         {
@@ -73,7 +67,7 @@ namespace Service.Services
 
         public User GetById(int id)
         {
-            User user = _userRepository.GetAll().Include(x=>x.Photos).Where(x=>x.Id==id).FirstOrDefault();
+            User user = _userRepository.GetAll().Include(x => x.Photos).Where(x => x.Id == id).FirstOrDefault();
 
             return user;
         }
@@ -141,14 +135,14 @@ namespace Service.Services
             {
                 throw new Exception();//to be corrected
             }
-            
-            string ProfilePhoto = "/"+userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
-            if(userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault() == null)
+
+            string ProfilePhoto = "/" + userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
+            if (userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault() == null)
             {
                 ProfilePhoto = "/blank-profile.png";
             }
             String newMessage = "false";
-            if(_messageRepository.GetAll().Any(x => x.UserId2 == userToLogin.Id && x.IsNew == true) )
+            if (_messageRepository.GetAll().Any(x => x.UserId2 == userToLogin.Id && x.IsNew == true))
             {
                 newMessage = "true";
             }
@@ -180,7 +174,7 @@ namespace Service.Services
             userToSave.IsBlocked = user.IsBlocked;
             userToSave.PasswordHash = user.PasswordHash;
             userToSave.Role = user.Role;
-    
+
             _userRepository.UpdateAndSaveChanges(userToSave);
             _userRepository.SaveChanges();
         }
@@ -210,7 +204,7 @@ namespace Service.Services
                 RoleName = user.Role.Name,
 
 
-                ProfilePhoto = user.Photos.Where(p => p.IsProfilePicture==true).Select(p => p.Path).FirstOrDefault(),
+                ProfilePhoto = user.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault(),
                 Photos = user.Photos.Where(p => p.IsProfilePicture == false).Select(p => p.Path).ToList(),
             };
 

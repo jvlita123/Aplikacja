@@ -4,32 +4,22 @@
 }
 
 <style>
-    .button-disabled {
-        opacity: 0.5;
-    }
-
-
     #calendar {
         max-width: 1100px;
         margin: 0 auto;
-        background-color: white; /* Białe tło kalendarza */
+        background-color: white;
     }
 
     a.fc-day-header {
         background-color: mediumpurple;
         color: black;
-        text-decoration: none; /* Usunięcie podkreślenia */
-    }
-
-    a.fc-scroll-grid-sync-inner {
-        background-color: magenta; /* Kolor tła */
+        text-decoration: none; 
     }
 
     a {
         color: black;
-        text-decoration: none; /* Usunięcie podkreślenia */
+        text-decoration: none; 
     }
-
 </style>
 
 @if (TempData["ErrorMessage"] != null)
@@ -40,15 +30,22 @@
 }
 
 <div id='calendar'>
-    @foreach (var slot in slots)
+    
+
+<table id="slots" style="display: none;">
+    @for (int i = 0; i < slots.Count(); i++)
     {
-        <div class="slot"
-             data-id="@slot.Id"
-             data-date="@($"{slot.Date.ToString("yyyy-MM-dd")}T{slot.StartTime}")"
-             data-endTime="@($"{slot.EndTime}")"
-             data-startTime="@($"{slot.EndTime}")">
-        </div>
+        <tr>
+            <td>@slots.ElementAt(i).Id</td>
+            <td>@slots.ElementAt(i).StartTime</td>
+            <td>@slots.ElementAt(i).EndTime</td>
+            <td>@slots.ElementAt(i).Service.Id</td>
+            <td>@slots.ElementAt(i).Date.Add(slots.ElementAt(i).StartTime)</td>
+            <td>@slots.ElementAt(i).IsAvailable</td>
+            <td>@slots.ElementAt(i).Service.Name</td>
+        </tr>
     }
+</table>
 </div>
 
 <div id="ReservationSlotsModal" class="modal fade" role="dialog">
@@ -63,39 +60,44 @@
 </div>
 
 <script>
+
+    var eventsArr = [];
+    let slotsTable = document.getElementById("slots");
+    let trElems = slotsTable.getElementsByTagName("tr");
+    for (let tr of trElems) {
+        let tdElems = tr.getElementsByTagName("td");
+            let dateString = tdElems[4].innerText; 
+            let dateParts = dateString.split('.'); 
+            let formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+            let newDate = new Date(formattedDate);
+        let eventObj = {
+            id: tdElems[0].innerText,
+            start: newDate,
+            end: tdElems[2].innerText,
+            service: tdElems[3].innerText,
+            date: new Date(tdElems[4].innerText),
+            isavailable: tdElems[5].innerText,
+            title: tdElems[6].innerText,
+        };
+            eventsArr.push(eventObj);
+    }
+
+    var calendarEl = document.getElementById('calendar');
     document.addEventListener('DOMContentLoaded', function () {
-        var slotsElements = document.querySelectorAll('.slot');
-        var selectedDate;
-        var events = [];
-        console.log(slotsElements)
-        console.log(selectedDate)
-        slotsElements.forEach(slotElement => {
-            slotElement.getAttribute('data-endtime');
-            var id = slotElement.dataset.id;
-            var date = new Date(slotElement.dataset.date);
-            var endTime = slotElement.dataset.endtime; 
-            var startTime = slotElement.dataset.starttime;
-
-            events.push({
-                id: id,
-                start: date,
-                end: endTime,
-                title: `${startTime} - ${endTime}`
-            });
-        });
-
-        var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            initialDate: '2023-11-01',
+            initialDate: '2024-01-01',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth'
             },
-            events: events,
+            locale: 'pl',
+            events: eventsArr,
             dateClick: function (info) {
-                selectedDate = info.dateStr; // Pobranie daty z klikniętego dnia
+                console.log(eventsArr);
+                selectedDate = info.dateStr;
+                console.log(selectedDate);
                 $.ajax({
                     url: '/ReservationSlots/NewReservationSlot',
                     type: 'GET',

@@ -1,7 +1,4 @@
 ﻿@model IEnumerable<Data.Entities.Reservation1>
-@{
-
-}
 
 @foreach (var v in Model)
 {
@@ -39,9 +36,32 @@
                 }
             </div>
         </td>
-        <td> @v.ReservationSlot.Date, @v.ReservationSlot.StartTime </td>
-        <td> @v.ReservationSlot.Date, @v.ReservationSlot.EndTime </td>
+        <td>
+            @if (string.IsNullOrEmpty(v.UserPhotoPath?.ToString()))
+            {
+                <span>Photo not uploaded</span>
+            }
+            else
+            {
+                <a class="reservationphotos" data-reservation-id="@v.Id" data-photo-path="/uploads/@v.UserPhotoPath">
+                    <img style="border-radius:0px;" src="/uploads/@v.UserPhotoPath" alt="@v.Title" />
+                </a>
+            }
+        </td>
+        <td>
+            @if (string.IsNullOrEmpty(v.AdminPhotoPath?.ToString()))
+            {
+                <span class="uploadphoto" data-reservation-id="@v.Id" >Photo not uploaded</span>
+            }
+            else
+            {
+                <a class="uploadphoto" data-reservation-id="@v.Id" data-photo-path="/uploads/@v.AdminPhotoPath">
+                    <img style="border-radius:0px;" src="/uploads/@v.AdminPhotoPath" alt="@v.Title" />
+                </a>
+            }
+        </td>
+        <td> @v.ReservationSlot.Date.ToShortDateString(), @v.ReservationSlot.StartTime </td>
+        <td> @v.ReservationSlot.Date.ToShortDateString(), @v.ReservationSlot.EndTime </td>
     </tr>
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+

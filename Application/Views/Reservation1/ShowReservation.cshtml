@@ -1,9 +1,6 @@
 ﻿@model Data.Entities.Reservation1
 
 <div>
-    <h4>Reservation1</h4>
-    <hr />
-    <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ReservationSlot.StartTime)
         </dt>
@@ -17,12 +14,6 @@
             @Html.DisplayFor(model => model.ReservationSlot.EndTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Service)
         </dt>
         <dd class="col-sm-10">
@@ -34,14 +25,9 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Status.Name)
         </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index">My reservations</a>
 </div>
 
 <button id="deleteReservationBtn" class="btn btn-danger">Delete</button>
-<button id="editReservationBtn" class="btn btn-info">Edit</button>
 
 <div class="modal fade" id="deleteConfirmationModal">
     <div class="modal-dialog">
@@ -77,6 +63,10 @@
                 window.location.href = '/Reservation1/Calendar';
             }
         });
+    });
+
+    $('#cancelDeleteBtn').on('click', function () {
+        $('#deleteConfirmationModal').modal('hide');
     });
 </script>
 

@@ -12,7 +12,7 @@ public partial class Course
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
-    public virtual ICollection<Cycle> Cycles { get; set; } = new List<Cycle>();
+    public virtual ICollection<Cycle>? Cycles { get; set; }
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 

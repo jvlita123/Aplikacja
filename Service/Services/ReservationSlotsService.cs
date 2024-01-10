@@ -9,15 +9,18 @@ namespace Service.Services
         private readonly ReservationSlotsRepository _reservationSlotsRepository;
         private readonly UserRepository _userRepository;
         private readonly StatusRepository _statusRepository;
-        public ReservationSlotsService(UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository)
+        private readonly Reservation1Repository _reservation1Repository;
+        public ReservationSlotsService(UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository, Reservation1Repository reservation1Repository)
         {
             _userRepository = userRepository;
             _statusRepository = statusRepository;
             _reservationSlotsRepository = reservationSlotsRepository;
 
+            _reservation1Repository = reservation1Repository;
+
             var reservationSlots = _reservationSlotsRepository.GetAll().Include(x => x.UserReservationSlots).ToList();
 
-            foreach (var observer in reservationSlots)
+            /*foreach (var observer in reservationSlots)
             {
                 foreach (var v in observer.UserReservationSlots)
                 {
@@ -27,7 +30,7 @@ namespace Service.Services
                         observer.Attach(user);
                     }
                 }
-            }
+            }*/
         }
 
         public List<ReservationSlots> GetAll()
@@ -38,6 +41,7 @@ namespace Service.Services
         }
         public void RemoveReservationSlot(int id)
         {
+            _reservation1Repository.RemoveByIdAndSaveChanges((int)_reservationSlotsRepository.GetById(id).ReservationId);
             _reservationSlotsRepository.RemoveByIdAndSaveChanges(id);
         }
         public ReservationSlots GetById(int id)

@@ -34,10 +34,10 @@ namespace Application.Controllers
             var newReservationSlot = _reservationSlotsService.NewReservationSlot(reservationSlot);
             if (newReservationSlot == null)
             {
-                TempData["ErrorMessage"] = "Wybrany slot koliduje z innym slotem. Wybierz inny czas.";
+                TempData["ErrorMessage"] = "Chosen date conflicts with another date. Please select a different time.";
                 return RedirectToAction(nameof(SlotsCalendar));
             }
-            return CreatedAtAction(nameof(GetReservationSlot), new { id = newReservationSlot.Id }, newReservationSlot);
+            return RedirectToAction(nameof(SlotsCalendar));
         }
 
 

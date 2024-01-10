@@ -6,12 +6,11 @@
     Data.Entities.ReservationSlots reservationSlots = (Data.Entities.ReservationSlots)ViewData["reservationSlots"];
 }
 
-<div class="row">
     <div class="col-md-4">
         <h3>@serviceName</h3>
         <h4>@reservationSlots.StartTime - @reservationSlots.EndTime</h4>
 
-        <form asp-action="NewReservation" enctype="multipart/form-data">
+        <form id="newReservationForm" asp-action="NewReservation" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @if (@context.HttpContext.User.IsInRole("admin"))
             {
@@ -32,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PrimaryColor" class="control-label"></label>
-                <input asp-for="PrimaryColor" class="form-control" />
+                <input type="color" asp-for="PrimaryColor" class="form-control" />
                 <span asp-validation-for="PrimaryColor" type="color" class="text-danger"></span>
             </div>
 
@@ -47,4 +46,3 @@
             </div>
         </form>
     </div>
-</div>

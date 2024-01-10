@@ -17,10 +17,10 @@ namespace Data.Entities
         public int ReservationSlotsId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User? User { get; set; }
 
         [ForeignKey("ReservationSlotsId")]
-        public ReservationSlots ReservationSlots { get; set; }
+        public ReservationSlots? ReservationSlots { get; set; }
 
     }
 }

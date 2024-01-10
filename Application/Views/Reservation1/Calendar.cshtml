@@ -60,13 +60,6 @@
     }
 </style>
 
-@if (TempData["ErrorMessage"] != null)
-{
-  <script>
-      alert("@TempData["ErrorMessage"]");
-  </script>
-}
-
 <table id="eventsTable" style="display: none;">
     @for (int i = 0; i < userReservations.Count(); i++)
     {
@@ -79,6 +72,7 @@
         </tr>
     }
 </table>
+
 <table id="availableSlots" style="display: none;">
     @for (int i = 0; i < availableSlots.Count(); i++)
         {
@@ -87,11 +81,13 @@
             <td>@availableSlots.ElementAt(i).StartTime</td>
             <td>@availableSlots.ElementAt(i).EndTime</td>
             <td>@availableSlots.ElementAt(i).Service.Id</td>
-            <td>@availableSlots.ElementAt(i).Date</td>
+            <td>@availableSlots.ElementAt(i).Date.ToShortDateString()</td>
             <td>@availableSlots.ElementAt(i).IsAvailable</td>
+            <td>@availableSlots.ElementAt(i).ReservationId</td>
             </tr>
         }
-    </table>
+</table>
+
 <table id="busySlots" style="display: none;">
     @for (int i = 0; i < busySlots.Count(); i++)
     {
@@ -100,8 +96,9 @@
             <td>@busySlots.ElementAt(i).StartTime</td>
             <td>@busySlots.ElementAt(i).EndTime</td>
             <td>@busySlots.ElementAt(i).Service.Id</td>
-            <td>@busySlots.ElementAt(i).Date</td>
+            <td>@busySlots.ElementAt(i).Date.ToShortDateString()</td>
             <td>@busySlots.ElementAt(i).IsAvailable</td>
+            <td>@busySlots.ElementAt(i).ReservationId</td>
         </tr>
     }
 </table>
@@ -125,10 +122,12 @@
             @service.Name
         </button>
     }
+    <button onclick="refresh()">
+        X
+    </button>
 </div>
 
-<div id="slotsButtons" class="buttons-container">
-</div>
+<div id="slotsButtons" class="buttons-container"></div>
 <div id='calendar'></div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -142,9 +141,4 @@
     </div>
 </div>
 
-
 <script src="~/js/calendar1.js"></script>
-<script>
-    var elementsWithDataDate = document.querySelectorAll('[data-date]');
-    console.log(elementsWithDataDate)
-</script>
