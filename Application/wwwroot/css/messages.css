@@ -43,6 +43,13 @@
 }
 
 
+.userElList{
+    text-decoration: none;
+    color: black;
+    text-align: left;
+    border-bottom: none; /* Dodaj tę linię, aby usunąć podkreślenie */
+}
+
 .list-container.message-list .message-row .message-row-content {
     display: flex;
     align-items: left;
@@ -95,7 +102,7 @@
     margin-left: 10px;
     flex-direction: column;
     margin-top: 1px;
-    max-height: 100vh; /* Ustawienie wysokości body na 100% wysokości widoku */
+    max-height: 100vh;
 }
 
     .list-container.message-list.wide .message-row {
@@ -242,7 +249,7 @@
                 box-shadow: rgb(105 14 127 / 7%) 0px 7px 29px 0px;
             }
 
-a {
+a h6 {
     text-decoration: none;
     color: black;
     text-align: left;

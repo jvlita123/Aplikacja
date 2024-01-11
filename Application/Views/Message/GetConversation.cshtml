@@ -30,7 +30,7 @@
             <div class="usersContainerList">
             @foreach (var item in users)
             {
-                <a href="@item.Id" class="message-row">
+                    <a href="@item.Id" class="message-row userElList">
                     <div class="message-row-content">
                         <div class="header-wrapper">
                             <div class="image-wrapper rounded">
@@ -43,7 +43,7 @@
                                     <img src="~/images/blank-profile.png" alt="blankuser" height="40" width="40" />
                                 }
                             </div>
-                            <h6>
+                            <h6 >
                                 @item.FirstName @item.LastName
                             </h6>
                         </div>
