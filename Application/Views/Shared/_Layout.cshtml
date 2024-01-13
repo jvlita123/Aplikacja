@@ -20,9 +20,9 @@
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" asp-controller="Home" asp-action="Home">
-                    <img src="~/assets/images/logo.svg" alt="logo" />                    
+                    <img src="~/assets/images/logo.png" style="height:max-content" alt="logo" />                    
                 </a>
-                <a class="navbar-brand brand-logo-mini" href="~/_Layout.html"><img src="~/assets/images/logo-mini.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" asp-controller="Home" asp-action="Home"><img style="height:35px;width:35px " src="~/assets/images/minilogo.png" alt="logo" /></a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-stretch">
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -63,13 +63,12 @@
                          else
                         {
                         <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link dropdown-toggle btn" id="showModalBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link btn" asp-area="" asp-controller="Account" asp-action="LoginPage" >
                                 <div class="nav-profile-text">
                                     <p class="mb-1 text-black">Sign in</p>
                                 </div>
                             </a>
                         </li>
-                  
                         }
                     <li class="nav-item d-none d-lg-block full-screen-link">
                         <a class="nav-link">
@@ -77,11 +76,11 @@
                         </a>
                     </li>
                     <li class="nav-item d-none d-lg-block">
-                        <a class="nav-link " href="~/Message/GetConversation/0" id="messageDropdown">
+                        <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
                             <i class="mdi mdi-email-outline"></i>
                             @if (User.Identity.IsAuthenticated && User.FindFirst("newMessage").Value.ToLower() == "true")
                             {
-                                <span class="count-symbol bg-danger"></span>
+                                <span style="color:darkred; float:top" class="mdi mdi-alert-circle"></span>
                             }
                         </a>
                     </li>
@@ -123,19 +122,19 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/User/AdminDashboard/0/">
+                        <a class="nav-link" asp-area="" asp-action="AdminDashboard" asp-controller="User" asp-route-id="">
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon"></i>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Message/GetConversation/0/">
+                        <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
                             <span class="menu-title">Messages</span>
                             <i class="mdi mdi-message-processing menu-icon"></i>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="~/MakeUpCreator/Index/">
+                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="MakeUpCreator" asp-route-id="">
                             <span class="menu-title">MakeUp Creator</span>
                             <i class="mdi mdi-brush menu-icon"></i>
                         </a>
@@ -148,15 +147,26 @@
                         </a>
                         <div class="collapse" id="courses-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><a class="nav-link" href="~/Courses/Index/">Courses</a></li>
-                                <li class="nav-item"><a class="nav-link" href="~/Courses/GetUserCourses/">My Courses</a></li>
-                                <li class="nav-item"><a class="nav-link" href="~/Attendances/Index/">Attendances</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Courses">
+                                        Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-action="GetUserCourses" asp-controller="Courses">
+                                        My Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Attendances" asp-route-id="">
+                                        Attendances
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
-
                     <li class="nav-item">
-                       <a class="nav-link" href="~/Reservation1/Index/">
+                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation1">
                             <span class="menu-title">Reservations</span>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
                         </a>
@@ -169,8 +179,16 @@
                         </a>
                         <div class="collapse" id="calendars-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="~/Reservation1/Calendar/"> Reservations Calendar </a></li>
-                                <li class="nav-item"> <a class="nav-link" href="~/ReservationSlots/SlotsCalendar/"> Slots Calendar </a></li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link" asp-area="" asp-action="Calendar" asp-controller="Reservation1" asp-route-id="">
+                                        Reservations Calendar 
+                                    </a>
+                                </li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link" asp-area="" asp-action="SlotsCalendar" asp-controller="ReservationSlots" asp-route-id="">
+                                        Slots Calendar 
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -182,13 +200,21 @@
                         </a>
                         <div class="collapse" id="services-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="~/Services/AddService/" > Add Service </a></li>
-                                <li class="nav-item"> <a class="nav-link" href="~/Services/IndexServices/"> Services </a></li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link" asp-area="" asp-action="AddService" asp-controller="Services" asp-route-id="">
+                                        Add Service 
+                                    </a>
+                                </li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Services">
+                                        Services
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="~/Home/Contact/">
+                        <a class="nav-link" asp-area="" asp-action="Contact" asp-controller="Home" asp-route-id="">
                             <span class="menu-title">Contact</span>
                             <i class="mdi mdi-contact-mail menu-icon"></i>
                         </a>
@@ -214,7 +240,7 @@
 </body>
 </html>
 
-<div class="modal" tabindex="-1" role="dialog" id="myModal">
+@*<div class="modal" tabindex="-1" role="dialog" id="myModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -231,41 +257,11 @@
             </div>
         </div>
     </div>
-</div>
-
+</div>*@
 
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
-
 <script>
-    $(document).ready(function () {
-        $("#showModalBtn").on("click", function () {
-            $("#myModal").modal("show");
-            $.ajax({
-                url: '/Account/Login',
-                type: 'GET',
-                success: function (data) {
-                    $('#editReservationContent').html(data);
-                    $('#modaltitle').html("Sign in");
-                    $('.registerBtn').show();
-                }
-            });
-        });
 
-        $(document).on("click", ".registerBtn", function () {
-            $.ajax({
-                url: '/Account/RegisterUser',
-                type: 'GET',
-                success: function (data) {
-                    $('#editReservationContent').html(data);
-                    $('#modaltitle').html("Create Your Account");
-                    $('.registerBtn').hide();
-                }
-            });
-        });
 
-        $("#closeModal").on("click", function () {
-            $("#myModal").modal("hide");
-        });
-    });
 </script>

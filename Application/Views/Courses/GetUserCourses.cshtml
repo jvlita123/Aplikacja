@@ -16,8 +16,7 @@
         word-wrap: break-word;
     }
 </style>
-  
-<div class="row">
+
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
@@ -29,6 +28,7 @@
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Enrollment Date</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,7 +40,7 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Description)
-                                    </td>                                    
+                                    </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Enrollments.Where(x=>x.User.Email == context.HttpContext.User.Identity.Name).First().EnrollmentDate)
                                     </td>
@@ -55,4 +55,3 @@
             </div>
         </div>
     </div>
-</div>

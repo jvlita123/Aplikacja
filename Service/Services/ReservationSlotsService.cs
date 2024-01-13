@@ -19,18 +19,6 @@ namespace Service.Services
             _reservation1Repository = reservation1Repository;
 
             var reservationSlots = _reservationSlotsRepository.GetAll().Include(x => x.UserReservationSlots).ToList();
-
-            /*foreach (var observer in reservationSlots)
-            {
-                foreach (var v in observer.UserReservationSlots)
-                {
-                    var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == v.UserId);
-                    if (user != null && user.UserReservationSlots.Where(x => x.Id == observer.Id).ToList().Count() > 0)
-                    {
-                        observer.Attach(user);
-                    }
-                }
-            }*/
         }
 
         public List<ReservationSlots> GetAll()
@@ -76,12 +64,18 @@ namespace Service.Services
         private bool IsSlotAvailable(ReservationSlots newSlot)
         {
             var existingSlots = _reservationSlotsRepository
-            .GetAll()
-            .Where(existingSlot =>
-                existingSlot.Date == newSlot.Date &&
-                newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime <= existingSlot.StartTime &&
-                newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime)
-            .ToList();
+                .GetAll()
+                .Where(existingSlot =>
+                    existingSlot.Date == newSlot.Date &&
+                    (
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime <= existingSlot.StartTime) ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime >= existingSlot.EndTime) ||
+                        (newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime) ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime > existingSlot.EndTime) ||
+                        (newSlot.StartTime >= existingSlot.StartTime && newSlot.EndTime <= existingSlot.EndTime)
+                    )
+                )
+                .ToList();
 
             bool isSlotAvailable = !existingSlots.Any();
 

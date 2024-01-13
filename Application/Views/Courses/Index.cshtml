@@ -1,54 +1,50 @@
 ﻿@model IEnumerable<Data.Entities.Course>
 
-
 <div class="row" style="padding:15px">
     <div class="col-md-12">
         <div class="page-header">
             <h3 class="page-title">
-            <button class="newCourseButton btn button-styled" ">
-                add new course
-            </button>
+                <button class="newCourseButton btn button-styled" ">
+                    add new course
+                </button>
             </h3>
         </div>
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-
-            @foreach (var item in Model)
-            {
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <div class="card-img-holder getCourseButton" data-course-id="@item.Id">
-                        <img style="" src="/uploads/@item.PhotoPath?.ToString()" alt="@item.Title"  />
-                        <div class="course-label">Course</div>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h4 class="course-title">@item.Title</h4>
-                        <p class="course-description">@item.Description</p>
-                        <div>
-                                @foreach (var cycle in item.Cycles.OrderBy(x => x.StartDate))
-                                {
-                                <button class="cycle-button deleteCycleButton btn btn-primary" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
-                                        @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
-                                </button>
-                                }
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+                @foreach (var item in Model)
+                {
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <div class="card-img-holder getCourseButton" data-course-id="@item.Id">
+                            <img style="" src="/uploads/@item.PhotoPath?.ToString()" alt="@item.Title" />
+                            <div class="course-label">Course</div>
                         </div>
-                        <div class="mt-auto">
+                        <div class="card-body d-flex flex-column">
+                            <h4 class="course-title">@item.Title</h4>
+                            <p class="course-description">@item.Description</p>
+                            <div>
+                                    @foreach (var cycle in item.Cycles.OrderBy(x => x.StartDate))
+                                    {
+                                    <button class="cycle-button deleteCycleButton btn btn-primary" data-cycle-id="@cycle.Id" data-course-id="@item.Id">
+                                            @cycle.StartDate.ToString("yyyy-MM-dd HH:mm") - @cycle.EndDate.ToString("yyyy-MM-dd HH:mm")
+                                    </button>
+                                    }
+                            </div>
+                            <div class="mt-auto">
                                 <div class="d-inline-flex flex-wrap gap-1 btn-container">
-                                <button class="newEnrollmentButton btn btn-success" data-course-id="@item.Id">
-                                    Enroll
-                                </button>
-                                <button class="addCycleButton btn btn-info" data-course-id="@item.Id">Add New Cycle</button>
-                                <button class="deleteCourseButton btn btn-danger" data-course-id="@item.Id">Delete Course</button>
+                                    <button class="newEnrollmentButton btn btn-success" data-course-id="@item.Id">
+                                        Enroll
+                                    </button>
+                                    <button class="addCycleButton btn btn-info" data-course-id="@item.Id">Add New Cycle</button>
+                                    <button class="deleteCourseButton btn btn-danger" data-course-id="@item.Id">Delete Course</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            }
-      </div>
+                }
+        </div>
+    </div>
 </div>
-</div>
-
-
 <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -59,7 +55,6 @@
         </div>
     </div>
 </div>
-
 <div id="newEnrollmentModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -71,8 +66,6 @@
         </div>
     </div>
 </div>
-
-
 <div id="newCycleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -84,8 +77,6 @@
         </div>
     </div>
 </div>
-
-
 <div class="modal fade" id="deleteConfirmationModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -104,7 +95,7 @@
 </div>
 
 <script>
-    let newCycles = []; 
+    let newCycles = [];
 
     $('.addCycleButton').on('click', function () {
         var courseId = $(this).data('course-id');
@@ -112,9 +103,11 @@
         $.ajax({
             url: '/Cycles/NewCycle',
             type: 'GET',
-            data: { id: courseId },
+            data: {
+                id: courseId
+            },
             success: function (data) {
-                $('#newCycleContent').html(data); 
+                $('#newCycleContent').html(data);
             }
         });
     });
@@ -123,9 +116,11 @@
         var courseId = $(this).data('course-id');
         $('#newEnrollmentModal').modal('show');
         $.ajax({
-            url: '/Enrollment/NewEnrollment', 
+            url: '/Enrollment/NewEnrollment',
             type: 'GET',
-            data: { id: courseId }, 
+            data: {
+                id: courseId
+            },
             success: function (data) {
                 $('#newEnrollmentContext').html(data);
             }
@@ -140,7 +135,7 @@
     $('.newCourseButton').on('click', function () {
         $('#newCycleModal').modal('show');
         $.ajax({
-            url: '/Courses/NewCourse', 
+            url: '/Courses/NewCourse',
             type: 'GET',
             success: function (data) {
                 $('#newCycleContent').html(data);
@@ -159,7 +154,9 @@
             $.ajax({
                 url: '/Cycles/DeleteCycle',
                 type: 'POST',
-                data: { cycleId: cycleId },
+                data: {
+                    cycleId: cycleId
+                },
                 success: function (data) {
                     $('#deleteConfirmationModal').modal('hide');
                     $(`.cycle-button[data-cycle-id="${cycleId}"]`).remove();
@@ -177,7 +174,9 @@
             $.ajax({
                 url: '/Courses/DeleteCourse',
                 type: 'POST',
-                data: { id: courseId },
+                data: {
+                    id: courseId
+                },
                 success: function (data) {
                     $('#deleteConfirmationModal').modal('hide');
                     $(`.deleteCourseButton[data-course-id="${courseId}"]`).closest('.col').remove();
@@ -196,8 +195,8 @@
 
     $('.closeBtn').on('click', function () {
         $('#newCycleModal').modal('hide');
-        $('#alertModal').modal('hide');+
-        $('#newEnrollmentModal').modal('hide');
+        $('#alertModal').modal('hide'); +
+            $('#newEnrollmentModal').modal('hide');
         $('#deleteConfirmationModal').modal('hide');
     });
 </script>

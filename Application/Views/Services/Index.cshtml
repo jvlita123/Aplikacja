@@ -40,26 +40,29 @@
                             </tr>
 
                             <tr class="hidden-form" data-row-id="@item.Id" style="display:none">
-                                <form class="form-sample" asp-controller="Services" asp-action="Edit">
-                                    <input asp-for="@Model.Where(x=>x.Id == item.Id).First().Id"  type="hidden" name="Id" />
+                                <form class="form-sample" asp-controller="Services" asp-action="Edit" method="post">
+                                    <input asp-for="@item.Id"  type="hidden" name="Id" />
                                 <td>
                                     <div class="form-group">
-                                        <input asp-for="@Model.Where(x=>x.Id == item.Id).First().Name" name="Name" class="form-control" />
+                                        <input asp-for="@item.Name" name="Name" class="form-control" />
+                                    <span asp-validation-for="@item.Name" class="text-danger"></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <input asp-for="@Model.Where(x=>x.Id == item.Id).First().Description" name="Description" class="form-control" />
+                                        <input asp-for="@item.Description" name="Description" class="form-control" />
+                                    <span asp-validation-for="@item.Description" class="text-danger"></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <input asp-for="@Model.Where(x=>x.Id == item.Id).First().ServiceTime" name="ServiceTime" class="form-control" />
+                                        <input asp-for="@item.ServiceTime" name="ServiceTime" class="form-control" />
+                                        <span asp-validation-for="@item.ServiceTime"  class="text-danger"></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <input type="submit" value="Save" class="btn btn-primary" />
+                                    <input type="submit" value="Save" class="btn btn-primary saveEditButton" />
                                         <button class="btn btn-secondary cancel-btn">Cancel</button> 
                                     </div>
                                 </td>
@@ -92,10 +95,6 @@
     </div>
 </div>
 
-
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $('.edit-link').on('click', function (e) {
         e.preventDefault();
@@ -108,7 +107,30 @@
         $formRow.toggle();
         $row.toggle();
     });
-    $('.cancel-btn').on('click', function (e) {
+    $('.form-sample').submit(function (e) {
+        e.preventDefault();
+        var $form = $(this);
+        var id = $form.find('input[name="Id"]').val();
+
+        $.ajax({
+            url: '/Services/Edit',
+            method: 'POST',
+            data: $form.serialize(),
+            success: function (response) {
+                window.location.href = response.redirectUrl;
+            },
+            error: function (xhr) {
+                var errorObj = xhr.responseJSON;
+                if (errorObj && errorObj.errors) {
+                    alert('Validation failed. Errors: ' + errorObj.errors.join(',  '));
+                }
+            }
+        });
+    });
+
+
+
+    $(document).on('click', '.cancel-btn', function (e) {
         e.preventDefault();
         $(this).closest('.hidden-form').hide();
         $('#deleteModal').modal('hide');

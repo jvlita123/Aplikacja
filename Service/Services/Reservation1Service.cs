@@ -33,6 +33,11 @@ namespace Service.Services
 
         public List<Reservation1> GetUserReservations(int id)
         {
+            if (id == null)
+            {
+                return new List<Reservation1>();
+            }
+
             var usr = _userRepository.GetById(id);
             if (usr.Role.Name == "admin")
             {

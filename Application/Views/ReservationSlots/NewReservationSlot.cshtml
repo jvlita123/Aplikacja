@@ -4,7 +4,6 @@
     var selectedDate = ((DateTime)ViewData["selectedDate"]).ToString("yyyy-MM-dd");
 }
 
-<div class="row">
     <div class="col-md-4">
         <form asp-action="NewReservationSlot">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -39,7 +38,6 @@
             </div>
         </form>
     </div>
-</div>
 
 <script>
     var serviceTime;

@@ -42,8 +42,6 @@
 	  <None Include="wwwroot\assets\images\faces\face9.jpg" />
 	  <None Include="wwwroot\assets\images\favicon.ico" />
 	  <None Include="wwwroot\assets\images\favicon.png" />
-	  <None Include="wwwroot\assets\images\logo-mini.svg" />
-	  <None Include="wwwroot\assets\images\logo.svg" />
 	  <None Include="wwwroot\assets\images\sprites\blue.png" />
 	  <None Include="wwwroot\assets\images\sprites\dark.png" />
 	  <None Include="wwwroot\assets\images\sprites\flag.png" />

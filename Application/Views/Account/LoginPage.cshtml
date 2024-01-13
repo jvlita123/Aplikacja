@@ -1,42 +1,40 @@
-﻿@model Data.Dto_s.RegisterUserDto
+﻿@model Data.Dto_s.LoginDto
 <style>
-    #RegisterUserForm {
+    #LoginUserForm {
         position: relative;
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1001; 
+        z-index: 1001; /* Umieść treść modala na wierzchu tła */
     }
 
-    #RegisterUserFormModal{
-        margin-top:60px;
-    }
 
+    /* Styl dla przycisku zamknięcia modala */
     #closeModal {
-        position:absolute;
+        position: absolute;
         top: 10px;
-        margin-bottom:20px;
         right: 10px;
         font-size: 20px;
         cursor: pointer;
     }
 
-    #registerModalBackground {
+    /* Styl dla tła modala */
+    #modalBackground {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); 
-        z-index: 1000; 
+        background: rgba(0, 0, 0, 0.5); /* Kolor tła z przezroczystością */
+        z-index: 1000; /* Umieść tło pod treścią modala */
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* Styl dla tła z efektem blur dla modala rejestracji */
-    #blurredRegisterBackground {
+    /* Styl dla tła z efektem blur */
+    #blurredBackground {
         position: fixed;
         top: 0;
         left: 0;
@@ -46,14 +44,14 @@
         z-index: 999; /* Umieść tło z blur na niższym poziomie niż tło modala */
     }
 </style>
-<!-- Dodaj to do sekcji "RegisterUser" -->
+<!-- Dodaj to do sekcji "Login" -->
 
-<div id="blurredRegisterBackground"></div>
-<div id="registerModalBackground">
-    <div id="RegisterUserFormModal" class="col-md-4">
+<div id="blurredBackground"></div>
+<div id="modalBackground">
+    <div id="LoginUserFormModal" class="col-md-4">
         <div class="modal-content">
-            <form asp-action="RegisterUser" id="RegisterUserForm" class="account-registration">
             <span id="closeModal" class="btn-close" onclick="closeModal()"></span>
+            <form asp-action="LoginPage" id="LoginUserForm" class="account-login">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Email" class="control-label"></label>
@@ -62,22 +60,17 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Password" class="control-label"></label>
-                    <input type="password" asp-for="Password" class="form-control" />
+                    <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ConfirmPassword" class="control-label"></label>
-                    <input type="password" asp-for="ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" id="registerUserButton" value="Register" class="btn btn-primary" />
+                    <input type="submit" value="Login" id="LoginUserButton" class="btn btn-primary" />
+                    <button id="registerUserButton" class="btn btn-secondary" asp-action="RegisterUser" formmethod="get">Register</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 @section Scripts {
     @{
@@ -87,22 +80,20 @@
 
 <script>
     $(document).ready(function () {
-        openRegisterModal();
+        openModal();
     });
 
-    function openRegisterModal() {
-        console.log("Opening Register Modal");
-        $("#blurredRegisterBackground").fadeIn();
-        $("#registerModalBackground").fadeIn();
-        $("#RegisterUserFormModal").fadeIn();
+    function openModal() {
+        $("#blurredBackground").fadeIn();
+        $("#modalBackground").fadeIn();
+        $("#LoginUserFormModal").fadeIn();
         $("body").addClass("modal-open");
     }
 
     function closeModal() {
-        console.log("Closing Register Modal");
-        $("#blurredRegisterBackground").fadeOut();
-        $("#registerModalBackground").fadeOut();
-        $("#RegisterUserFormModal").fadeOut();
+        $("#blurredBackground").fadeOut();
+        $("#modalBackground").fadeOut();
+        $("#LoginUserFormModal").fadeOut();
         $("body").removeClass("modal-open");
     }
 </script>

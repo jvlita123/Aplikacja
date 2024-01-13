@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<Data.Entities.User>
 @{
     ViewData["Title"] = "My Chats";
-    var userId = 0;
 }
 
 <div class="list-container message-list">
@@ -10,7 +9,7 @@
     </div>
     @foreach (var item in Model)
     {
-        <a href="GetConversation?id=@item.Id" class="message-row">
+        <a asp-action="GetConversation" asp-controller="Message" asp-route-id="@item.Id" class="message-row">
             <div class="message-row-content">
                 <div class="header-wrapper">
                     <div class="image-wrapper rounded">
@@ -28,13 +27,13 @@
         </a>
     }
 </div>
-
+@*
 <script>
     $('.userId').on('click', function () {
         var userId = $(this).data('user-id'); 
         if (userId) {
             $.ajax({
-                url: '/Message/GetConversation', 
+                url: '/GetConversation', 
                 type: 'GET',
                 data: { id: userId },
                 success: function (data) {
@@ -47,4 +46,4 @@
             console.log('Proszę wybrać użytkownika.');
         }
     });
-</script>
+</script>*@

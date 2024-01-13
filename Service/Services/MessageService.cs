@@ -1,10 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Text.Json.Serialization.Metadata;
 
 namespace Service.Services
 {
@@ -12,15 +8,11 @@ namespace Service.Services
     {
         private readonly MessageRepository _messageRepository;
         private readonly UserRepository _userRepository;
-        private readonly IHttpContextAccessor _context;
 
-        public MessageService(MessageRepository messageRepository, UserRepository userRepository, IHttpContextAccessor context)
+        public MessageService(MessageRepository messageRepository, UserRepository userRepository)
         {
             _messageRepository = messageRepository;
             _userRepository = userRepository;
-            _context = context;
-
-           
         }
 
         public List<Message> GetAll()
@@ -92,20 +84,19 @@ namespace Service.Services
             var user1Ids = GetSentMessages(id).Select(x => x.UserId2).ToList();
 
             var distinctUserIds = user2Ids.Union(user1Ids).Distinct().ToList();
-
+            var allUsers = _userRepository.GetAll().Include(x => x.Photos).Include(x => x.Role)
+                .Include(x => x.Messages).ToList();
             foreach (var userId in distinctUserIds)
             {
-                User user = _userRepository.GetAll().Include(x=>x.Photos).Include(x => x.Role)
-                .Include(x => x.Messages).Where(x=>x.Id == userId).FirstOrDefault();
+                User user = allUsers.FirstOrDefault(x =>x.Id == userId);
                 if (user != null)
                 {
                     users.Add(user);
-
                 }
             }
 
             return users;
-    }
+        }
 
         public List<Message> GetConversation(int firstUserId, int secondUserId)
         {
@@ -116,10 +107,9 @@ namespace Service.Services
                 if(message.UserId != firstUserId || (message.UserId == firstUserId && message.UserId2 == firstUserId))
                 {
                 message.IsNew = false;
-                _messageRepository.Update(message);
-                _messageRepository.SaveChanges();
                 }
             }
+            _messageRepository.UpdateRangeAndSaveChanges(messages);
 
             return messages;
         }

@@ -58,12 +58,13 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> GetConversation(int id)
+        [Route("GetConversation")]
+        public IActionResult GetConversation(int id)
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             List<User> userConversation = _messageService.GetUserConversations(user.Id);
             List<User> allAppUsers = _userService.GetAll();
-            List<Message> conversation = _messageService.GetConversation(user.Id, id);
+            List<Message>? conversation = _messageService.GetConversation(user.Id, id);
             User user2 = _userService.GetById(id);
 
             var user1 = HttpContext.User;
@@ -80,9 +81,8 @@ namespace Application.Controllers
 
                 claimsIdentity.AddClaim(new Claim("newMessage", "false"));
 
-                await HttpContext.SignInAsync(HttpContext.User);
+                HttpContext.SignInAsync(HttpContext.User);
             }
-
 
             ViewData["users"] = userConversation;
             ViewData["allusers"] = allAppUsers;

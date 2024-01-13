@@ -1,40 +1,28 @@
 ﻿using Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Service.Services;
-using System.Collections.Generic;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 
 namespace Application.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly UserService _userService;
-        private readonly ServiceService _serviceService;
-        private readonly StatusService _statusService;
         private readonly EnrollmentsService _enrollmentService;
         private readonly CoursesService _coursesService;
-        private readonly CyclesService _cyclesService;
-        private IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
 
-        public CoursesController(IWebHostEnvironment environment,CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public CoursesController(IWebHostEnvironment environment, CoursesService coursesService, UserService userService, EnrollmentsService enrollmentsService)
         {
             _userService = userService;
-            _serviceService = serviceService;
-            _statusService = statusService;
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
-            _cyclesService = cyclesService;
             _environment = environment;
         }
-        [Route("/Courses/Index")]
 
-        public ActionResult Index()
+        [Route("AllCourses")]
+        public IActionResult Index()
         {
             List<Course> courses = _coursesService.GetAll();
             return View(courses);
@@ -48,6 +36,7 @@ namespace Application.Controllers
 
             ViewData["cycles"] = cycles;
             ViewData["enrolledUsers"] = enrolledUsers;
+
             return View(course);
         }
 
@@ -56,7 +45,6 @@ namespace Application.Controllers
         {
             return PartialView();
         }
-
 
         [HttpPost]
         public async Task<IActionResult> NewCourse(Course course, IFormFile uploadFile)
@@ -99,16 +87,5 @@ namespace Application.Controllers
 
             return users;
         }
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
     }
 }

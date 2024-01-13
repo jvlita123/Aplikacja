@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
@@ -13,7 +14,7 @@ namespace Application.Controllers
         private readonly StatusService _statusService;
         private readonly ReservationSlotsService _reservationSlotsService;
         private readonly UserReservationSlotsService _userReservationSlotsService;
-        private IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
         public Reservation1Controller(Reservation1Service reservation1Service, ServiceService serviceService, StatusService statusService, UserService userService, ReservationSlotsService reservationSlotsService, UserReservationSlotsService userReservationSlotsService, IWebHostEnvironment environment)
         {
@@ -26,12 +27,13 @@ namespace Application.Controllers
             _environment = environment;
         }
 
-        [Route("/Reservation1/Index")]
-        public IActionResult Index()
+        [Route("UserReservations")]
+        [Authorize]
+        public ActionResult Index()
         {
             var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
             var statuses = _statusService.GetAll().ToList();
-           
+
             ViewData["statuses"] = statuses;
 
             return View(_reservation1Service.GetUserReservations(usr.Id));
@@ -44,15 +46,24 @@ namespace Application.Controllers
             return PartialView(reservation);
         }
 
+        [Route("ReservationsCalendar")]
         public IActionResult Calendar()
         {
-            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                User? usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity?.Name).FirstOrDefault();
+                var userReservations = _reservation1Service.GetUserReservations(usr.Id);
+                ViewData["userReservations"] = userReservations;
+
+            }
+            else
+            {
+                ViewData["userReservations"] = new List<Reservation1>();
+            }
             var services = _serviceService.GetAll().ToList();
             var availableSlots = _reservationSlotsService.GetAll().Where(x => x.IsAvailable == true);
             var busySlots = _reservationSlotsService.GetAll().Where(x => x.IsAvailable == false);
-            var userReservations = _reservation1Service.GetUserReservations(usr.Id);
 
-            ViewData["userReservations"] = userReservations;
             ViewData["services"] = services;
             ViewData["availableSlots"] = availableSlots;
             ViewData["busySlots"] = busySlots;
@@ -73,8 +84,9 @@ namespace Application.Controllers
 
             return Json(new { AvailableSlots = availableSlots, BusySlots = busySlots });
         }
-                
+
         [HttpGet]
+        [Authorize]
         public PartialViewResult GetReservationDetails(int reservationId)
         {
             Reservation1 reservation = _reservation1Service.GetAll().Where(x => x.Id == reservationId).First();
@@ -92,6 +104,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public PartialViewResult NewReservation(int serviceId, DateTime selectedDate, int reservationSlotsId)
         {
             var emails = new SelectList(_userService.GetAll().Select(x => x.Email).ToList());
@@ -106,7 +119,8 @@ namespace Application.Controllers
             return PartialView();
         }
 
-       public void UploadFile(IFormFile uploadFile)
+        [Authorize]
+        public void UploadFile(IFormFile uploadFile)
         {
             if (uploadFile != null && uploadFile.Length > 0)
             {
@@ -115,11 +129,13 @@ namespace Application.Controllers
 
                 using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
                 {
-                     uploadFile.CopyToAsync(strumień);
+                    uploadFile.CopyToAsync(strumień);
                 }
             }
         }
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UploadFile1(IFormFile uploadFile, int id)
         {
             if (uploadFile != null && uploadFile.Length > 0)
@@ -140,6 +156,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult NewReservation(Reservation1 reservation, string userEmail, IFormFile uploadFile)
         {
             UploadFile(uploadFile);
@@ -155,8 +172,8 @@ namespace Application.Controllers
             return RedirectToAction("Calendar");
         }
 
-
         [HttpPost]
+        [Authorize]
         public IActionResult RemoveReservation(int id)
         {
             Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == id).FirstOrDefault();
@@ -166,6 +183,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public PartialViewResult changeReservationStatus(int id)
         {
             var StatusList = new SelectList(_statusService.GetAll().Select(x => x.Name).ToList());
@@ -177,6 +195,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult changeReservationStatus(int id, string status)
         {
             _reservation1Service.changeReservationStatus(id, _statusService.GetByName(status).Id);
@@ -184,6 +203,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult SubscribeSlot(int reservationSlotId)
         {
             var usr = _userService.GetByEmail(HttpContext.User.Identity.Name);

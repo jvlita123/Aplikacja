@@ -1,5 +1,4 @@
 ﻿using Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -7,14 +6,12 @@ namespace Application.Controllers
 {
     public class AttendancesController : Controller
     {
-        private UserService _userService;
-        private AttendanceService _attendanceService;
-        private EnrollmentsService _enrollmentService;  
-        private CoursesService _coursesService;
+        private readonly AttendanceService _attendanceService;
+        private readonly EnrollmentsService _enrollmentService;
+        private readonly CoursesService _coursesService;
 
-        public AttendancesController(UserService userService, AttendanceService attendanceService, EnrollmentsService enrollmentsService, CoursesService coursesService)
+        public AttendancesController(AttendanceService attendanceService, EnrollmentsService enrollmentsService, CoursesService coursesService)
         {
-            _userService = userService;
             _attendanceService = attendanceService;
             _enrollmentService = enrollmentsService;
             _coursesService = coursesService;
@@ -48,11 +45,11 @@ namespace Application.Controllers
             ViewData["enrolledUsers"] = enrolledUsers;
             ViewData["course"] = course;
 
-            if(_attendanceService.GetAll().Where(x => x.CycleId == id).Count() <= 0)
+            if (!_attendanceService.GetAll().Where(x => x.CycleId == id).Any())
             {
-                return PartialView(new List<Attendance>());  
+                return PartialView(new List<Attendance>());
             }
-            
+
             return PartialView(_attendanceService.GetAll().Where(x => x.CycleId == id));
         }
 
@@ -66,14 +63,14 @@ namespace Application.Controllers
         {
             _attendanceService.RemoveAttendanceForCycle(cycleId);
 
-            foreach(var v in selectedUsers)
+            foreach (var v in selectedUsers)
             {
                 Attendance attendance = new Attendance();
                 attendance.CourseId = courseId;
                 attendance.CycleId = cycleId;
                 attendance.UserId = v;
                 attendance.TimeArrive = new TimeSpan(2, 14, 18);
-                attendance.TimeLeave = new TimeSpan(2, 14, 18); 
+                attendance.TimeLeave = new TimeSpan(2, 14, 18);
 
                 _attendanceService.addAttendance(attendance);
             }

@@ -30,7 +30,7 @@
             <div class="usersContainerList">
             @foreach (var item in users)
             {
-                    <a href="@item.Id" class="message-row userElList">
+                    <a asp-action="GetConversation" asp-controller="Message" asp-route-id="@item.Id" class="message-row userElList">
                     <div class="message-row-content">
                         <div class="header-wrapper">
                             <div class="image-wrapper rounded">
@@ -146,8 +146,7 @@
 <script>
     var chatWrapper = document.querySelector('.list-container.message-list.wide .chat-wrapper');
     chatWrapper.scrollTop = chatWrapper.scrollHeight;
-</script>
-<script>
+
     $(document).ready(function () {
         $('#selectUser').on('change', function () {
             var userId = $(this).val();

@@ -1,23 +1,22 @@
 ﻿using Data.Dto_s;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
 
 namespace Application.Controllers
 {
     public class UserController : Controller
     {
-        private UserService _userService;
-        private PhotoService _photoService;
-        private CyclesService _cyclesService;
-        private CoursesService _coursesService;
-        private EnrollmentsService _enrollmentsService;
-        private Reservation1Service _reservationService;
-        private StatusService _statusService;
-        private IWebHostEnvironment _environment;
+        private readonly UserService _userService;
+        private readonly PhotoService _photoService;
+        private readonly CyclesService _cyclesService;
+        private readonly CoursesService _coursesService;
+        private readonly EnrollmentsService _enrollmentsService;
+        private readonly Reservation1Service _reservationService;
+        private readonly StatusService _statusService;
+        private readonly IWebHostEnvironment _environment;
 
-        public UserController(IWebHostEnvironment environment,StatusService statusService, Reservation1Service reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, PhotoService photoService)
+        public UserController(IWebHostEnvironment environment, StatusService statusService, Reservation1Service reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, PhotoService photoService)
         {
             _userService = userService;
             _photoService = photoService;
@@ -34,6 +33,7 @@ namespace Application.Controllers
         {
             return View(_userService.GetAll());
         }
+
         public ActionResult MyAccount()
         {
             return View(_userService.GetByEmail(User.Identity.Name));
@@ -65,7 +65,6 @@ namespace Application.Controllers
             return View(user);
         }
 
-
         [HttpGet]
         public IActionResult AdminDashboard()
         {
@@ -77,7 +76,7 @@ namespace Application.Controllers
             var enrollments = _enrollmentsService.GetAll().Where(x => x.Course.Cycles?.OrderBy(y => y.EndDate).FirstOrDefault()?.EndDate > DateTime.Now).ToList();
 
             var currentDate = DateTime.Now.Date;
-            var reservations = _reservationService.GetAll().Where(x => x.ReservationSlot?.Date + x.ReservationSlot?.StartTime >= currentDate &&(x.Status?.Name == "Pending" || x.Status?.Name == "Confirmed")).ToList();
+            var reservations = _reservationService.GetAll().Where(x => x.ReservationSlot?.Date + x.ReservationSlot?.StartTime >= currentDate && (x.Status?.Name == "Pending" || x.Status?.Name == "Confirmed")).ToList();
 
             ViewData["admin"] = user;
             ViewData["users"] = users;
@@ -105,7 +104,7 @@ namespace Application.Controllers
                     await photo.CopyToAsync(strumień);
                 }
 
-                var file =  nazwaPliku;
+                var file = nazwaPliku;
                 _photoService.AddPhoto(file, id);
             }
 

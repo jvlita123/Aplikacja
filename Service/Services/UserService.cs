@@ -27,7 +27,7 @@ namespace Service.Services
             _photoRepository = photoRepository;
             _messageRepository = messageRepository;
             _context = context;
-
+/*
             var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
 
             foreach (var v in _userRepository.GetAll().Include(u => u.Role).Include(x => x.Messages).ToList())
@@ -39,12 +39,11 @@ namespace Service.Services
             }
             var user1 = _context.HttpContext?.User;
 
-            if (user1.Identity.Name != null)
+            if (user1.Identity.Name != null && user1.Identity.IsAuthenticated)
             {
                 User userLogged = _userRepository.GetUserByEmail(user1.Identity.Name);
                 if (_messageRepository.GetAll().Any(x => x.UserId2 == userLogged.Id && x.IsNew == true))
                 {
-
                     var claimsIdentity = (ClaimsIdentity)user1.Identity;
 
                     var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
@@ -55,7 +54,7 @@ namespace Service.Services
                     claimsIdentity.AddClaim(new Claim("newMessage", "true"));
                     _context.HttpContext.SignInAsync(_context.HttpContext.User);
                 }
-            }
+            }*/
         }
 
         public List<User> GetAll()
@@ -104,7 +103,7 @@ namespace Service.Services
             var newUser = new User()
             {
                 Email = dto.Email,
-                RoleId = dto.RoleId,
+                RoleId = 2,
             };
 
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
@@ -115,7 +114,7 @@ namespace Service.Services
             return newUser;
         }
 
-        public ClaimsIdentity Login(LoginDto dto) //to be corrected
+        public ClaimsIdentity Login(LoginDto dto) 
         {
             var userToLogin = _userRepository
                 .GetAll()
@@ -126,14 +125,14 @@ namespace Service.Services
 
             if (userToLogin is null)
             {
-                throw new Exception();//to be corrected
+                throw new Exception();
             }
 
             var result = _passwordHasher.VerifyHashedPassword(userToLogin, userToLogin.PasswordHash, dto.Password);
 
             if (result == PasswordVerificationResult.Failed)
             {
-                throw new Exception();//to be corrected
+                throw new Exception();
             }
 
             string ProfilePhoto = "/" + userToLogin.Photos.Where(p => p.IsProfilePicture == true).Select(p => p.Path).FirstOrDefault();
@@ -149,7 +148,7 @@ namespace Service.Services
             var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userToLogin.Id.ToString()),
-                        new Claim(ClaimTypes.Name, userToLogin.Email),//need update to Name
+                        new Claim(ClaimTypes.Name, userToLogin.Email),
                         new Claim(ClaimTypes.Email, userToLogin.Email),
                         new Claim(ClaimTypes.Role, userToLogin.Role.Name.ToString()),
                         new Claim("ProfilePhotoPath", ProfilePhoto),

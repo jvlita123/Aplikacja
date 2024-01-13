@@ -1,5 +1,4 @@
 ﻿using Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -13,10 +12,9 @@ namespace Application.Controllers
         private readonly EnrollmentsService _enrollmentService;
         private readonly CoursesService _coursesService;
         private readonly CyclesService _cyclesService;
-        private IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-
-        public CyclesController(IWebHostEnvironment environment,CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
+        public CyclesController(IWebHostEnvironment environment, CyclesService cyclesService, CoursesService coursesService, ServiceService serviceService, StatusService statusService, UserService userService, EnrollmentsService enrollmentsService)
         {
             _userService = userService;
             _serviceService = serviceService;
@@ -31,6 +29,7 @@ namespace Application.Controllers
         {
             return View(_cyclesService.GetAll());
         }
+
         public List<Cycle> GetCyclesForCourse(int courseId)
         {
             var cycles = _cyclesService.GetAll().Where(x => x.CourseId == courseId).ToList();
@@ -54,7 +53,7 @@ namespace Application.Controllers
         {
             _cyclesService.NewCycle(cycle);
 
-            return RedirectToAction("Index","Courses");
+            return RedirectToAction("Index", "Courses");
         }
 
         public IActionResult DeleteCycle(Cycle cycle)
@@ -69,7 +68,6 @@ namespace Application.Controllers
 
             return RedirectToAction("Index", "Courses");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile uploadFileCycle, int id)
@@ -89,72 +87,6 @@ namespace Application.Controllers
             }
 
             return RedirectToAction("Index", "Courses");
-        }
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CyclesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: CyclesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CyclesController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CyclesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

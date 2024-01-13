@@ -1,8 +1,10 @@
-﻿namespace Data.Dto_s
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Data.Dto_s
 {
     public class LoginDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 }

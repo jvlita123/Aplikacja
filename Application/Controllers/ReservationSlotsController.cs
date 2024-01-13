@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Services;
 using System.Collections.ObjectModel;
 
@@ -16,7 +15,6 @@ namespace Application.Controllers
             _reservationSlotsService = reservationSlotsService;
             _serviceService = serviceService;
         }
-
 
         [HttpGet]
         public PartialViewResult NewReservationSlot(DateTime selectedDate)

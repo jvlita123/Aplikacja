@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Service.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.CookiePolicy;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 namespace Application
 {
@@ -26,24 +27,32 @@ namespace Application
                     builder
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:3000");
+                    .WithOrigins("http://localhost:3000")
+                                .AllowCredentials(); // W³¹cz zezwolenie na przesy³anie ciasteczek
+
                 });
             });
-            builder.Services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.HttpOnly = HttpOnlyPolicy.None;
-                options.Secure = CookieSecurePolicy.Always; // Ustawienie zawsze zabezpieczonego pliku cookie
-            });
-            // Add services to the container.
-            builder.Services.AddControllersWithViews()
-                .AddJsonOptions(options =>
+
+                       builder.Services.Configure<CookiePolicyOptions>(options =>
+                        {
+                            options.MinimumSameSitePolicy = SameSiteMode.None;
+                            options.HttpOnly = HttpOnlyPolicy.None;
+                            options.Secure = CookieSecurePolicy.Always; 
+                            
+                        });
+
+            builder.Services.AddControllersWithViews();
+/*                .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-                });
+                });*/
 
-            //builder.Services.AddFluentValidation(); 
-            builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
+            builder.Services.AddFluentValidation(opt =>
+            {
+                opt.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
+
+          //  builder.Services.AddValidatorsFromAssemblyContaining<LoginUserDtoValidator>();
 
             string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
@@ -54,9 +63,13 @@ namespace Application
                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                options.SlidingExpiration = true;
                options.AccessDeniedPath = "/Forbidden/";
+               options.LoginPath ="/Account/LoginPage";
            });
 
+
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            builder.Services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
+            builder.Services.AddScoped<IValidator<Data.Entities.Service>, ServiceValidator>();
             builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<RoleRepository>();
             builder.Services.AddScoped<ServiceRepository>();
@@ -112,28 +125,33 @@ namespace Application
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
-           
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Home}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(name: "user",
+                pattern: "{controller=User}/{action=Get}/{id?}");
+
+            app.UseHttpsRedirection();
+
+            app.UseCors("CORSPolicy");
 
             app.Run();
         }

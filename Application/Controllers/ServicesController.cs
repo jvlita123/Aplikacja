@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
@@ -11,9 +11,9 @@ namespace Application.Controllers
         {
             _servicesService = servicesService;
         }
-        [Route("/Services/IndexServices")]
 
-        public IActionResult Index()
+        [Route("AllServices")]
+        public ActionResult Index()
         {
             return View(_servicesService.GetAll());
         }
@@ -32,23 +32,30 @@ namespace Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddService(Data.Entities.Service service)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(service);
+            }
             _servicesService.AddService(service);
-            return View();
-        }
-
-        public IActionResult Edit(int id)
-        {
-            return NoContent();        
+            return RedirectToAction("AllServices");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public RedirectToActionResult Edit(int id, Data.Entities.Service collection)
+        public IActionResult Edit(Data.Entities.Service collection)
         {
-            _servicesService.Edit(id, collection);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                             .Select(e => e.ErrorMessage)
+                                             .ToList();
 
-            return RedirectToAction("Index");        
+                return BadRequest(new { Message = "Validation failed", Errors = errors });
+            }
+            _servicesService.Edit(collection.Id, collection);
+            return Json(new { success = true, redirectUrl = Url.Action("Index", "Services") });
         }
+
 
         [HttpPost]
         public IActionResult Remove(int id)

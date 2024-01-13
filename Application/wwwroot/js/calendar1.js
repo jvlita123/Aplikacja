@@ -130,23 +130,31 @@ function SubscribeToSlot(reservationSlotId) {
         }
     });
 }
-
 function NewReservation(serviceId, selectedDate, reservationSlotsId) {
     $.ajax({
         type: "GET",
         url: "/Reservation1/NewReservation",
+        xhrFields: {
+            withCredentials: true
+        },
         data: {
             serviceId: serviceId,
             selectedDate: selectedDate,
             reservationSlotsId: reservationSlotsId
         },
         success: function (response) {
+            console.log(response);
             $('#modalContent').html(response);
             $('#myModal').modal('show');
         },
+        error: function (xhr, status, error) {
+            if (xhr.status === 401) {
+                window.location.href = "/Account/LoginPage";
+            }
+        }
     });
-    
 }
+
 
 function setSelectedServiceId(serviceId) {
     selectedServiceId = serviceId;

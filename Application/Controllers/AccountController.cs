@@ -9,52 +9,52 @@ namespace Application.Controllers
 {
     public class AccountController : Controller
     {
-        private UserService _userService;
+        private readonly UserService _userService;
         public AccountController(UserService userService)
         {
             _userService = userService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult RegisterUser()
         {
-            return View(_userService.GetAllDto());
-        }
-
-        public PartialViewResult RegisterUser()
-        {
-            return PartialView();
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult RegisterUser(RegisterUserDto dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                return View(dto);
+            }
+            else
             {
                 _userService.RegisterUserDto(dto);
+                return RedirectToAction("Home", "Home");
             }
-            return RedirectToAction("Index");
         }
 
-        public PartialViewResult Login()
+        [HttpGet]
+        public IActionResult LoginPage()
         {
-            return PartialView();
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Login(LoginDto dto)
+        public IActionResult LoginPage(LoginDto dto)
         {
             if (ModelState.IsValid)
             {
                 ClaimsIdentity claimsIdentity = _userService.Login(dto);
 
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("index", "Home");
+                return RedirectToAction("Home", "Home");
             }
             else
             {
-                ModelState.AddModelError("", "Email or Password is wrong.");
-                return RedirectToAction("Index");
+                return View(dto);
             }
         }
 
@@ -67,7 +67,7 @@ namespace Application.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("index", "Home");
+            return RedirectToAction("Home", "Home");
         }
     }
 }
