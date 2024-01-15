@@ -119,9 +119,9 @@ namespace Application
             builder.Services.AddHostedService(provider =>
             {
                 var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
-                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                return new ReminderService(scopeFactory, contextAccessor);
+                return new ReminderService(scopeFactory);
             });
+
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();

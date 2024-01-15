@@ -46,7 +46,6 @@ namespace Application.Controllers
             return PartialView(reservation);
         }
 
-        [Route("ReservationsCalendar")]
         public IActionResult Calendar()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -120,7 +119,7 @@ namespace Application.Controllers
         }
 
         [Authorize]
-        public void UploadFile(IFormFile uploadFile)
+        public async Task<IActionResult> UploadFile(IFormFile uploadFile)
         {
             if (uploadFile != null && uploadFile.Length > 0)
             {
@@ -129,9 +128,11 @@ namespace Application.Controllers
 
                 using (var strumień = new FileStream(ścieżkaZapisu, FileMode.Create))
                 {
-                    uploadFile.CopyToAsync(strumień);
+                    await uploadFile.CopyToAsync(strumień);
                 }
             }
+            return RedirectToAction("Calendar");
+
         }
 
         [HttpPost]
@@ -155,11 +156,11 @@ namespace Application.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("NewReservation")]
         [Authorize]
-        public IActionResult NewReservation(Reservation1 reservation, string userEmail, IFormFile uploadFile)
+        public async Task<IActionResult> NewReservation(Reservation1 reservation, string userEmail, IFormFile uploadFile)
         {
-            UploadFile(uploadFile);
+            await UploadFile(uploadFile);
             string nazwaPliku = Path.GetFileName(uploadFile.FileName);
 
             reservation.UserPhotoPath = nazwaPliku;
@@ -179,7 +180,7 @@ namespace Application.Controllers
             Reservation1 ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == id).FirstOrDefault();
             _reservation1Service.RemoveReservation(id);
 
-            return NoContent();
+            return RedirectToAction("Calendar");
         }
 
         [HttpGet]

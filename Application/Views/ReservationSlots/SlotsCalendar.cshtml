@@ -92,7 +92,6 @@
                 center: 'title',
                 right: 'dayGridMonth'
             },
-            locale: 'pl',
             events: eventsArr,
             dateClick: function (info) {
                 console.log(eventsArr);
@@ -103,8 +102,8 @@
                     type: 'GET',
                     data: { selectedDate: selectedDate },
                     success: function (data) {
-                        $('#ReservationSlotsModal .modal-body').html(data); // Wstawienie danych częściowego widoku do modala
-                        $('#ReservationSlotsModal').modal('show'); // Wyświetlenie modala                    }
+                        $('#ReservationSlotsModal .modal-body').html(data); 
+                        $('#ReservationSlotsModal').modal('show');
                     }});
             },
             eventClick: function (info) {
@@ -122,7 +121,6 @@
                         $('#ReservationSlotsModal').modal('show');
                     },
                     error: function (xhr, status, error) {
-                        console.error('Wystąpił błąd podczas pobierania szczegółów rezerwacji:', error);
                     }
                 });
             }

@@ -12,9 +12,11 @@ namespace Data.Validators
                 .NotEmpty()
                 .EmailAddress();
 
-            RuleFor(x => x.Password).MinimumLength(10);
+            RuleFor(x => x.Password)
+                .MinimumLength(10);
 
-            RuleFor(x => x.ConfirmPassword).Equal(e => e.Password);
+            RuleFor(x => x.ConfirmPassword)
+                .Equal(e => e.Password);
 
             RuleFor(x => x.Email)
                 .Custom((value, context) =>

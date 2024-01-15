@@ -1,7 +1,5 @@
 ﻿using Data.Patterns;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
@@ -27,16 +25,8 @@ public partial class ReservationSlots : ISubject
         get { return _isAvailable; }
         set
         {
-            if (value == true)
-            {
-                _isAvailable = value;
-                Notify(); 
-            }
-            else
-            {
-             _isAvailable = value;
-                Notify();
-            }
+            _isAvailable = value;
+            Notify();
         }
     }
 
@@ -46,10 +36,10 @@ public partial class ReservationSlots : ISubject
     [ForeignKey("ReservationId")]
     public virtual Reservation1? Reservation { get; set; }
 
-    public virtual ObservableCollection<UserReservationSlots> UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
-    
+    public virtual ObservableCollection<UserReservationSlots>? UserReservationSlots { get; set; }
+
     public List<IObserver> _observers = new List<IObserver>();
-  
+
     #region Observer
 
     public void Attach(IObserver observer)
@@ -65,9 +55,12 @@ public partial class ReservationSlots : ISubject
     public void Notify()
     {
         ReservationSlots thisSlot = this;
-        foreach (var user in UserReservationSlots)
+        if (UserReservationSlots.Count() > 0)
         {
-            user.User.Update(thisSlot); 
+            foreach (var user in UserReservationSlots)
+            {
+                user.User.Update(thisSlot);
+            }
         }
     }
 

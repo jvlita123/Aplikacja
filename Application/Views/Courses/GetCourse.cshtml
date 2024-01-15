@@ -8,11 +8,8 @@
 <head>
     <link rel="stylesheet" href="~/css/courses/getCourse.css" />
 </head>
-<div class="row">
     <div class="col-12 " style="margin-top: 0;">
-        <div class="card">
-            <div class="card">
-                <div class="row d-flex justify-content-between px-3 top">
+                <div class="row with-radius d-flex justify-content-between px-3 top">
                     <div class="d-flex center">
                         <h3>@Model.Title</h3>
                     </div>
@@ -20,7 +17,7 @@
                         <p><span class="font-weight-bold">@Model.Description</span></p>
                     </div>
                 </div>
-                <div class="row d-flex justify-content-center">
+                <div class="row d-flex justify-content-center no-radius">
                     <div class="col-12">
                         <ul id="progressbar" class="text-center">
                             @foreach (var v in cycles)
@@ -29,15 +26,15 @@
                                 <li class=" active step0 mdi mdi-check"></li>
                                 </a>
                             }
-                            <li class="step0 mdi mdi-checkbox-blank-circle-outline"></li>
+                                                            <a href="#" class="progress-line-gray">
+
+                <li class="step0 mdi mdi-checkbox-blank-circle-outline"></li>                                </a>
+
                         </ul>
                     </div>
-                    <div id="partialViewContainer"></div>
+                    <div id="partialViewContainer" style="margin-bottom:30px;"></div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).on('click', '.progress-line', function (e) {

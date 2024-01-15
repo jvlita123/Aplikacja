@@ -60,6 +60,7 @@ public partial class User : INotifyPropertyChanged, IObserver
         {
             ReservationSlots reservationSlots = (ReservationSlots)subject;
             string message;
+
             if (reservationSlots.IsAvailable == true)
             {
             message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is available again.";

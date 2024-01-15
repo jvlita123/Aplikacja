@@ -14,12 +14,12 @@ namespace Service.Services
     public class ReminderService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IHttpContextAccessor _context;
+      //  private readonly IHttpContextAccessor _context;
 
-        public ReminderService(IServiceScopeFactory scopeFactory, IHttpContextAccessor context)
+        public ReminderService(IServiceScopeFactory scopeFactory /*IHttpContextAccessor context*/)
         {
             _scopeFactory = scopeFactory;
-            this._context = context;
+        //    this._context = context;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,15 +50,14 @@ namespace Service.Services
                                     var messageText = $"Tomorrow will be the next course day: {v.Title} for the course '{course.Title}'";
 
                                     v.IsNotificationSent = true;
-                                    _cycleRepository.Update(v);
-                                    _cycleRepository.SaveChanges();
+                                    _cycleRepository.UpdateAndSaveChanges(v);
 
                                     await NotificationService.HandleUserNotification(user, messageText, _messageRepository, adminUser);
                                 }
                             }
                         }
                     }
-                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+                    await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
                 }
             }
         }

@@ -88,16 +88,16 @@
                                     @Html.DisplayFor(modelItem => item.Text)
                                 </p>
                             </div>
+                                <div class="message-user-image">
                             @if (currentUser.Photos.Count > 0)
                             {
-                                <div class="message-user-image">
                                     <img src="~/images/@currentUser.Photos.Where(x=>x.IsProfilePicture==true).FirstOrDefault().Path" height="50" width="50" />
-                                </div>
                             }
                             else
                             {
-                                <img src="~/images/blankUser.svg" height="50" width="50" />
+                                <img src="~/images/blank-profile.png" height="50" width="50" />
                             }
+                                </div>
                         </div>
                     }
 
@@ -112,7 +112,7 @@
                             }
                             else
                             {
-                                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" height="40" width="40" />
+                                    <img src="~/images/blank-profile.png" alt="blankuser" height="40" width="40" />
                                 }
                             </div>
 
@@ -135,7 +135,7 @@
                     <textarea asp-for="@newMessage.Text" name="Text" class="form-control d-inline-block"
                               placeholder="Type a message..." style="resize: vertical; max-height: 200px; max-width: 73%;"
                               ></textarea>
-                    <input type="hidden" asp-for="@newMessage.UserId2" name="UserId2" id="UserId2" class="form-sample d-inline-block" value="@user2.Id" />
+                <input type="hidden" asp-for="@newMessage.UserId2" name="UserId2" id="UserId2" class="form-sample d-inline-block" value="@user2.Id" />
                     <button type="submit" class="btn btn-gradient-primary mb-2 d-inline-block">Send <i class="bi bi-send-fill"></i></button>
                 </form>
             </div>
@@ -151,7 +151,7 @@
         $('#selectUser').on('change', function () {
             var userId = $(this).val();
             if (userId !== '') {
-                window.location.href = "/Message/GetConversation/" + userId; 
+                window.location.href = "/GetConversation?id=" + userId;
             }
         });
     });

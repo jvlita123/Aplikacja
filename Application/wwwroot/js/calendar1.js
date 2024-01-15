@@ -116,7 +116,7 @@ function showSchedule(serviceId, reservationSlots) {
 function SubscribeToSlot(reservationSlotId) {
     $.ajax({
         type: "POST",
-        url: "/Reservation1/SubscribeSlot",
+        url: "/SubscribeSlot",
         data: {
             reservationSlotId: reservationSlotId
         },

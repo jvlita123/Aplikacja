@@ -1,12 +1,4 @@
-﻿
 
-.card {
-    z-index: 0;
-    background-color: #ECEFF1;
-    padding-bottom: 20px;
-    margin-bottom: 90px;
-    border-radius: 10px;
-}
 
 .top {
     padding-top: 40px;
@@ -56,7 +48,12 @@ text-align:center}
         color: #ffffff;
         width: 40px;
     }
-
+.no-radius{
+    border-radius:0px 0px 10px 10px;
+}
+.with-radius{
+    border-radius:10px 10px 0px 0px;
+}
     #progressbar li:before {
         width: 40px;
         height: 40px;
@@ -131,3 +128,18 @@ text-align:center}
     background-color: #b66dff3b;
     width: 90%
 }
+a.progress-line {
+    display: inline;
+    width: 50%;
+    height: 3px;
+    background: #b66dff;
+    margin-bottom:100px;
+}
+li.step0{
+        margin-bottom:10px;
+}
+.progress-line-gray{
+    width: 50%;
+    height: 3px;
+    background: #c5cae9;
+    margin-bottom:100px;}

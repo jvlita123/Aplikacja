@@ -75,20 +75,23 @@
                             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
                         </a>
                     </li>
-                    <li class="nav-item d-none d-lg-block">
-                        <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
-                            <i class="mdi mdi-email-outline"></i>
-                            @if (User.Identity.IsAuthenticated && User.FindFirst("newMessage").Value.ToLower() == "true")
-                            {
-                                <span style="color:darkred; float:top" class="mdi mdi-alert-circle"></span>
-                            }
-                        </a>
-                    </li>
-                    <li class="nav-item nav-logout d-none d-lg-block">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">
+                       @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item d-none d-lg-block">
+                            <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
+                                <i class="mdi mdi-email-outline"></i>
+                                @if (User.Identity.IsAuthenticated && User.FindFirst("newMessage").Value.ToLower() == "true")
+                                {
+                                    <span style="color:darkred; float:top" class="mdi mdi-alert-circle"></span>
+                                }
+                            </a>
+                        </li>
+                        <li class="nav-item nav-logout d-none d-lg-block">
+                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">
                             <i class="mdi mdi-power"></i>
                         </a>
                     </li>
+                    }
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
                     <span class="mdi mdi-menu"></span>
@@ -121,24 +124,27 @@
                             }
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-action="AdminDashboard" asp-controller="User" asp-route-id="">
-                            <span class="menu-title">Dashboard</span>
-                            <i class="mdi mdi-home menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
-                            <span class="menu-title">Messages</span>
-                            <i class="mdi mdi-message-processing menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="MakeUpCreator" asp-route-id="">
+
+                      @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-action="AdminDashboard" asp-controller="User" asp-route-id="">
+                                <span class="menu-title">Dashboard</span>
+                                <i class="mdi mdi-home menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
+                                <span class="menu-title">Messages</span>
+                                <i class="mdi mdi-message-processing menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-action="Index" asp-controller="MakeUpCreator" asp-route-id="">
                             <span class="menu-title">MakeUp Creator</span>
                             <i class="mdi mdi-brush menu-icon"></i>
                         </a>
-                    </li>
+                    </li>}
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#courses-pages" aria-expanded="false" aria-controls="courses-pages">
                             <span class="menu-title">Courses</span>
@@ -152,25 +158,29 @@
                                         Courses
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-action="GetUserCourses" asp-controller="Courses">
-                                        My Courses
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Attendances" asp-route-id="">
+                                   @if (User.Identity.IsAuthenticated)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-action="GetUserCourses" asp-controller="Courses">
+                                            My Courses
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Attendances" asp-route-id="">
                                         Attendances
                                     </a>
-                                </li>
+                                </li>}
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation1">
+                     @if (User.IsInRole("admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation1">
                             <span class="menu-title">Reservations</span>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
                         </a>
-                    </li>
+                    </li>}
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#calendars-pages" aria-expanded="false" aria-controls="calendars-pages">
                             <span class="menu-title">Calendar</span>
@@ -184,35 +194,40 @@
                                         Reservations Calendar 
                                     </a>
                                 </li>
-                                <li class="nav-item"> 
-                                    <a class="nav-link" asp-area="" asp-action="SlotsCalendar" asp-controller="ReservationSlots" asp-route-id="">
-                                        Slots Calendar 
+                                  @if (User.IsInRole("admin"))
+                                {
+                                    <li class="nav-item"> 
+                                        <a class="nav-link" asp-area="" asp-action="SlotsCalendar" asp-controller="ReservationSlots" asp-route-id="">
+                                            Service Hours Calendar
                                     </a>
-                                </li>
+                                </li>}
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#services-pages" aria-expanded="false" aria-controls="services-pages">
-                            <span class="menu-title">Services</span>
-                            <i class="menu-arrow"></i>
-                            <i class="mdi mdi-medical-bag menu-icon"></i>
-                        </a>
-                        <div class="collapse" id="services-pages">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> 
-                                    <a class="nav-link" asp-area="" asp-action="AddService" asp-controller="Services" asp-route-id="">
-                                        Add Service 
-                                    </a>
-                                </li>
-                                <li class="nav-item"> 
-                                    <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Services">
-                                        Services
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                       @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#services-pages" aria-expanded="false" aria-controls="services-pages">
+                                <span class="menu-title">Services</span>
+                                <i class="menu-arrow"></i>
+                                <i class="mdi mdi-medical-bag menu-icon"></i>
+                            </a>
+                            <div class="collapse" id="services-pages">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item"> 
+                                        <a class="nav-link" asp-area="" asp-action="AddService" asp-controller="Services" asp-route-id="">
+                                            Add Service 
+                                        </a>
+                                    </li>
+                                    <li class="nav-item"> 
+                                        <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Services">
+                                            Services
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-action="Contact" asp-controller="Home" asp-route-id="">
                             <span class="menu-title">Contact</span>

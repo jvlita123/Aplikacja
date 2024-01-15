@@ -69,9 +69,9 @@ namespace Service.Services
                     existingSlot.Date == newSlot.Date &&
                     (
                         (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime <= existingSlot.StartTime) ||
-                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime >= existingSlot.EndTime) ||
-                        (newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime) ||
-                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime > existingSlot.EndTime) ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime >= existingSlot.EndTime)   ||
+                        (newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime)     ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime > existingSlot.EndTime)    ||
                         (newSlot.StartTime >= existingSlot.StartTime && newSlot.EndTime <= existingSlot.EndTime)
                     )
                 )

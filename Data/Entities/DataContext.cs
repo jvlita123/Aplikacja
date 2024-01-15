@@ -4,6 +4,16 @@ namespace Data.Entities
 {
     public class DataContext : DbContext
     {
+        private static DataContext _instance;
+
+        public static DataContext Instance
+        {
+            get
+            {
+                _instance ??= new DataContext();
+                return _instance;
+            }
+        }
 
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }

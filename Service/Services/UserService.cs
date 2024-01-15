@@ -27,8 +27,8 @@ namespace Service.Services
             _photoRepository = photoRepository;
             _messageRepository = messageRepository;
             _context = context;
-/*
-            var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
+
+           /* var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
 
             foreach (var v in _userRepository.GetAll().Include(u => u.Role).Include(x => x.Messages).ToList())
             {
