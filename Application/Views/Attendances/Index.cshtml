@@ -151,9 +151,9 @@
 
                         var imageCell = $('<td></td>');
                         if (user.photos[0] == null) {
-                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/blank-profile.png').attr('alt', 'User Image');
+                            var userImage = $('<img>').attr('src', '@Url.Content("~/images/blank-profile.png")').attr('alt', 'User Image');
                         } else {
-                            var userImage = $('<img>').attr('src', 'https://localhost:44367/images/' + user.photos[0].path).attr('alt', 'User Image');
+                            var userImage = $('<img>').attr('src', '@Url.Content("~/images/")' + user.photos[0].path).attr('alt', 'User Image');
                         }
 
                         var userNameCell = $('<p></p>').text(user.firstName + " " + user.lastName).css({
