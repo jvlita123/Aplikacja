@@ -45,16 +45,17 @@ namespace Application.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditUser(User user)
+        public IActionResult MyUser(MyUserDto user)
         {
-            User usr = _userService.GetById(user.Id);
-            user.RoleId = usr.RoleId;
-            user.IsBlocked = usr.IsBlocked;
-            user.PasswordHash = usr.PasswordHash;
-            user.Role = usr.Role;
-
-            _userService.UpdateUser(user);
-            return RedirectToAction("MyUser");
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+            else
+            {
+                _userService.UpdateUser(user);
+                return RedirectToAction("MyUser");
+            }
         }
 
         [HttpGet]

@@ -165,7 +165,7 @@ namespace Service.Services
 
             return claimsIdentity;
         }
-        public void UpdateUser(User user)
+        public void UpdateUser(MyUserDto user)
         {
             User userToSave = _userRepository.GetById(user.Id);
             userToSave.FirstName = user.FirstName;
@@ -173,10 +173,6 @@ namespace Service.Services
             userToSave.Email = user.Email;
             userToSave.PhoneNumber = user.PhoneNumber;
             userToSave.DateOfBirth = user.DateOfBirth;
-            userToSave.RoleId = user.RoleId;
-            userToSave.IsBlocked = user.IsBlocked;
-            userToSave.PasswordHash = user.PasswordHash;
-            userToSave.Role = user.Role;
 
             _userRepository.UpdateAndSaveChanges(userToSave);
             _userRepository.SaveChanges();

@@ -69,6 +69,7 @@ namespace Application
 
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
+            builder.Services.AddScoped<IValidator<MyUserDto>, MyUserValidator>();
             builder.Services.AddScoped<IValidator<Data.Entities.Service>, ServiceValidator>();
             builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<RoleRepository>();

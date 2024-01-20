@@ -13,20 +13,24 @@
         width:180px;
     }
 
+    #fileInput {
+        width: 96%;
+    }
+
         .form-control:focus {
             border-color: rgb(182 109 255);
             outline: 0;
             box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
         }
 
-        .form-control:disabled {
+        .form-control:read-only {
             background-color: #f5f5f5; 
         }
 </style>
 
 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style=" background-color:white">
             <div class="modal-header">
                 <h5 class="modal-title" id="imageModalLabel">Change Profile Photo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -35,10 +39,18 @@
             </div>
             <div class="modal-body">
                 <form id="uploadForm" asp-controller="User" asp-action="ChangeCurrentUserProfilePicture" method="post" enctype="multipart/form-data">
-                    <input type="file" name="photo" id="fileInput" />
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <input type="submit" class="btn btn-primary" id="uploadBtn"  value="Upload" />
-                    <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Default file input example</label>
+                        <input class="form-control" type="file" name="photo" id="fileInput">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                    </div>
+
+                  
+                    <div class="col-sm-9" style="margin-top:30px;">
+
+                    <input type="submit" class="btn-rounded btn btn-outline-primary  " id="uploadBtn" value="Upload" />
+                    <button type="button" class="closeModal btn-rounded btn btn-outline-secondary ">Close</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -51,9 +63,9 @@
                 <div class="col-md-3" style="margin-top:50px;">
                     <div class="card-body" style=" text-align:center">
                         <h4 class="card-title">My account</h4>
-                        @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
+                        @if (Model.ProfilePhoto.Length > 0)
                         {
-                            <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
+                        <img src="~/images/@Model.ProfilePhoto" class="profile-image inline-block" alt="Profile" />
                         }
                         else
                         {
@@ -66,9 +78,11 @@
                 <div class="col-md-8">
                         <div class="card-body">
 
-            <form class="form-sample" asp-controller="User" asp-action="EditUser">
-                        <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" disabled />
-                        <p class="card-description"> Edit personal info                       <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i> </p>
+            <form class="form-sample" asp-controller="User" asp-action="MyUser" mathod="post" >
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+                        <input type="hidden" asp-for="ProfilePhoto" value="@Model.ProfilePhoto" class="form-control" />
+                        <p class="card-description"> Edit personal info <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i> </p>
  
 
                 <div class="row">
@@ -76,15 +90,18 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">First Name</label>
                             <div class="col-sm-9">
-                                        <input asp-for="FirstName" value="@Model.FirstName" class="form-control editInput" disabled />
-                            </div>
+                                        <input asp-for="FirstName" value="@Model.FirstName" class="form-control editInput"  />
+@*                                        < asp-validation-for="FirstName" class="text-danger"  ></span>
+*@                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Last Name</label>
                             <div class="col-sm-9">
-                                        <input asp-for="LastName" value="@Model.LastName" class="form-control editInput" disabled />
+                                        <input asp-for="LastName" value="@Model.LastName" class="form-control editInput"  />
+@*                                        <span asp-validation-for="LastName" class="text-danger"></span>
+*@
                             </div>
                         </div>
                     </div>
@@ -94,7 +111,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Role</label>
                             <div class="col-sm-9">
-                                    <p class="card-description">@Model.RoleName</p>
+                                        <input type="text" asp-for="RoleName" value="@Model.RoleName" class="card-description form-control" />
                             </div>
                         </div>
                     </div>
@@ -102,8 +119,10 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Date of Birth</label>
                             <div class="col-sm-9">
-                                        <input type="date" asp-for="DateOfBirth" placeholder="@Model.DateOfBirth.Value.Month.ToString()/@Model.DateOfBirth.Value.Day.ToString()/@Model.DateOfBirth.Value.Year.ToString()" class="form-control editInput" disabled />
-                            </div>
+                                        <input type="date" asp-for="DateOfBirth" placeholder="@Model.DateOfBirth.Value.Month.ToString()/@Model.DateOfBirth.Value.Day.ToString()/@Model.DateOfBirth.Value.Year.ToString()" class="form-control editInput"  />
+@*                                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+*@
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -114,13 +133,15 @@
                             <div class="col-sm-9">
                                     @if (Model.PhoneNumber != null)
                                     {
-                                            <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" asp-for="PhoneNumber" value="@Model.PhoneNumber" class="form-control editInput" disabled />
-
+                                            <input type="tel" id="phoneNumber" asp-for="PhoneNumber" value="@Model.PhoneNumber" class="form-control editInput"  />
+@*                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+*@
                                     }
                                     else
                                     {
-                                            <input type="tel" id="phoneNumber" asp-for="PhoneNumber" class="form-control editInput" disabled />
-                                    }
+                                            <input type="tel" id="phoneNumber" asp-for="PhoneNumber" class="form-control editInput"  />
+                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                        }
                             </div>
                         </div>
                     </div>
@@ -128,7 +149,9 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
-                                        <input type="email" asp-for="Email" value="@Model.Email" class="form-control editInput" disabled />
+                                        <input type="email" asp-for="Email" value="@Model.Email" class="form-control editInput"  />
+@*                                        <span asp-validation-for="Email" class="text-danger"></span>
+*@
                             </div>
                         </div>
                     </div>
@@ -145,26 +168,26 @@
     </div>
  </div>
 
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
 
     <script>
         $(document).ready(function () {
-        $('.row .informationUser').show();
-
-        $('.editInput input').prop('disabled', true);
+        $('.editInput').prop('readonly', true);
 
         $('#editLink').on('click', function () {
-            // Włącz pola formularza na kliknięcie przycisku "Edit"
-            $('.editInput input').prop('disabled', false);
+            $('.editInput').prop('readonly', false);
 
-            // Pokaż/ukryj przyciski zgodnie z trybem edycji
             $('#saveButton').show();
             $('#backBtn').show();
             $('#editLink').hide();
         });
 
         $('.backBtn').on('click', function () {
-            $('.editInput input').prop('disabled', true);
+            $('.editInput').prop('readonly', true);
 
             $('#saveButton').hide();
             $('#backBtn').hide();

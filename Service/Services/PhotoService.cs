@@ -40,7 +40,7 @@ namespace Service.Services
             photo.UserId = id;
 
             _photoRepository.AddAndSaveChanges(photo);
-            _userRepository.UpdateAndSaveChanges(_userRepository.GetById(photo.Id));
+            _userRepository.UpdateAndSaveChanges(_userRepository.GetById(photo.UserId));
         }
 
     }
