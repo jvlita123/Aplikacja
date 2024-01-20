@@ -3,9 +3,9 @@ using Data.Repositories;
 
 namespace Service.Services
 {
-    public class NotificationService 
+    public class NotificationService
     {
-        public NotificationService(){}
+        public NotificationService() { }
 
         public static async Task HandleUserNotification(User user, string messageText, MessageRepository _messageRepository, User admin)
         {

@@ -133,7 +133,7 @@ function SubscribeToSlot(reservationSlotId) {
 function NewReservation(serviceId, selectedDate, reservationSlotsId) {
     $.ajax({
         type: "GET",
-        url: "/Reservation1/NewReservation",
+        url: "/Reservation/NewReservation",
         xhrFields: {
             withCredentials: true
         },
@@ -219,7 +219,7 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
     eventClick: function (info) {
         let eventId = info.event.id; 
         $.ajax({
-            url: '/Reservation1/ShowReservation', 
+            url: '/Reservation/ShowReservation', 
             method: 'GET',
             data: { id: eventId },
             success: function (data) {

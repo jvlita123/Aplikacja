@@ -24,5 +24,4 @@ public partial class Cycle
     [ForeignKey("CourseId")]
     public virtual Course? Course { get; set; }
 
-    public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
 }

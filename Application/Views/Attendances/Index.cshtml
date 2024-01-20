@@ -1,66 +1,72 @@
 ﻿@model IEnumerable<Data.Entities.Attendance>
+
 @{
     var courses = (IEnumerable<Data.Entities.Course>)ViewData["courses"];
 }
-<div class="col-12 grid-margin">
-    <div class="card">
-        <div class="card-body">
-            <div class="row ">
-                <div class="mb-3">
-                    <div class="col-md-6">
-                        <label for="courseDropdown" class="form-label">Select Course:</label>
-                        <select class="form-select" id="courseDropdown">
-                            <option value="0">Select a course</option>
-                            @foreach (var course in courses)
-                            {
-                                <option value="@course.Id">@course.Title</option>
-                            }
-                        </select>
-                    </div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="courseDropdown" class="form-label">Select Course:</label>
+        <select class="form-select" id="courseDropdown">
+            <option value="0">Select a course</option>
+            @foreach (var course in courses)
+            {
+                <option value="@course.Id">@course.Title</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="userSearch" class="form-label">Search for a user:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="userSearch" placeholder="Last Name">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label for="cycleDropdown" class="form-label">Select Cycle:</label>
+        <div class="input-group flex-grow-1">
+            <select class="form-select" id="cycleDropdown">
+                <option value="0">All</option>
+            </select>
+            <button class="btn ms-3" type="button" id="filterButton">
+                <i class="bi bi-funnel"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <div id="saveContainer" class="ms-3"></div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="headerTableAttendance">
+                        <thead>
+                            <tr>
+                                <th>Course Member</th>
+                                <th>Days Not Met</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendancesTable">
+                        </tbody>
+                    </table>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="userSearch" class="form-label">Search for a user:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="userSearch" placeholder="Last Name">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="cycleDropdown" class="form-label">Select Cycle:</label>
-                        <div class="input-group flex-grow-1">
-                            <select class="form-select" id="cycleDropdown">
-                                <option value="0">All</option>
-                            </select>
-                            <button class="btn ms-3" type="button" id="filterButton">
-                                <i class="bi bi-funnel"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <div id="saveContainer" class="ms-3"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table" id="headerTableAttendance">
-                    <thead>
-                        <tr>
-                            <th>Course Member</th>
-                            <th>Days Not Met</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendancesTable">
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 </div>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
+
 <script>
+
     $(document).ready(function () {
+
         var courseId = $('#courseDropdown').val();
+
         const courseDropdown = document.getElementById('courseDropdown');
         const cycleDropdown = document.getElementById('cycleDropdown');
         var cyclesData;
@@ -76,21 +82,25 @@
         $.ajax({
             url: '/Attendances/AddAttendance',
             type: 'POST',
-            data: {
-                courseId: courseId,
-                cycleId: cycleId,
-                selectedUsers: selectedUsers
-            },
+            data: { courseId: courseId, cycleId: cycleId, selectedUsers: selectedUsers },
             traditional: true,
             success: function (result) {
+                console.log('Users saved:', result);
                 var selectedValue = courseId;
                 $('#courseDropdown').val(selectedValue);
+                console.log('Userssss ssss:', result);
+
+                console.log('Przed triggerem change');
                 $('#courseDropdown').trigger('change');
+                console.log('Po triggerze change');
 
                 $('#saveButton').hide();
                 $('#cancelButton').hide();
 
             },
+            error: function () {
+                alert('Wystąpił błąd podczas zapisu.');
+            }
         });
 
         $('#courseDropdown').change(function () {
@@ -99,23 +109,29 @@
             $.ajax({
                 url: '/Cycles/GetCyclesForCourse',
                 type: 'GET',
-                data: {
-                    courseId: courseId
-                },
+                data: { courseId: courseId },
                 success: function (cycles) {
                     cyclesData = cycles;
+
                     var dropdown = $('#cycleDropdown');
+                    console.log('Received cycles:', cycles);
+
                     dropdown.find('option:not(:first)').remove();
+
 
                     if (Array.isArray(cycles)) {
                         cycles.forEach((e) => {
+                            console.log('Cycle Title:', e.title);
+
                             var option = $('<option></option>').attr('value', e.id).text(e.title);
                             dropdown.append(option);
                         });
                     }
 
+
                     if (Array.isArray(cycles)) {
                         var dropdown = $('#cycleDropdown');
+
                         var tableHeadRow = $('#headerTableAttendance thead tr');
 
                         $('#headerTableAttendance th:not(:lt(2))').remove();
@@ -123,9 +139,14 @@
                         cycles.forEach((e) => {
                             var cycleHeader = $('<th></th>').text(e.title).attr('data-cycle-id-th', e.id);
                             cycleHeader.attr('data-cycle-start', e.startDate);
+
+                            console.log('Cycle Title:', e.title);
+
                             tableHeadRow.append(cycleHeader);
                         });
-                    } else {
+                    }
+                    else {
+                        console.error('Invalid cycles data format:', cycles);
                         alert('An error occurred while fetching cycles.');
                     }
                 },
@@ -134,19 +155,24 @@
                 }
             });
 
+
+
             $.ajax({
                 url: '/Courses/GetCourseUsers',
                 type: 'GET',
-                data: {
-                    courseId: courseId
-                },
+                data: { courseId: courseId },
                 success: function (users) {
                     console.log('users:', users);
                     var tableBody = $('#attendancesTable');
+
                     tableBody.empty();
+
                     users.forEach((user) => {
                         const currentUserId = user.id;
+
                         var tableRow = $('<tr></tr>');
+
+                        console.log('user:', user);
                         tableRow.attr('user-id-row', user.id);
 
                         var imageCell = $('<td></td>');
@@ -155,7 +181,6 @@
                         } else {
                             var userImage = $('<img>').attr('src', '@Url.Content("~/images/")' + user.photos[0].path).attr('alt', 'User Image');
                         }
-
                         var userNameCell = $('<p></p>').text(user.firstName + " " + user.lastName).css({
                             'margin-left': '10px',
                             'display': 'inline-block'
@@ -168,6 +193,7 @@
                         var daysNotMetCell = $('<td></td>').text("-");
                         tableRow.append(daysNotMetCell);
 
+
                         var thElements = $('#headerTableAttendance th[data-cycle-id-th]').get();
 
                         function processCycle(thElements, index = 0) {
@@ -177,8 +203,14 @@
                             }
 
                             const cycleId = $(thElements[index]).attr('data-cycle-id-th');
+                            console.log('CYCLE ID from th:', cycleId);
+
                             var attendanceCell = $('<td></td>');
                             attendanceCell.attr('data-cycle-id-colrow', cycleId);
+
+                            console.log('CYCLE ID from th:', cycleId);
+                            console.log('USER ID from th:', user.id);
+                            console.log('USER ID from th:', user.id);
 
                             fillCell(user.id, cycleId, courseId, attendanceCell, function () {
                                 processCycle(thElements, index + 1);
@@ -189,17 +221,18 @@
                             $.ajax({
                                 url: '/Attendances/CheckAttendance',
                                 type: 'GET',
-                                data: {
-                                    userId: userId,
-                                    cycleId: cycleId,
-                                    courseId: courseId
-                                },
+                                data: { userId: userId, cycleId: cycleId, courseId: courseId },
                                 success: function (isPresent) {
+                                    console.log('Table userId:', userId);
+                                    console.log('Table cycleId:', cycleId);
+                                    console.log('Table courseId:', courseId);
+
                                     var iconClass = isPresent ? "mdi mdi-bookmark-check" : "mdi mdi-bookmark-remove";
                                     var iconColor = isPresent ? "green" : "red";
+
                                     var icon = $('<i></i>').addClass(iconClass).css('color', iconColor);
-                                   
                                     cell.empty().append(icon);
+
                                     tableRow.append(cell);
 
                                     callback();
@@ -210,11 +243,15 @@
                                 }
                             });
                         }
+
                         processCycle(thElements);
                         tableBody.append(tableRow);
                     });
                 },
-                error: function () {alert('An error occurred while fetching users.');}
+                error: function () {
+                    alert('An error occurred while fetching users.');
+                }
+
             });
         });
 
@@ -229,20 +266,25 @@
             $.ajax({
                 url: '/Attendances/AddAttendance',
                 type: 'POST',
-                data: {
-                    courseId: courseId,
-                    cycleId: cycleId,
-                    selectedUsers: selectedUsers
-                },
+                data: { courseId: courseId, cycleId: cycleId, selectedUsers: selectedUsers },
                 traditional: true,
                 success: function (result) {
+                    console.log('Users saved:', result);
                     var selectedValue = courseId;
                     $('#courseDropdown').val(selectedValue);
+                    console.log('Userssss ssss:', result);
+
+                    console.log('Przed triggerem change');
                     $('#courseDropdown').trigger('change');
+                    console.log('Po triggerze change');
+
                     $('#saveButton').hide();
                     $('#cancelButton').hide();
 
                 },
+                error: function () {
+                    alert('Wystąpił błąd podczas zapisu.');
+                }
             });
         });
 
@@ -251,11 +293,14 @@
             $('input[type="checkbox"]').hide();
             $('#saveButton').hide();
             $('#cancelButton').hide();
+
+
         });
 
         $('#headerTableAttendance').on('click', 'th[data-cycle-id-th]', function () {
             var cycleId = $(this).data('cycle-id-th');
             var tableCells = $('#attendancesTable tr td[data-cycle-id-colrow="' + cycleId + '"]');
+            console.log('Cycle id:', cycleId);
             $('#attendancesTable td').removeClass('highlight-column');
             $('input[type="checkbox"]').hide();
 
@@ -276,6 +321,7 @@
             });
 
             saveButton.attr('data-cycle-id', cycleId);
+
             var cancelButton = $('<button>').text('CANCEL').attr({
                 id: 'cancelButton',
                 class: 'btn btn-secondary'
@@ -303,6 +349,7 @@
 
                 $('#attendancesTable td[data-cycle-id-colrow]').each(function () {
                     var cycleIdForCell = $(this).attr('data-cycle-id-colrow');
+
                     if (cycleIdForCell !== selectedCycleId) {
                         $(this).hide();
                     } else {
@@ -343,10 +390,15 @@
             });
 
             $('#attendancesTable').empty();
+
             $.each(rows, function (index, row) {
                 $('#attendancesTable').append(row);
             });
+
             sortDirection = -1 * sortDirection;
         });
+
+
     });
+
 </script>

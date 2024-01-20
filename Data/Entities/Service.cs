@@ -10,7 +10,7 @@ public partial class Service
 
     public TimeSpan? ServiceTime { get; set; }
 
-    public virtual ICollection<Reservation1> Reservations { get; set; } = new List<Reservation1>();
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
     public virtual ICollection<ReservationSlots> ReservationSlots { get; set; } = new HashSet<ReservationSlots>();
 

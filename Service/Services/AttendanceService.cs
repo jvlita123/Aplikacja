@@ -16,7 +16,7 @@ namespace Service.Services
 
         public List<Attendance> GetAll()
         {
-            List<Attendance> attendances = _attendanceRepository.GetAll().Include(x=>x.Cycle).Include(x => x.User).Include(x => x.Course).ToList();
+            List<Attendance> attendances = _attendanceRepository.GetAll().Include(x => x.Cycle).Include(x => x.User).Include(x => x.Course).ToList();
 
             return attendances;
         }

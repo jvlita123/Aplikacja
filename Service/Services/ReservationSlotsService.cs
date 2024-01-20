@@ -9,8 +9,8 @@ namespace Service.Services
         private readonly ReservationSlotsRepository _reservationSlotsRepository;
         private readonly UserRepository _userRepository;
         private readonly StatusRepository _statusRepository;
-        private readonly Reservation1Repository _reservation1Repository;
-        public ReservationSlotsService(UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository, Reservation1Repository reservation1Repository)
+        private readonly ReservationRepository _reservation1Repository;
+        public ReservationSlotsService(UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository, ReservationRepository reservation1Repository)
         {
             _userRepository = userRepository;
             _statusRepository = statusRepository;
@@ -68,11 +68,11 @@ namespace Service.Services
                 .Where(existingSlot =>
                     existingSlot.Date == newSlot.Date &&
                     (
-                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime <= existingSlot.StartTime) ||
-                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime >= existingSlot.EndTime)   ||
-                        (newSlot.StartTime >= existingSlot.EndTime && newSlot.EndTime > existingSlot.EndTime)     ||
-                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime > existingSlot.EndTime)    ||
-                        (newSlot.StartTime >= existingSlot.StartTime && newSlot.EndTime <= existingSlot.EndTime)
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime >= existingSlot.EndTime) ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime > existingSlot.EndTime) ||
+                        (newSlot.StartTime < existingSlot.StartTime && newSlot.EndTime < existingSlot.EndTime) ||
+                        (newSlot.StartTime >= existingSlot.StartTime && newSlot.EndTime <= existingSlot.EndTime) ||
+                        (newSlot.StartTime >= existingSlot.StartTime && newSlot.StartTime < existingSlot.EndTime && newSlot.EndTime >= existingSlot.EndTime) 
                     )
                 )
                 .ToList();

@@ -28,22 +28,25 @@ namespace Service.Services
             _messageRepository = messageRepository;
             _context = context;
 
-           /* var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
 
-            foreach (var v in _userRepository.GetAll().Include(u => u.Role).Include(x => x.Messages).ToList())
+            var adminUser = _userRepository.GetAll().Include(u => u.Role).FirstOrDefault(x => x.Role.Name.ToLower() == "admin");
+            List<User> users = _userRepository.GetAll().Include(u => u.Role).Include(x => x.Messages).ToList();
+            foreach (var v in users)
             {
                 v.NotifyUserEvent += (user, message) =>
                 {
                     NotificationService.HandleUserNotification(user, message, _messageRepository, adminUser);
                 };
+
             }
             var user1 = _context.HttpContext?.User;
 
-            if (user1.Identity.Name != null && user1.Identity.IsAuthenticated)
+            if (user1.Identity.Name != null)
             {
                 User userLogged = _userRepository.GetUserByEmail(user1.Identity.Name);
                 if (_messageRepository.GetAll().Any(x => x.UserId2 == userLogged.Id && x.IsNew == true))
                 {
+
                     var claimsIdentity = (ClaimsIdentity)user1.Identity;
 
                     var existingNewMessageClaim = claimsIdentity.FindFirst("newMessage");
@@ -54,7 +57,8 @@ namespace Service.Services
                     claimsIdentity.AddClaim(new Claim("newMessage", "true"));
                     _context.HttpContext.SignInAsync(_context.HttpContext.User);
                 }
-            }*/
+
+            }
         }
 
         public List<User> GetAll()
@@ -114,7 +118,7 @@ namespace Service.Services
             return newUser;
         }
 
-        public ClaimsIdentity Login(LoginDto dto) 
+        public ClaimsIdentity Login(LoginDto dto)
         {
             var userToLogin = _userRepository
                 .GetAll()
@@ -212,7 +216,7 @@ namespace Service.Services
             return myUserDto;
         }
 
-        private string CheckProfile(string? path)
+        public string CheckProfile(string? path)
         {
             if (String.IsNullOrEmpty(path))
             {

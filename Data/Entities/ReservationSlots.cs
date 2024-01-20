@@ -34,7 +34,7 @@ public partial class ReservationSlots : ISubject
     public virtual Service Service { get; set; } = null!;
 
     [ForeignKey("ReservationId")]
-    public virtual Reservation1? Reservation { get; set; }
+    public virtual Reservation? Reservation { get; set; }
 
     public virtual ObservableCollection<UserReservationSlots>? UserReservationSlots { get; set; }
 
@@ -55,7 +55,7 @@ public partial class ReservationSlots : ISubject
     public void Notify()
     {
         ReservationSlots thisSlot = this;
-        if (UserReservationSlots.Count() > 0)
+        if (UserReservationSlots != null)
         {
             foreach (var user in UserReservationSlots)
             {

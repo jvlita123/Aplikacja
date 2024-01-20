@@ -3,52 +3,8 @@
 	<ItemGroup>
 	  <None Include="wwwroot\assets\css\style.css" />
 	  <None Include="wwwroot\assets\css\style.css.map" />
-	  <None Include="wwwroot\assets\images\dashboard\circle.png" />
-	  <None Include="wwwroot\assets\images\dashboard\circle.svg" />
-	  <None Include="wwwroot\assets\images\dashboard\img_1.jpg" />
-	  <None Include="wwwroot\assets\images\dashboard\img_2.jpg" />
-	  <None Include="wwwroot\assets\images\dashboard\img_3.jpg" />
-	  <None Include="wwwroot\assets\images\dashboard\img_4.jpg" />
-	  <None Include="wwwroot\assets\images\faces-clipart\pic-1.png" />
-	  <None Include="wwwroot\assets\images\faces-clipart\pic-2.png" />
-	  <None Include="wwwroot\assets\images\faces-clipart\pic-3.png" />
-	  <None Include="wwwroot\assets\images\faces-clipart\pic-4.png" />
-	  <None Include="wwwroot\assets\images\faces\face1.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face10.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face11.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face12.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face13.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face14.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face15.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face16.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face17.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face18.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face19.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face2.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face20.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face21.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face22.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face23.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face24.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face25.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face26.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face27.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face3.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face4.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face5.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face6.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face7.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face8.jpg" />
-	  <None Include="wwwroot\assets\images\faces\face9.jpg" />
 	  <None Include="wwwroot\assets\images\favicon.ico" />
 	  <None Include="wwwroot\assets\images\favicon.png" />
-	  <None Include="wwwroot\assets\images\sprites\blue.png" />
-	  <None Include="wwwroot\assets\images\sprites\dark.png" />
-	  <None Include="wwwroot\assets\images\sprites\flag.png" />
-	  <None Include="wwwroot\assets\images\sprites\green.png" />
-	  <None Include="wwwroot\assets\images\sprites\jsgrid-icons.png" />
-	  <None Include="wwwroot\assets\images\sprites\red.png" />
-	  <None Include="wwwroot\assets\images\sprites\yellow.png" />
 	  <None Include="wwwroot\assets\js\chart.js" />
 	  <None Include="wwwroot\assets\js\dashboard.js" />
 	  <None Include="wwwroot\assets\js\file-upload.js" />
@@ -138,6 +94,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
+    <PackageReference Include="NUnit" Version="4.0.1" />
+    <PackageReference Include="SpecFirst.TestGenerator.xUnit" Version="1.1.0" />
   </ItemGroup>
 	
 </Project>

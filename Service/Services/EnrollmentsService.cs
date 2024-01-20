@@ -59,7 +59,8 @@ namespace Service.Services
 
         public bool IsEnrolled(int userId, int courseId)
         {
-            if(_enrollmentsRepository.GetAll().Where(x => x.UserId == userId && x.CourseId == courseId).FirstOrDefault() != null){
+            if (_enrollmentsRepository.GetAll().Where(x => x.UserId == userId && x.CourseId == courseId).FirstOrDefault() != null)
+            {
                 return true;
             }
 
@@ -69,12 +70,12 @@ namespace Service.Services
         public Enrollment NewEnrollment(Enrollment enrollment)
         {
             Enrollment newEnrollment = new()
-            { 
+            {
                 UserId = enrollment.UserId,
                 CourseId = enrollment.CourseId,
                 Cancelled = enrollment.Cancelled,
                 CancellationReason = enrollment.CancellationReason,
-                EnrollmentDate = enrollment.EnrollmentDate, 
+                EnrollmentDate = enrollment.EnrollmentDate,
             };
 
             _enrollmentsRepository.AddAndSaveChanges(newEnrollment);

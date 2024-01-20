@@ -1,17 +1,13 @@
 ﻿using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {
     public class UserReservationSlotsService
     {
         private readonly UserReservationSlotsRepository _userReservationSlotsRepository;
+
         public UserReservationSlotsService(UserReservationSlotsRepository userReservationSlotsRepository)
         {
             _userReservationSlotsRepository = userReservationSlotsRepository;
@@ -22,11 +18,11 @@ namespace Service.Services
             List<UserReservationSlots> userReservationSlots = _userReservationSlotsRepository.GetAll().Include(x => x.User).Include(x => x.ReservationSlots).ToList();
 
             return userReservationSlots;
-        }        
-        
+        }
+
         public UserReservationSlots AddNewUserReservationSlot(int userId, int reservationSlotId)
         {
-            if(!(_userReservationSlotsRepository.GetAll().Where(x => x.UserId == userId && x.ReservationSlotsId == reservationSlotId).ToList().Count() > 0))
+            if (!(_userReservationSlotsRepository.GetAll().Where(x => x.UserId == userId && x.ReservationSlotsId == reservationSlotId).ToList().Count() > 0))
             {
                 UserReservationSlots newUserReservationSlots = new()
                 {

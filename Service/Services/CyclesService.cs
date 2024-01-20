@@ -8,6 +8,7 @@ namespace Service.Services
     public class CyclesService
     {
         private readonly CyclesRepository _cyclesRepository;
+
         public CyclesService(CyclesRepository cyclesRepository)
         {
             _cyclesRepository = cyclesRepository;
@@ -22,21 +23,21 @@ namespace Service.Services
 
         public Cycle GetById(int id)
         {
-            Cycle cycle = _cyclesRepository.GetAll().Where(x=>x.Id == id).FirstOrDefault();
+            Cycle cycle = _cyclesRepository.GetAll().Where(x => x.Id == id).FirstOrDefault();
 
             return cycle;
         }
 
         public List<Cycle> GetAllOrderByDate()
         {
-            List<Cycle> cycles = _cyclesRepository.GetAll().Include(x => x.Attendances).OrderBy(x=>x.StartDate).ToList();
+            List<Cycle> cycles = _cyclesRepository.GetAll().Include(x => x.Attendances).OrderBy(x => x.StartDate).ToList();
 
             return cycles;
         }
 
         public Cycle UploadFile(string filePath, int id)
         {
-            Cycle cycle = _cyclesRepository.GetAll().Where(x=>x.Id==id).FirstOrDefault() ;
+            Cycle cycle = _cyclesRepository.GetAll().Where(x => x.Id == id).FirstOrDefault();
             cycle.SourcePath = filePath;
 
             _cyclesRepository.Update(cycle);

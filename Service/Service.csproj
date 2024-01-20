@@ -13,6 +13,9 @@
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.12" />
+	  <PackageReference Include="Moq.AutoMock" Version="3.5.0" />
+	  <PackageReference Include="NUnit" Version="4.0.1" />
+	  <PackageReference Include="SpecFirst.TestGenerator.xUnit" Version="1.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -10,16 +10,7 @@
     }
 
     #RegisterUserFormModal{
-        margin-top:60px;
-    }
-
-    #closeModal {
-        position:absolute;
-        top: 10px;
-        margin-bottom:20px;
-        right: 10px;
-        font-size: 20px;
-        cursor: pointer;
+        margin-top:10px;
     }
 
     #registerModalBackground {
@@ -35,74 +26,85 @@
         justify-content: center;
     }
 
-    /* Styl dla tła z efektem blur dla modala rejestracji */
     #blurredRegisterBackground {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        backdrop-filter: blur(5px); /* Dodaj efekt blur */
-        z-index: 999; /* Umieść tło z blur na niższym poziomie niż tło modala */
+        backdrop-filter: blur(5px); 
+        z-index: 999; 
+    }
+    .form-control{
+        border-radius: 50px !important;
+        width: 230px;
+    }
+
+        .form-control:focus {
+            border-color: rgb(182 109 255);
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
     }
 </style>
-<!-- Dodaj to do sekcji "RegisterUser" -->
 
-<div id="blurredRegisterBackground"></div>
-<div id="registerModalBackground">
-    <div id="RegisterUserFormModal" class="col-md-4">
-        <div class="modal-content">
-            <form asp-action="RegisterUser" id="RegisterUserForm" class="account-registration">
-            <span id="closeModal" class="btn-close" onclick="closeModal()"></span>
+<div id="blurredRegisterBackground" ></div>
+<div id="registerModalBackground" >
+    <div id="RegisterUserFormModal"@* class="col-md-4"*@>
+        <div class="modal-content" style="align-items:center;">
+                <form asp-action="RegisterUser" id="RegisterUserForm" class="account-registration">
+            <h2 style="color: rgb(182 109 255); text-align:center">Register</h2>
+            <div style="padding:50px;">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
+                    <input asp-for="Email" placeholder="Email" class="form-control rounded" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input type="password" asp-for="Password" class="form-control" />
+                        <input type="password" placeholder="Password" asp-for="Password" class="form-control rounded" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ConfirmPassword" class="control-label"></label>
-                    <input type="password" asp-for="ConfirmPassword" class="form-control" />
+                        <input type="password" placeholder="Confirm password" asp-for="ConfirmPassword" class="form-control rounded" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <input type="submit" id="registerUserButton" value="Register" class="btn btn-primary" />
+                <div class="form-group" style="text-align:center; ">
+                    <input type="submit" id="registerUserButton" class="btn-rounded btn btn-outline-primary" value="Register" />
+
+                    <p style="padding-top:24px;">
+                            Already have an account? <a id="LoginUserButton" asp-action="LoginPage" class="" formmethod="get">Sign in</a>
+                    </p>
                 </div>
+            </div>
             </form>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        openModal();
+    });
+
+    function openModal() {
+        $("#blurredBackground, #registerModalBackground, #RegisterUserFormModal").fadeIn();
+        $("body").addClass("modal-open");
+    }
+
+    function closeModal() {
+        $("#blurredBackground, #registerModalBackground, #RegisterUserFormModal").fadeOut();
+        $("body").removeClass("modal-open");
+    }
+
+    $(document).mouseup(function (e) {
+        var modal = $("#RegisterUserFormModal");
+        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+            closeModal();
+        }
+    });
+</script>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-<script>
-    $(document).ready(function () {
-        openRegisterModal();
-    });
-
-    function openRegisterModal() {
-        console.log("Opening Register Modal");
-        $("#blurredRegisterBackground").fadeIn();
-        $("#registerModalBackground").fadeIn();
-        $("#RegisterUserFormModal").fadeIn();
-        $("body").addClass("modal-open");
-    }
-
-    function closeModal() {
-        console.log("Closing Register Modal");
-        $("#blurredRegisterBackground").fadeOut();
-        $("#registerModalBackground").fadeOut();
-        $("#RegisterUserFormModal").fadeOut();
-        $("body").removeClass("modal-open");
-    }
-</script>

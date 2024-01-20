@@ -2,11 +2,26 @@
 
 <style>
     .profile-image{
-        width: 60px;
-        height: 60px;
+        width: 150px;
+        height: 150px;
         margin-left: 5px;
         border-radius: 100%
     }
+
+    .form-control {
+        border-radius: 50px !important;
+        width:180px;
+    }
+
+        .form-control:focus {
+            border-color: rgb(182 109 255);
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
+        }
+
+        .form-control:disabled {
+            background-color: #f5f5f5; 
+        }
 </style>
 
 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -30,105 +45,38 @@
     </div>
 </div>
 
-<div class="informationUser">
 <div class="col-12">
     <div class="card">
-        <div class="card-body">
-            <h4 class="card-title d-inline-block">My account</h4>
-                @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
-                {
-                    <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
-                }
-                else
-                {
-                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" />
-                }
-                <p class="card-description"> Personal info </p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">First Name</label>
-                            <div class="col-sm-9">
-                            <p class="card-description">@Model.FirstName</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Last Name</label>
-                            <div class="col-sm-9">
-                            <p class="card-description">@Model.LastName</p>
-                        </div>
-                        </div>
+            <div class="row" style="padding-left:80px;padding-right:80px">
+                <div class="col-md-3" style="margin-top:50px;">
+                    <div class="card-body" style=" text-align:center">
+                        <h4 class="card-title">My account</h4>
+                        @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
+                        {
+                            <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
+                        }
+                        else
+                        {
+                            <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" />
+                        }
+                        <h6 class="f-w-600"> @Model.FirstName @Model.LastName</h6>
+                        <p class="card-description"> Personal info </p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Role</label>
-                            <div class="col-sm-9">
-                                <p class="card-description">@Model.RoleName</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Date of Birth</label>
-                            <div class="col-sm-9">
-                            <p class="card-description">@Model.DateOfBirth</p>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Phone Number</label>
-                            <div class="col-sm-9">
-                            <p class="card-description">@Model.PhoneNumber</p>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Email</label>
-                            <div class="col-sm-9">
-                            <p class="card-description">@Model.Email</p>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-9">
-                        <button id="editLink" class="btn-outline-primary btn btn-fw">Edit</button>
-                    </div>
-                </div>
-          </div>
-    </div>
-</div>
-</div>
+                <div class="col-md-8">
+                        <div class="card-body">
 
-<div id="editFields" style="display:none">
-<div class="col-12">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">My account</h4>
-                @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length > 3)
-                {
-                    <img src="~/images/@User.FindFirst("ProfilePhotoPath").Value.ToString()" class="profile-image inline-block" alt="Profile" />
-                    <span class="login-status online"></span>
-                }
-                else
-                {
-                    <img src="~/images/blank-profile.png" class="profile-image inline-block" alt="blankuser" />
-                }
             <form class="form-sample" asp-controller="User" asp-action="EditUser">
-                <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
-                <p class="card-description"> Edit personal info </p>
+                        <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" disabled />
+                        <p class="card-description"> Edit personal info                       <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i> </p>
+ 
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">First Name</label>
                             <div class="col-sm-9">
-                                <input asp-for="FirstName" value="@Model.FirstName" class="form-control" />
+                                        <input asp-for="FirstName" value="@Model.FirstName" class="form-control editInput" disabled />
                             </div>
                         </div>
                     </div>
@@ -136,7 +84,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Last Name</label>
                             <div class="col-sm-9">
-                                <input asp-for="LastName" value="@Model.LastName" class="form-control" />
+                                        <input asp-for="LastName" value="@Model.LastName" class="form-control editInput" disabled />
                             </div>
                         </div>
                     </div>
@@ -154,7 +102,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Date of Birth</label>
                             <div class="col-sm-9">
-                                <input type="date" asp-for="DateOfBirth" value="@Model.DateOfBirth" class="form-control" placeholder="dd/mm/yyyy" />
+                                        <input type="date" asp-for="DateOfBirth" placeholder="@Model.DateOfBirth.Value.Month.ToString()/@Model.DateOfBirth.Value.Day.ToString()/@Model.DateOfBirth.Value.Year.ToString()" class="form-control editInput" disabled />
                             </div>
                         </div>
                     </div>
@@ -166,12 +114,12 @@
                             <div class="col-sm-9">
                                     @if (Model.PhoneNumber != null)
                                     {
-                                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" asp-for="PhoneNumber" value="@Model.PhoneNumber" class="form-control" />
+                                            <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" asp-for="PhoneNumber" value="@Model.PhoneNumber" class="form-control editInput" disabled />
 
                                     }
                                     else
                                     {
-                                        <input type="tel" id="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" asp-for="PhoneNumber"  placeholder="___-___-___" maxlength="11" />
+                                            <input type="tel" id="phoneNumber" asp-for="PhoneNumber" class="form-control editInput" disabled />
                                     }
                             </div>
                         </div>
@@ -180,31 +128,48 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
-                                <input type="email" asp-for="Email" value="@Model.Email" class="form-control" />
+                                        <input type="email" asp-for="Email" value="@Model.Email" class="form-control editInput" disabled />
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-9">
-                        <button type="submit" class="btn-outline-primary btn btn-fw" >Save</button>
+                                <button type="button" id="editLink" class="btn-rounded btn btn-outline-primary btn btn-fw">Edit</button>
+                                <button type="submit" class="btn-rounded btn btn-outline-primary btn btn-fw" id="saveButton" style="display:none;">Save</button>
+                                <button type="button" class="btn-rounded btn btn-outline-secondary btn-fw backBtn" id="backBtn" style="display:none;">Back</button>
                     </div>
                 </div>
             </form>
-                <button class="btn-outline-primary btn btn-fw backBtn" style="float:right; margin:2px;">Back</button>
+        </div>
+        </div>
         </div>
     </div>
  </div>
-</div>
 
 
 
     <script>
         $(document).ready(function () {
-        $('.row .informationUser').show(); 
+        $('.row .informationUser').show();
 
-            $('#editLink').on('click', function () {
-            $('.informationUser').hide();
-            $('#editFields').show(); 
-            });
+        $('.editInput input').prop('disabled', true);
+
+        $('#editLink').on('click', function () {
+            // Włącz pola formularza na kliknięcie przycisku "Edit"
+            $('.editInput input').prop('disabled', false);
+
+            // Pokaż/ukryj przyciski zgodnie z trybem edycji
+            $('#saveButton').show();
+            $('#backBtn').show();
+            $('#editLink').hide();
+        });
+
+        $('.backBtn').on('click', function () {
+            $('.editInput input').prop('disabled', true);
+
+            $('#saveButton').hide();
+            $('#backBtn').hide();
+            $('#editLink').show();
+        });
         $('.profile-image').on('click', function () {
             $('#imageModal').modal('show');
         });
@@ -213,10 +178,7 @@
             $('#imageModal').modal('hide'); 
         });
 
-        $('.backBtn').on('click', function () {
-            $('#editFields').hide(); 
-            $('.informationUser').show(); 
-        });
+
                 $('.closeModal').on('click', function () {
             $('#imageModal').hide();
         });
@@ -229,8 +191,4 @@
         });
 
         });
-    document.getElementById('phoneNumber').addEventListener('input', function (e) {
-        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-        e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
-    });
     </script>

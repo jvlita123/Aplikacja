@@ -12,11 +12,11 @@ namespace Application.Controllers
         private readonly CyclesService _cyclesService;
         private readonly CoursesService _coursesService;
         private readonly EnrollmentsService _enrollmentsService;
-        private readonly Reservation1Service _reservationService;
+        private readonly ReservationService _reservationService;
         private readonly StatusService _statusService;
         private readonly IWebHostEnvironment _environment;
 
-        public UserController(IWebHostEnvironment environment, StatusService statusService, Reservation1Service reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, PhotoService photoService)
+        public UserController(IWebHostEnvironment environment, StatusService statusService, ReservationService reservationService, EnrollmentsService enrollmentsService, CyclesService cyclesService, CoursesService coursesService, UserService userService, PhotoService photoService)
         {
             _userService = userService;
             _photoService = photoService;
@@ -110,5 +110,6 @@ namespace Application.Controllers
 
             return RedirectToAction("MyUser", "User");
         }
+
     }
 }

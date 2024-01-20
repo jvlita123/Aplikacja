@@ -78,7 +78,7 @@ namespace Service.Services
                 return users;
             }
 
-            var messages = _messageRepository.GetAll().Include(x=>x.User1).ThenInclude(x =>x.Photos).Where(x => x.UserId2 == id || x.UserId == id).ToList();
+            var messages = _messageRepository.GetAll().Include(x => x.User1).ThenInclude(x => x.Photos).Where(x => x.UserId2 == id || x.UserId == id).ToList();
 
             var user2Ids = GetUserMessages(id).Select(x => x.UserId).ToList();
             var user1Ids = GetSentMessages(id).Select(x => x.UserId2).ToList();
@@ -88,7 +88,7 @@ namespace Service.Services
                 .Include(x => x.Messages).ToList();
             foreach (var userId in distinctUserIds)
             {
-                User user = allUsers.FirstOrDefault(x =>x.Id == userId);
+                User user = allUsers.FirstOrDefault(x => x.Id == userId);
                 if (user != null)
                 {
                     users.Add(user);
@@ -101,12 +101,12 @@ namespace Service.Services
         public List<Message> GetConversation(int firstUserId, int secondUserId)
         {
             List<Message> messages = _messageRepository.GetAll().Where(x => (x.UserId == firstUserId && x.UserId2 == secondUserId) || (x.UserId == secondUserId && x.UserId2 == firstUserId)).ToList();
-            
+
             foreach (var message in messages)
             {
-                if(message.UserId != firstUserId || (message.UserId == firstUserId && message.UserId2 == firstUserId))
+                if (message.UserId != firstUserId || (message.UserId == firstUserId && message.UserId2 == firstUserId))
                 {
-                message.IsNew = false;
+                    message.IsNew = false;
                 }
             }
             _messageRepository.UpdateRangeAndSaveChanges(messages);

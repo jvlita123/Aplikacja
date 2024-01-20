@@ -6,6 +6,7 @@ namespace Service.Services
     public class StatusService
     {
         private readonly StatusRepository _statusRepository;
+
         public StatusService(StatusRepository statusRepository)
         {
             _statusRepository = statusRepository;
@@ -17,6 +18,7 @@ namespace Service.Services
 
             return attendances;
         }
+
         public Status GetByName(string name)
         {
             Status status = _statusRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();

@@ -21,6 +21,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NUnit" Version="4.0.1" />
+    <PackageReference Include="SpecFirst.TestGenerator.xUnit" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

@@ -28,7 +28,7 @@ namespace Application
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:3000")
-                                .AllowCredentials(); // W³¹cz zezwolenie na przesy³anie ciasteczek
+                    .AllowCredentials(); // W³¹cz zezwolenie na przesy³anie ciasteczek
 
                 });
             });
@@ -37,15 +37,15 @@ namespace Application
                         {
                             options.MinimumSameSitePolicy = SameSiteMode.None;
                             options.HttpOnly = HttpOnlyPolicy.None;
-                            options.Secure = CookieSecurePolicy.Always; 
+                            options.Secure = CookieSecurePolicy.Always;
                             
                         });
 
-            builder.Services.AddControllersWithViews();
-/*                .AddJsonOptions(options =>
+            builder.Services.AddControllersWithViews()
+                .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-                });*/
+                });
 
             builder.Services.AddFluentValidation(opt =>
             {
@@ -75,24 +75,10 @@ namespace Application
             builder.Services.AddScoped<ServiceRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserRepository>();
-            builder.Services.AddScoped<CategoriesRepository>();
-            builder.Services.AddScoped<CategoriesService>();
             builder.Services.AddScoped<CoursesRepository>();
             builder.Services.AddScoped<CoursesService>();
             builder.Services.AddScoped<CyclesRepository>();
             builder.Services.AddScoped<CyclesService>();
-            builder.Services.AddScoped<CoursesPerCycleRepository>();
-            builder.Services.AddScoped<CoursesPerCycleService>();
-            builder.Services.AddScoped<SurveyRepository>();
-            builder.Services.AddScoped<SurveyService>();
-            builder.Services.AddScoped<QuestionRepository>();
-            builder.Services.AddScoped<QuestionService>();
-            builder.Services.AddScoped<AnswerOptionRepository>();
-            builder.Services.AddScoped<AnswerOptionService>();
-            builder.Services.AddScoped<AnswerRepository>();
-            builder.Services.AddScoped<AnswerService>();
-            builder.Services.AddScoped<ResponseRepository>();
-            builder.Services.AddScoped<ResponseService>();
             builder.Services.AddScoped<EnrollmentsRepository>();
             builder.Services.AddScoped<EnrollmentsService>();
             builder.Services.AddScoped<AttendanceRepository>();
@@ -103,12 +89,10 @@ namespace Application
             builder.Services.AddScoped<ServiceRepository>();
             builder.Services.AddScoped<PhotoRepository>();
             builder.Services.AddScoped<PhotoService>();
-            builder.Services.AddScoped<BlockRepository>();
-            builder.Services.AddScoped<BlockService>();
             builder.Services.AddScoped<MessageRepository>();
             builder.Services.AddScoped<MessageService>();
-            builder.Services.AddScoped<Reservation1Repository>();
-            builder.Services.AddScoped<Reservation1Service>();
+            builder.Services.AddScoped<ReservationRepository>();
+            builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<ReservationSlotsService>();
             builder.Services.AddScoped<ReservationSlotsRepository>();
             builder.Services.AddScoped<UserReservationSlotsRepository>();

@@ -6,5 +6,5 @@ public partial class Status
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<Reservation1> Reservations { get; set; } = new List<Reservation1>();
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

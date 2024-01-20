@@ -19,6 +19,7 @@
   border: 1px solid $border-color;
   font-family: $type1-regular;
   font-size: $input-font-size;
+  border-radius:50px;
   &:focus {
     background-color: $form-focus-bg;
     color: $form-focus-color;
@@ -27,23 +28,27 @@
 }
 
 select {
-  &.form-control {
-    padding: .4375rem .75rem;
-    border: 0;
-    outline: 1px solid $border-color;
-    color: $input-placeholder-color;
-    &:focus {
-      outline: 1px solid $border-color;
-    }
-    @each $color, $value in $theme-colors {
-      &.border-#{$color} {
-        outline: 1px solid $value;
+    &.form-control {
+        padding: .4375rem .75rem;
+        border: 0;
+        border-radius: 50px;
+        outline: 1px solid $border-color;
+        color: $input-placeholder-color;
+
         &:focus {
-          outline: 1px solid $value;
+            outline: 1px solid $border-color;
         }
-      }
+
+        @each $color, $value in $theme-colors {
+            &.border-#{$color} {
+                outline: 1px solid $value;
+
+                &:focus {
+                    outline: 1px solid $value;
+                }
+            }
+        }
     }
-  }
 }
 .form-group {
   label {

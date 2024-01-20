@@ -4,37 +4,19 @@ namespace Data.Entities
 {
     public class DataContext : DbContext
     {
-        private static DataContext _instance;
-
-        public static DataContext Instance
-        {
-            get
-            {
-                _instance ??= new DataContext();
-                return _instance;
-            }
-        }
 
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<Reservation1> Reservation1 { get; set; }
+        public DbSet<Reservation> Reservation { get; set; }
         public DbSet<ReservationSlots> ReservationSlots { get; set; }
         public DbSet<UserReservationSlots> UserReservationSlots { get; set; }
         public DbSet<Service> Service { get; set; }
-        public DbSet<Category> Category { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Cycle> Cycles { get; set; }
-        public DbSet<CoursesPerCycle> CoursesPerCycle { get; set; }
-        public DbSet<Survey> Survey { get; set; }
-        public DbSet<Question> Question { get; set; }
-        public DbSet<AnswerOption> AnswerOptions { get; set; }
-        public DbSet<Answer> Answer { get; set; }
-        public DbSet<Response> Responses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Photo> Photo { get; set; }
-        public DbSet<Block> Block { get; set; }
         public DbSet<Message> Message { get; set; }
         public DataContext()
         {

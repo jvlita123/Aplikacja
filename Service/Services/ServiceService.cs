@@ -1,5 +1,4 @@
-﻿using Data.Entities;
-using Data.Repositories;
+﻿using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
@@ -7,22 +6,26 @@ namespace Service.Services
     public class ServiceService
     {
         private readonly ServiceRepository _serviceRepository;
+
         public ServiceService(ServiceRepository serviceRepository)
         {
             _serviceRepository = serviceRepository;
         }
+
         public List<Data.Entities.Service> GetAll()
         {
             List<Data.Entities.Service> services = _serviceRepository.GetAll().Include(x => x.ReservationSlots).ToList();
 
             return services;
         }
+
         public Data.Entities.Service GetById(int id)
         {
             Data.Entities.Service service = _serviceRepository.GetAll().Where(x => x.Id == id).FirstOrDefault();
 
             return service;
         }
+
         public Data.Entities.Service AddService(Data.Entities.Service service)
         {
             Data.Entities.Service newService = new Data.Entities.Service
@@ -38,6 +41,7 @@ namespace Service.Services
 
             return newService;
         }
+
         public Data.Entities.Service Edit(int id, Data.Entities.Service serviceUp)
         {
             Data.Entities.Service service = _serviceRepository.GetById(id);
@@ -54,6 +58,7 @@ namespace Service.Services
 
             return service;
         }
+
         public void Remove(int id)
         {
             _serviceRepository.RemoveById(id);

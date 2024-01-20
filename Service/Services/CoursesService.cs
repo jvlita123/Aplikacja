@@ -28,7 +28,7 @@ namespace Service.Services
 
         public Course GetById(int id)
         {
-            Course course = _coursesRepository.GetAll().Include(x => x.Cycles).Where(x=>x.Id==id).ToList().FirstOrDefault();
+            Course course = _coursesRepository.GetAll().Include(x => x.Cycles).Where(x => x.Id == id).ToList().FirstOrDefault();
 
             return course;
         }
@@ -48,13 +48,13 @@ namespace Service.Services
 
         public List<Course> GetUserCourses(int id)
         {
-            List<Course> courses = _coursesRepository.GetAll().Include(x=>x.Cycles).Include(x => x.Enrollments).ThenInclude(x=>x.User).Where(x => x.Enrollments.Where(x=>x.UserId==id).Count()>0).ToList();
-            foreach(var v in courses)
+            List<Course> courses = _coursesRepository.GetAll().Include(x => x.Cycles).Include(x => x.Enrollments).ThenInclude(x => x.User).Where(x => x.Enrollments.Where(x => x.UserId == id).Count() > 0).ToList();
+            foreach (var v in courses)
             {
                 v.Cycles = GetById(v.Id).Cycles;
             }
             return courses;
-        }        
+        }
 
         public List<User> GetCourseUsers(int courseId)
         {
@@ -64,12 +64,10 @@ namespace Service.Services
                 .Select(x => new User
                 {
                     Id = x.User.Id,
+                    Email = x.User.Email,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
-                    Photos = _photoRepository
-                        .GetAll()
-                        .Where(photo => photo.UserId == x.User.Id && photo.IsProfilePicture == true)
-                        .ToList()
+                    Photos = x.User.Photos
                 })
                 .ToList();
             return users;

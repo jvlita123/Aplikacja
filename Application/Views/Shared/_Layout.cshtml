@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Application</title>
     <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
     <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="shortcut icon" href="~/assets/images/favicon.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -176,7 +177,7 @@
                      @if (User.IsInRole("admin"))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation1">
+                            <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation">
                             <span class="menu-title">Reservations</span>
                             <i class="mdi mdi-medical-bag menu-icon"></i>
                         </a>
@@ -190,7 +191,7 @@
                         <div class="collapse" id="calendars-pages">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> 
-                                    <a class="nav-link" asp-area="" asp-action="Calendar" asp-controller="Reservation1" asp-route-id="">
+                                    <a class="nav-link" asp-area="" asp-action="Calendar" asp-controller="Reservation" asp-route-id="">
                                         Reservations Calendar 
                                     </a>
                                 </li>

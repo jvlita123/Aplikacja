@@ -2,7 +2,7 @@
 
 namespace Data.Entities;
 
-public partial class Enrollment
+public class Enrollment
 {
     public int Id { get; set; }
 

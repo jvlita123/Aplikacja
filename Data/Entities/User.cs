@@ -1,4 +1,5 @@
 ﻿using Data.Patterns;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public partial class User : INotifyPropertyChanged, IObserver
+public partial class User : IObserver
 {
     [Key]
     public int Id { get; set; }
@@ -31,24 +32,14 @@ public partial class User : INotifyPropertyChanged, IObserver
 
     public virtual ICollection<Attendance>? Attendances { get; set; }
 
-    [NotMapped]
-    public virtual ICollection<Block>? BlockBlockedUsers { get; set; }
+    public virtual ICollection<Enrollment>? Enrollments { get; set; } = new List<Enrollment>();
 
-    public virtual ICollection<Block>? Blocks { get; set; }
+    public virtual ICollection<Message>? Messages { get; set; } = new List<Message>();
 
-    public virtual ICollection<Enrollment>? Enrollments { get; set; }
+    public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
-    public virtual ICollection<Message>? Messages { get; set; }
+    public virtual ICollection<Reservation>? Reservations { get; set; }
 
-    public virtual ICollection<Photo>? Photos { get; set; }
-
-    public virtual ICollection<Reservation1>? Reservations { get; set; }
-
-    public virtual ICollection<Response>? Responses { get; set; }
-
-    public virtual ICollection<Survey>? Surveys { get; set; }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public virtual ObservableCollection<UserReservationSlots>? UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
 

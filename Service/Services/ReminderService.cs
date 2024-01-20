@@ -1,25 +1,18 @@
-﻿
-
-using Data.Entities;
+﻿using Data.Entities;
 using Data.Repositories;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Security.Claims;
 
 namespace Service.Services
 {
     public class ReminderService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-      //  private readonly IHttpContextAccessor _context;
 
-        public ReminderService(IServiceScopeFactory scopeFactory /*IHttpContextAccessor context*/)
+        public ReminderService(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-        //    this._context = context;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -34,7 +27,7 @@ namespace Service.Services
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var coursesStartingTomorrow = _courseRepository.GetAll()
-                        .Include(c => c.Cycles).Include(x=>x.Enrollments).ThenInclude(x=>x.User)
+                        .Include(c => c.Cycles).Include(x => x.Enrollments).ThenInclude(x => x.User)
                         .Where(c => c.Cycles.Any(cycle => cycle.StartDate.Date == DateTime.Today.AddDays(1))).ToList();
 
                     foreach (var course in coursesStartingTomorrow)
@@ -59,27 +52,6 @@ namespace Service.Services
                     }
                     await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
                 }
-            }
-        }
-
-
-        public static void HandleUserNotification(User user, string messageText, MessageRepository _messageRepository, User admin)
-        {
-            User firstUser = admin;
-            User secondUser = user;
-
-            if (firstUser != null && secondUser != null)
-            {
-                var message = new Message()
-                {
-                    UserId = firstUser.Id,
-                    UserId2 = secondUser.Id,
-                    Text = messageText,
-                    IsNew = true
-                };
-
-                _messageRepository.AddAndSaveChanges(message);
-
             }
         }
     }

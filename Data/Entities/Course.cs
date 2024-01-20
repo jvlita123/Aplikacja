@@ -16,5 +16,4 @@ public partial class Course
 
     public virtual ICollection<Enrollment>? Enrollments { get; set; }
 
-    public virtual ICollection<Survey>? Surveys { get; set; }
 }

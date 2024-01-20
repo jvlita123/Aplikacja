@@ -9,7 +9,7 @@
     IEnumerable<Cycle> cycles = (IEnumerable<Data.Entities.Cycle>)ViewData["allCycles"];
     IEnumerable<Status> statuses = (IEnumerable<Data.Entities.Status>)ViewData["statuses"];
     IEnumerable<Enrollment> enrollments = (IEnumerable<Data.Entities.Enrollment>)ViewData["enrollments"];
-    IEnumerable<Reservation1> reservations = (IEnumerable<Data.Entities.Reservation1>)ViewData["reservations"];
+    IEnumerable<Reservation> reservations = (IEnumerable<Data.Entities.Reservation>)ViewData["reservations"];
 }
 <link rel="stylesheet" href="~/css/AdminDashboard.css" />
 
@@ -117,7 +117,7 @@
             <img id="modalImage" src="" alt="Large Image" />
             @if (context.HttpContext.User.IsInRole("admin"))
             {
-                <form method="post" enctype="multipart/form-data" asp-controller="Reservation1" id="uploadphoto" asp-action="UploadFile1">
+                <form method="post" enctype="multipart/form-data" asp-controller="Reservation" id="uploadphoto" asp-action="UploadFile1">
                     <div class="mb-3">
                         <input class="form-control" type="file" name="uploadFile" id="uploadFile" />
                     </div>
@@ -167,7 +167,7 @@
 
         $("#myModal1").modal("show");
         $.ajax({
-            url: '/Reservation1/changeReservationStatus',
+            url: '/Reservation/changeReservationStatus',
             type: 'GET',
             data: { id: reservationId },
             success: function (data) {
@@ -180,7 +180,7 @@
                     var formData = $(this).serialize();
 
                     $.ajax({
-                        url: '/Reservation1/changeReservationStatus',
+                        url: '/Reservation/changeReservationStatus',
                         type: 'POST',
                         data: formData,
                         success: function (data) {
@@ -218,7 +218,7 @@
 
     function refreshTable(selectedStatus) {
         $.ajax({
-            url: '/Reservation1/getReservationsByStatus',
+            url: '/Reservation/getReservationsByStatus',
             type: 'GET',
             data: { status: selectedStatus },
             success: function (result) {
@@ -230,7 +230,7 @@
 
     function allReservations() {
         $.ajax({
-            url: '/Reservation1/getAll',
+            url: '/Reservation/getAll',
             type: 'GET',
             data: { status: selectedStatus },
             success: function (result) {

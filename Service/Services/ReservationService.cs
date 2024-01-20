@@ -1,4 +1,4 @@
-﻿/*using Data.Entities;
+﻿using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,68 +6,46 @@ namespace Service.Services
 {
     public class ReservationService
     {
-        private readonly ReservationRepository _reservationRepository;
+        private readonly ReservationRepository _reservation1Repository;
+        private readonly ReservationSlotsRepository _reservationSlotsRepository;
         private readonly UserRepository _userRepository;
         private readonly StatusRepository _statusRepository;
-        public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, StatusRepository statusRepository)
+        public ReservationService(ReservationRepository reservation1Repository, UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository)
         {
-            _reservationRepository = reservationRepository;
+            _reservation1Repository = reservation1Repository;
             _userRepository = userRepository;
             _statusRepository = statusRepository;
+            _reservationSlotsRepository = reservationSlotsRepository;
         }
 
         public List<Reservation> GetAll()
         {
-            List<Reservation> reservations = _reservationRepository.GetAll().Include(x => x.Status).Include(x => x.User.Role).Include(x => x.User).Include(x => x.Service)ToList();
+            List<Reservation> reservations = _reservation1Repository.GetAll().Include(x => x.Status).Include(x => x.User.Role).Include(x => x.User).Include(x => x.User.Photos).Include(x => x.Service).Include(x => x.ReservationSlot).ToList();
 
             return reservations;
         }
 
         public List<Reservation> GetReservationsByStatus(string status)
         {
-            List<Reservation> reservations = _reservationRepository.GetAll().Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Where(x => x.Status.Name == status).ToList();
+            List<Reservation> reservations = _reservation1Repository.GetAll().Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Include(x => x.ReservationSlot).Where(x => x.Status.Name == status).ToList();
             return reservations;
         }
 
-        public List<Reservation> GetConfirmed(User usr)
+        public List<Reservation> GetUserReservations(int id)
         {
-            List<Reservation> allUserReservations = GetUserReservations(usr);
-            var confirmed = allUserReservations.Where(x => x.Status != null && x.Status.Name == "Confirmed").ToList();
-            return confirmed;
-        }
+            if (id == null)
+            {
+                return new List<Reservation>();
+            }
 
-        public List<Reservation> GetFinished(User usr)
-        {
-            List<Reservation> allUserReservations = GetUserReservations(usr);
-            List<Reservation> finished = allUserReservations.Where(x => x.Status != null && x.Status.Name == "Finished").ToList();
-            return finished;
-        }
-
-        public List<Reservation> GetPending(User usr)
-        {
-            List<Reservation> allUserReservations = GetUserReservations(usr);
-            List<Reservation> finished = allUserReservations.Where(x => x.Status != null && x.Status.Name == "Pending").ToList();
-
-            return finished;
-        }
-
-        public List<Reservation> GetCancelled(User usr)
-        {
-            List<Reservation> allUserReservations = GetUserReservations(usr);
-            List<Reservation> cancelled = allUserReservations.Where(x => x.Status != null && x.Status.Name == "Cancelled").ToList();
-
-            return cancelled;
-        }
-
-        public List<Reservation> GetUserReservations(User usr)
-        {
+            var usr = _userRepository.GetById(id);
             if (usr.Role.Name == "admin")
             {
-                return _reservationRepository.GetAll().Include(x => x.Status).ToList();
+                return _reservation1Repository.GetAll().ToList();
             }
             else
             {
-                return _reservationRepository.GetAll().Include(x => x.Status).Where(x => x.UserId == usr.Id).ToList();
+                return _reservation1Repository.GetAll().ToList();
             }
         }
 
@@ -76,51 +54,79 @@ namespace Service.Services
             Reservation newReservation = new()
             {
                 UserId = reservation.UserId,
-                Start = reservation.Start,
-                End = reservation.End,
-                SecondaryColor = reservation.SecondaryColor,
                 PrimaryColor = reservation.PrimaryColor,
                 StatusId = reservation.StatusId,
                 Status = reservation.Status,
                 ServiceId = reservation.ServiceId,
                 Service = reservation.Service,
+                ReservationSlot = reservation.ReservationSlot,
+                ReservationSlotId = reservation.ReservationSlotId,
+                UserPhotoPath = reservation.UserPhotoPath,
                 Title = reservation.Title,
             };
+            _reservation1Repository.AddAndSaveChanges(newReservation);
+            _reservation1Repository.SaveChanges();
 
-            _reservationRepository.AddAndSaveChanges(newReservation);
+            ReservationSlots reservationSlot = _reservationSlotsRepository.GetById(newReservation.ReservationSlotId);
+            reservationSlot.IsAvailable = false;
+            reservationSlot.ReservationId = newReservation.Id;
 
-            return reservation;
+            _reservationSlotsRepository.Update(reservationSlot);
+            _reservationSlotsRepository.SaveChanges();
+
+            return newReservation;
         }
+
         public void RemoveReservation(int id)
         {
-            _reservationRepository.RemoveById(id);
-            _reservationRepository.SaveChanges();
+            var resSlotId = _reservation1Repository.GetById(id).ReservationSlotId;
+            int slotId = _reservationSlotsRepository.GetAll().Where(x => x.Id == resSlotId).First().Id;
+
+            _reservation1Repository.RemoveById(id);
+            _reservation1Repository.SaveChanges();
+
+            List<ReservationSlots> slots = _reservationSlotsRepository.GetAll().Where(x => x.Id == slotId).ToList();
+            foreach (ReservationSlots slot in slots)
+            {
+                slot.IsAvailable = true;
+            }
+            _reservationSlotsRepository.UpdateRangeAndSaveChanges(slots);
+
+        }
+        public Reservation UploadFile(string filePath, int id)
+        {
+            Reservation reservation = _reservation1Repository.GetAll().Where(x => x.Id == id).FirstOrDefault();
+            reservation.AdminPhotoPath = filePath;
+
+            _reservation1Repository.Update(reservation);
+            _reservation1Repository.SaveChanges();
+            return reservation;
         }
         public void UpdateReservation(Reservation updatedReservation)
         {
-            Reservation reservationToSave = _reservationRepository.GetById(updatedReservation.Id);
+            Reservation reservationToSave = _reservation1Repository.GetById(updatedReservation.Id);
 
-            reservationToSave.Start = updatedReservation.Start;
-            reservationToSave.End = updatedReservation.End;
             reservationToSave.Title = updatedReservation.Title;
             reservationToSave.PrimaryColor = updatedReservation.PrimaryColor;
-            reservationToSave.SecondaryColor = updatedReservation.SecondaryColor;
             reservationToSave.StatusId = updatedReservation.StatusId;
             reservationToSave.Status = updatedReservation.Status;
             reservationToSave.Service = updatedReservation.Service;
             reservationToSave.ServiceId = updatedReservation.ServiceId;
-            _reservationRepository.Update(reservationToSave);
+            reservationToSave.ReservationSlot = updatedReservation.ReservationSlot;
+            reservationToSave.ReservationSlotId = updatedReservation.ReservationSlotId;
 
-            _reservationRepository.UpdateAndSaveChanges(reservationToSave);
-            _reservationRepository.SaveChanges();
+            _reservation1Repository.Update(reservationToSave);
+
+            _reservation1Repository.UpdateAndSaveChanges(reservationToSave);
+            _reservation1Repository.SaveChanges();
+
         }
         public Reservation changeReservationStatus(int idReservation, int idStatus)
         {
-            Reservation reservation = _reservationRepository.GetById(idReservation);
+            Reservation reservation = _reservation1Repository.GetById(idReservation);
             reservation.StatusId = idStatus;
-            _reservationRepository.UpdateAndSaveChanges(reservation);
+            _reservation1Repository.UpdateAndSaveChanges(reservation);
             return reservation;
         }
     }
 }
-*/
