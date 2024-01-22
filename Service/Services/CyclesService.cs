@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
-
     public class CyclesService
     {
         private readonly CyclesRepository _cyclesRepository;

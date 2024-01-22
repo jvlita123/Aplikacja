@@ -1,4 +1,4 @@
-﻿using Data.Entities;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
@@ -23,6 +23,7 @@ namespace Application.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admin")]
         public ActionResult AddService()
         {
             return View();
@@ -30,6 +31,7 @@ namespace Application.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult AddService(Data.Entities.Service service)
         {
             if (!ModelState.IsValid)
@@ -42,6 +44,7 @@ namespace Application.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(Data.Entities.Service collection)
         {
             if (!ModelState.IsValid)
@@ -56,8 +59,8 @@ namespace Application.Controllers
             return Json(new { success = true, redirectUrl = Url.Action("Index", "Services") });
         }
 
-
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult Remove(int id)
         {
             _servicesService.Remove(id);

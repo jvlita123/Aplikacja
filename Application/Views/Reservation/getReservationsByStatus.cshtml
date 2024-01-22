@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<Data.Entities.Reservation>
-
 @foreach (var v in Model)
 {
     <tr>
@@ -13,7 +12,7 @@
         else
         {
             <td>
-                <img src="~/assets/images/faces/face1.jpg" class="me-2" alt="image">
+                <img src="~/images/blank-profile.png" alt="blankuser" height="40" width="40" />
                 @v.User.FirstName @v.User.LastName
             </td>
         }
@@ -23,12 +22,10 @@
                 @if (v.Status.Name == "Pending")
                 {
                     <label class="badge badge-gradient-warning btn">@v.Status.Name</label>
-
                 }
                 else if (v.Status.Name == "Confirmed")
                 {
                     <label class="badge badge-gradient-success btn">@v.Status.Name</label>
-
                 }
                 else
                 {
@@ -51,7 +48,7 @@
         <td>
             @if (string.IsNullOrEmpty(v.AdminPhotoPath?.ToString()))
             {
-                <span class="uploadphoto" data-reservation-id="@v.Id" >Photo not uploaded</span>
+                <span class="uploadphoto" data-reservation-id="@v.Id">Photo not uploaded</span>
             }
             else
             {
@@ -64,4 +61,3 @@
         <td> @v.ReservationSlot.Date.ToShortDateString(), @v.ReservationSlot.EndTime </td>
     </tr>
 }
-

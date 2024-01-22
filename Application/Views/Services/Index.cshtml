@@ -1,79 +1,79 @@
 ﻿@model IEnumerable<Data.Entities.Service>
 <style>
-    .table td:nth-child(2) {
+    .table td:nth-child(2) 
+    {
         white-space: normal;
         word-wrap: break-word;
     }
 </style>
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Services</h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Service time</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr class="service-info" data-row-id="@item.Id">
-                                <td>@item.Name</td>
-                                <td>@item.Description</td>
-                                <td>@item.ServiceTime</td>
-                                <td>
-                                    <a class="edit-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Services</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Service time</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="service-info" data-row-id="@item.Id">
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.ServiceTime</td>
+                            <td>
+                                <a class="edit-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
                                     <i class="mdi mdi-table-edit">
                                         Edit
                                     </i>
-                                    </a>
-                                    <a class="delete-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
-                                        <i class="mdi mdi-delete-forever">
-                                           Delete
-                                        </i>
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tr class="hidden-form" data-row-id="@item.Id" style="display:none">
-                                <form class="form-sample" asp-controller="Services" asp-action="Edit" method="post">
-                                    <input asp-for="@item.Id"  type="hidden" name="Id" />
-                                <td>
-                                    <div class="form-group">
-                                        <input asp-for="@item.Name" name="Name" class="form-control" />
+                                </a>
+                                <a class="delete-link" data-id="@item.Id" href="#" style="text-decoration:none; color:black">
+                                    <i class="mdi mdi-delete-forever">
+                                        Delete
+                                    </i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="hidden-form" data-row-id="@item.Id" style="display:none">
+                            <form class="form-sample" asp-controller="Services" asp-action="Edit" method="post">
+                                <input asp-for="@item.Id" type="hidden" name="Id" />
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@item.Name" name="Name" class="form-control" />
                                     <span asp-validation-for="@item.Name" class="text-danger"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input asp-for="@item.Description" name="Description" class="form-control" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@item.Description" name="Description" class="form-control" />
                                     <span asp-validation-for="@item.Description" class="text-danger"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input asp-for="@item.ServiceTime" name="ServiceTime" class="form-control" />
-                                        <span asp-validation-for="@item.ServiceTime"  class="text-danger"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@item.ServiceTime" name="ServiceTime" class="form-control" />
+                                    <span asp-validation-for="@item.ServiceTime" class="text-danger"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
                                     <input type="submit" value="Save" class="btn btn-primary saveEditButton" />
-                                        <button class="btn btn-secondary cancel-btn">Cancel</button> 
-                                    </div>
-                                </td>
-                                </form>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                    <button class="btn btn-secondary cancel-btn">Cancel</button>
+                                </div>
+                            </td>
+                            </form>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -107,6 +107,7 @@
         $formRow.toggle();
         $row.toggle();
     });
+
     $('.form-sample').submit(function (e) {
         e.preventDefault();
         var $form = $(this);
@@ -128,8 +129,6 @@
         });
     });
 
-
-
     $(document).on('click', '.cancel-btn', function (e) {
         e.preventDefault();
         $(this).closest('.hidden-form').hide();
@@ -137,6 +136,7 @@
 
         $(this).closest('.hidden-form').prev('.service-info').show();
     });
+
     $('.delete-link').on('click', function (e) {
         e.preventDefault();
         var itemId = $(this).data('id');
@@ -148,10 +148,12 @@
             $.ajax({
                 url: '/Services/Remove',
                 method: 'POST',
-                data: { id: itemId },
+                data: {
+                    id: itemId
+                },
                 success: function (response) {
                     console.log('Rekord usunięty pomyślnie');
-                    $rowToDelete.remove(); 
+                    $rowToDelete.remove();
                 },
                 error: function (error) {
                     console.error('Błąd podczas usuwania rekordu', error);

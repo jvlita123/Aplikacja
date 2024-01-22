@@ -4,7 +4,7 @@ namespace Data.Repositories
 {
     public class RoleRepository : BaseRepository<Role>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public RoleRepository(DataContext context) : base(context)
         {

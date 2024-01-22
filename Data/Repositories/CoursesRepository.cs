@@ -4,7 +4,7 @@ namespace Data.Repositories
 {
     public class CoursesRepository : BaseRepository<Course>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public CoursesRepository(DataContext context) : base(context)
         {

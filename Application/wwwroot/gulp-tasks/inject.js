@@ -6,10 +6,6 @@ var rename = require('gulp-rename');
 var prettify = require('gulp-prettify');
 var replace = require('gulp-replace');
 var merge = require('merge-stream');
-
-
-
-/* inject partials like sidebar and navbar */
 gulp.task('injectPartial', function () {
     var injPartial1 =  gulp.src("./pages/**/*.html", { base: "./" })
       .pipe(injectPartials())
@@ -20,9 +16,6 @@ gulp.task('injectPartial', function () {
     return merge(injPartial1, injPartial2);
   });
 
-
-
-/* inject Js and CCS assets into HTML */
 gulp.task('injectAssets', function () {
     return gulp.src(["./**/*.html"])
         .pipe(inject(gulp.src([
@@ -36,7 +29,6 @@ gulp.task('injectAssets', function () {
             relative: true
         }))
         .pipe(inject(gulp.src([
-            // './assets/css/shared/style.css',
             './assets/js/off-canvas.js',
             './assets/js/hoverable-collapse.js',
             './assets/js/misc.js',
@@ -48,9 +40,6 @@ gulp.task('injectAssets', function () {
         .pipe(gulp.dest('.'));
 });
 
-
-
-/*replace image path and linking after injection*/
 gulp.task('replacePath', function () {
     var replacePath1 = gulp.src('pages/**/*.html', {
             base: "./"
@@ -79,5 +68,4 @@ gulp.task('html-beautify', function () {
         }));
 });
 
-/*sequence for injecting partials and replacing paths*/
 gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'html-beautify', 'replacePath'));

@@ -30,8 +30,8 @@ namespace Application.Controllers
             return View(enrollments);
         }
 
-        [Authorize]
         [HttpGet]
+        [Authorize]
         public PartialViewResult NewEnrollment(int id)
         {
             var emails = new SelectList(_userService.GetAll().Select(x => x.Email).ToList());
@@ -59,14 +59,16 @@ namespace Application.Controllers
                 _enrollmentService.NewEnrollment(enrollment);
                 return RedirectToAction("Index", "Courses");
             }
-            TempData["Message"] = "You are already enrolled in this course.";
-
-            if (HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "admin")
+            else
             {
-                TempData["Message"] = "This user is already enrolled in this course.";
-            }
-            return RedirectToAction("Index", "Courses");
+                string message = "You are already enrolled in this course.";
 
+                if (HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "admin")
+                {
+                    message = "This user is already enrolled in this course.";
+                }
+                return BadRequest(message);
+            }
         }
     }
 }

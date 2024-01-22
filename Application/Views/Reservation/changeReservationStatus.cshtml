@@ -1,19 +1,33 @@
 ﻿@model Data.Entities.Reservation
-    <div class="col-md-4">
-        <form asp-action="changeReservationStatus" class="form">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input name="id" id="id" class="form-control" type="hidden" value="@ViewBag.ReservationId" />
-            </div>
-            <div class="form-group">
-                <label name="status" status="status" class="control-label">Status</label>
-                <select name="status" status="status" class="form-control" asp-items="ViewBag.StatusList"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<style>
+   .form-control 
+   {
+   border-radius: 50px !important;
+   width: 230px;
+   }
+   .form-control:focus 
+   {
+   border-color: rgb(182 109 255);
+   outline: 0;
+   box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
+   }
+</style>
+
+<div style="align-content:center;text-align:center">
+    <form asp-action="changeReservationStatus" class="form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input name="id" id="id" class="form-control" type="hidden" value="@ViewBag.ReservationId" />
+        </div>
+        <div class="form-group">
+            <label name="status" status="status" class="control-label">Status</label>
+            <select name="status" status="status" class="form-control" asp-items="ViewBag.StatusList"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn-rounded btn btn-outline-primary" />
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     @{

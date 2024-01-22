@@ -1,9 +1,6 @@
 ﻿using Data.Patterns;
-using System.Collections;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
@@ -43,22 +40,22 @@ public partial class User : IObserver
 
     public virtual ObservableCollection<UserReservationSlots>? UserReservationSlots { get; set; } = new ObservableCollection<UserReservationSlots>();
 
-    public event Action<User, string>? NotifyUserEvent; 
+    public event Action<User, string>? NotifyUserEvent;
 
     public void Update(ISubject subject)
     {
-        if(subject is ReservationSlots ReservationSlots)
+        if (subject is ReservationSlots ReservationSlots)
         {
             ReservationSlots reservationSlots = (ReservationSlots)subject;
             string message;
 
             if (reservationSlots.IsAvailable == true)
             {
-            message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is available again.";
+                message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is available again.";
             }
             else
             {
-            message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is unavailable again.";
+                message = $"{reservationSlots.Date.ToShortDateString()} {reservationSlots.StartTime} - {reservationSlots.EndTime} is unavailable again.";
             }
             NotifyUserEvent?.Invoke(this, message);
         }

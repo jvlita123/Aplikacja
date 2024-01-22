@@ -3,8 +3,6 @@
 	<ItemGroup>
 	  <None Include="wwwroot\assets\css\style.css" />
 	  <None Include="wwwroot\assets\css\style.css.map" />
-	  <None Include="wwwroot\assets\images\favicon.ico" />
-	  <None Include="wwwroot\assets\images\favicon.png" />
 	  <None Include="wwwroot\assets\js\chart.js" />
 	  <None Include="wwwroot\assets\js\dashboard.js" />
 	  <None Include="wwwroot\assets\js\file-upload.js" />
@@ -12,8 +10,6 @@
 	  <None Include="wwwroot\assets\js\jquery.cookie.js" />
 	  <None Include="wwwroot\assets\js\misc.js" />
 	  <None Include="wwwroot\assets\js\off-canvas.js" />
-	  <None Include="wwwroot\assets\js\todo.js" />
-	  <None Include="wwwroot\assets\js\todolist.js" />
 	  <None Include="wwwroot\assets\scss\components\_badges.scss" />
 	  <None Include="wwwroot\assets\scss\components\_bootstrap-progress.scss" />
 	  <None Include="wwwroot\assets\scss\components\_breadcrumbs.scss" />
@@ -80,8 +76,10 @@
   <ItemGroup>
     <PackageReference Include="BootstrapIcons.AspNetCore" Version="1.9.2" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="FormHelper" Version="5.0.0" />
     <PackageReference Include="fullcalendar" Version="3.9.0" />
     <PackageReference Include="jQuery.Fullcalendar" Version="3.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
       <PrivateAssets>all</PrivateAssets>

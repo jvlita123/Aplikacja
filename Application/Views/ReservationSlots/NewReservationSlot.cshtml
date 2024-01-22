@@ -3,41 +3,40 @@
     var services = (IEnumerable<Data.Entities.Service>)ViewData["services"];
     var selectedDate = ((DateTime)ViewData["selectedDate"]).ToString("yyyy-MM-dd");
 }
-
-    <div class="col-md-4">
-        <form asp-action="NewReservationSlot">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label">Service </label>
-                <select id="ServiceId" asp-for="ServiceId" class="form-control" onchange="handleServiceChange(this)">
-                    @foreach (var service in services)
-                    {
-                        <option value="@service.Id" data-service-time="@service.ServiceTime">@service.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <input asp-for="Date" id="selectedDate" class="form-control" value="@selectedDate" readonly type="hidden" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Hour: </label>
-                <input class="form-control" type="time" id="selectedTime" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Start: </label>
-                <input id="StartTime" asp-for="StartTime" class="form-control" readonly />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">End: </label>
-                <input id="EndTime" asp-for="EndTime" class="form-control" readonly />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="col-md-4">
+    <form asp-action="NewReservationSlot">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Service </label>
+            <select id="ServiceId" asp-for="ServiceId" class="form-control" onchange="handleServiceChange(this)">
+                @foreach (var service in services)
+                {
+                    <option value="@service.Id" data-service-time="@service.ServiceTime">@service.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <input asp-for="Date" id="selectedDate" class="form-control" value="@selectedDate" readonly type="hidden" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Hour: </label>
+            <input class="form-control" type="time" id="selectedTime" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Start: </label>
+            <input id="StartTime" asp-for="StartTime" class="form-control" readonly />
+            <span asp-validation-for="StartTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">End: </label>
+            <input id="EndTime" asp-for="EndTime" class="form-control" readonly />
+            <span asp-validation-for="EndTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
 
 <script>
     var serviceTime;
@@ -46,9 +45,6 @@
         var selectedValue = selectElement.value;
         var selectedOption = selectElement.options[selectElement.selectedIndex];
         serviceTime = selectedOption.getAttribute('data-service-time');
-
-        console.log("Selected value: " + selectedValue);
-        console.log("Service time: " + serviceTime);
     }
 
     var selectedDateInput = document.getElementById('selectedDate');
@@ -59,10 +55,7 @@
     $('#selectedTime').change(function () {
         var selectedTime = selectedTimeInput.value;
         var serviceId = $('#ServiceId').val();
-        console.log("Service time: " + serviceTime);
         var serviceTime1 = serviceTime.split(':').map(Number);
-        console.log("serviceTime1111: " + serviceTime);
-
         var startTime = selectedTime;
 
         var [selectedHours, selectedMinutes] = selectedTime.split(':').map(Number);
@@ -75,7 +68,6 @@
         endMinutes %= 60;
 
         var endTime = `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
-
 
         startTimeInput.value = startTime;
         endTimeInput.value = endTime;

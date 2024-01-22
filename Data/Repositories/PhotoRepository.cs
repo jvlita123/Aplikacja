@@ -4,7 +4,7 @@ namespace Data.Repositories
 {
     public class PhotoRepository : BaseRepository<Photo>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public PhotoRepository(DataContext context) : base(context)
         {

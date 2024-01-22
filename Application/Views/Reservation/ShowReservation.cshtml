@@ -27,8 +27,7 @@
         </dd>
 </div>
 
-<button id="deleteReservationBtn" class="btn btn-danger">Delete</button>
-
+<button id="deleteReservationBtn" class="btn-rounded btn btn-outline-danger">Delete</button>
 <div class="modal fade" id="deleteConfirmationModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -46,19 +45,21 @@
     </div>
 </div>
 
-
 <script>
     $('#deleteReservationBtn').on('click', function () {
-        $('#deleteConfirmationModal').modal('show');
-    });
 
+        $('#emptyModal').modal('hide');
+        $('#removeModal').modal('show');
+    });
 
     $('#confirmDeleteBtn').on('click', function () {
         var reservationId = @Model.Id;
         $.ajax({
             url: '/Reservation/RemoveReservation',
             type: 'POST',
-            data: { id: reservationId },
+            data: {
+                id: reservationId
+            },
             success: function (data) {
                 window.location.href = '/Reservation/Calendar';
             }
@@ -66,7 +67,7 @@
     });
 
     $('#cancelDeleteBtn').on('click', function () {
-        $('#deleteConfirmationModal').modal('hide');
+        $('#removeModal').modal('hide');
     });
 </script>
 

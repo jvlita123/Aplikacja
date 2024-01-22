@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Add Service";
 }
+
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
@@ -10,8 +11,7 @@
                 <div class="col-md-4">
                     <form asp-action="AddService">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="
-">
+                        <div class="">
                             <label asp-for="Name" class="control-label"></label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>

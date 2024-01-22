@@ -2,7 +2,6 @@
 using Data.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
 
 namespace Data.Validators
 {
@@ -17,11 +16,13 @@ namespace Data.Validators
             _passwordHasher = passwordHasher;
 
             RuleFor(x => x.Email)
-                .EmailAddress().WithMessage("Invalid email address.");
+                .NotEmpty()
+                .EmailAddress().WithMessage("Invalid email address");
 
             RuleFor(x => x.Password)
+                .NotEmpty()
                 .Must((dto, password) => BeValidUser(dto.Email, password))
-                .WithMessage("Invalid email or password.");
+                .WithMessage("Invalid email or password");
         }
 
         private bool BeValidUser(string email, string password)

@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
     <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="shortcut icon" href="~/assets/images/favicon.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src='~/fullCalendar/dist/index.global.js'></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,7 +20,7 @@
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" asp-controller="Home" asp-action="Home">
-                    <img src="~/assets/images/logo.png" style="height:max-content" alt="logo" />                    
+                    <img src="~/assets/images/logo.png" style="height:max-content" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" asp-controller="Home" asp-action="Home"><img style="height:35px;width:35px " src="~/assets/images/minilogo.png" alt="logo" /></a>
             </div>
@@ -30,9 +29,9 @@
                     <span class="mdi mdi-menu"></span>
                 </button>
                 <ul class="navbar-nav navbar-nav-right">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                    <li class="nav-item nav-profile dropdown">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item nav-profile dropdown">
                             <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="nav-profile-img">
                                     @if (User.FindFirst("ProfilePhotoPath").Value.ToString().Length >= 3)
@@ -46,9 +45,9 @@
                                         <span class="availability-status offline"></span>
                                     }
                                 </div>
-                                    <div class="nav-profile-text">
-                                        <p class="mb-1 text-black">@User.FindFirst("FullName").Value</p>
-                                    </div>
+                                <div class="nav-profile-text">
+                                    <p class="mb-1 text-black">@User.FindFirst("FullName").Value</p>
+                                </div>
                             </a>
                             <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
                                 <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="MyUser">
@@ -59,39 +58,39 @@
                                     <i class="mdi mdi-logout me-2 text-primary"></i> Signout
                                 </a>
                             </div>
-                    </li>
-                        }
-                         else
-                        {
+                        </li>
+                    }
+                    else
+                    {
                         <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link btn" asp-area="" asp-controller="Account" asp-action="LoginPage" >
+                            <a class="nav-link btn" asp-area="" asp-controller="Account" asp-action="LoginPage">
                                 <div class="nav-profile-text">
                                     <p class="mb-1 text-black">Sign in</p>
                                 </div>
                             </a>
                         </li>
-                        }
+                    }
                     <li class="nav-item d-none d-lg-block full-screen-link">
                         <a class="nav-link">
                             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
                         </a>
                     </li>
-                       @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item d-none d-lg-block">
                             <a class="nav-link" asp-area="" asp-action="GetConversation" asp-controller="Message" asp-route-id="" id="messageDropdown">
                                 <i class="mdi mdi-email-outline"></i>
                                 @if (User.Identity.IsAuthenticated && User.FindFirst("newMessage").Value.ToLower() == "true")
                                 {
-                                    <span style="color:darkred; float:top" class="mdi mdi-alert-circle"></span>
+                                    <span style="color:darkred;" class="mdi mdi-alert-circle"></span>
                                 }
                             </a>
                         </li>
                         <li class="nav-item nav-logout d-none d-lg-block">
                             <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">
-                            <i class="mdi mdi-power"></i>
-                        </a>
-                    </li>
+                                <i class="mdi mdi-power"></i>
+                            </a>
+                        </li>
                     }
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
@@ -108,7 +107,6 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     var customClaimValue = User.FindFirst("ProfilePhotoPath").Value;
-
                                     @if (customClaimValue.ToString().Length >= 3)
                                     {
                                         <img src="~/images/@customClaimValue" alt="Profile" />
@@ -125,8 +123,7 @@
                             }
                         </a>
                     </li>
-
-                      @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-action="AdminDashboard" asp-controller="User" asp-route-id="">
@@ -142,10 +139,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-action="Index" asp-controller="MakeUpCreator" asp-route-id="">
-                            <span class="menu-title">MakeUp Creator</span>
-                            <i class="mdi mdi-brush menu-icon"></i>
-                        </a>
-                    </li>}
+                                <span class="menu-title">MakeUp Creator</span>
+                                <i class="mdi mdi-brush menu-icon"></i>
+                            </a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#courses-pages" aria-expanded="false" aria-controls="courses-pages">
                             <span class="menu-title">Courses</span>
@@ -159,7 +157,7 @@
                                         Courses
                                     </a>
                                 </li>
-                                   @if (User.Identity.IsAuthenticated)
+                                @if (User.Identity.IsAuthenticated)
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-action="GetUserCourses" asp-controller="Courses">
@@ -168,20 +166,22 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Attendances" asp-route-id="">
-                                        Attendances
-                                    </a>
-                                </li>}
+                                            Attendances
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </div>
                     </li>
-                     @if (User.IsInRole("admin"))
+                    @if (User.IsInRole("admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Reservation">
-                            <span class="menu-title">Reservations</span>
-                            <i class="mdi mdi-medical-bag menu-icon"></i>
-                        </a>
-                    </li>}
+                                <span class="menu-title">Reservations</span>
+                                <i class="mdi mdi-medical-bag menu-icon"></i>
+                            </a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#calendars-pages" aria-expanded="false" aria-controls="calendars-pages">
                             <span class="menu-title">Calendar</span>
@@ -190,22 +190,23 @@
                         </a>
                         <div class="collapse" id="calendars-pages">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> 
+                                <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-action="Calendar" asp-controller="Reservation" asp-route-id="">
-                                        Reservations Calendar 
+                                        Reservations Calendar
                                     </a>
                                 </li>
-                                  @if (User.IsInRole("admin"))
+                                @if (User.IsInRole("admin"))
                                 {
-                                    <li class="nav-item"> 
+                                    <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-action="SlotsCalendar" asp-controller="ReservationSlots" asp-route-id="">
                                             Service Hours Calendar
-                                    </a>
-                                </li>}
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </div>
                     </li>
-                       @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="collapse" href="#" data-bs-target="#services-pages" aria-expanded="false" aria-controls="services-pages">
@@ -215,12 +216,12 @@
                             </a>
                             <div class="collapse" id="services-pages">
                                 <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item"> 
+                                    <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-action="AddService" asp-controller="Services" asp-route-id="">
-                                            Add Service 
+                                            Add Service
                                         </a>
                                     </li>
-                                    <li class="nav-item"> 
+                                    <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-action="Index" asp-controller="Services">
                                             Services
                                         </a>
@@ -239,45 +240,120 @@
             </nav>
             <div class="main-panel">
                 <div class="content-wrapper">
-                   @RenderBody()
+                    <div class="modal fade " id="errorModal" data-backdrop="static" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-header">
+                                    <img title="https://www.freepik.com/free-vector/computer-user-human-character-program-windows_17257364.htm#page=2&query=error&position=14&from_view=search&track=ais&uuid=4ecfdda4-b13e-4f99-8870-21bc4704682a" style="width:300px;height:auto;" src="~/images/2004.i402.017_computer_users_flat_icons-01.jpg" />
+                                </div>
+                                <div class="modal-body" id="errorModalBodyId">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="questionModal" data-backdrop="static" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-header">
+                                    <img src="~/images/7630396.jpg" title="https://www.freepik.com/free-vector/curiosity-search-concept-illustration_29979654.htm#query=question&position=41&from_view=search&track=ais&uuid=0442ab92-5f1f-4a41-8f98-a9ef134d8ffd" style="width:300px;height:auto;" />
+                                </div>
+                                <div class="modal-body" id="questionModalBodyId">
+                                </div>
+                                <div class="modal-footer" id="questionModalFooterId">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade " id="notificationModal" data-backdrop="static" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-header">
+                                    <img src="~/images/8608661.jpg" title="https://www.freepik.com/free-vector/megaphone-concept-illustration_38321940.htm#page=2&query=notification%20icon&position=42&from_view=search&track=ais&uuid=be249260-b792-4df6-b5b4-2ed284d7a887" style="width:300px;height:auto;" />
+                                </div>
+                                <div class="modal-body" id="notificationModalBodyId">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade " id="removeModal" data-backdrop="static" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-header">
+                                    <img src="~/images/Wavy_Bus-26_Single-11.jpg" title="https://www.freepik.com/free-vector/removing-goods-from-basket-refusing-purchase-changing-decision-item-deletion-emptying-trash-online-shopping-app-laptop-user-cartoon-character-vector-isolated-concept-metaphor-illustration_12083608.htm#query=delete&position=1&from_view=search&track=sph&uuid=407ce3f8-6c89-4550-bf61-6095f468f649" style="width:240px;height:auto;" />
+                                </div>
+                                <div class="modal-body" id="removeModalBodyId">
+                                    <h5></h5>
+                                    <p></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="confirmDeleteBtn" class="btn  btn-rounded btn btn-outline-danger" data-dismiss="modal">Yes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade " id="successModal" data-backdrop="static" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-header">
+                                    <img src="~/images/Wavy_Tech-10_Single-02.jpg" title="https://www.freepik.com/free-vector/data-initiative-abstract-concept-illustration_12290882.htm#query=goal&position=35&from_view=search&track=ais&uuid=fc328def-b3ad-4cd3-bd75-c5933dcfe7a1" style="width:300px;height:auto;" />
+                                </div>
+                                <div class="modal-body" id="successModalBodyId">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="emptyModal" data-backdrop="static" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" id="emptyModalContentId" style="background-color:white;text-align:center;align-items:center">
+                                <div class="modal-body" id="emptyModalBodyId">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @RenderBody()
                 </div>
                 <footer class="footer">
                     <div class="container-fluid d-flex justify-content-between">
-                        <span class="text-muted d-block text-center text-sm-start d-sm-inline-block">Copyright © BeautyApp</span>
+                        <span class="text-muted d-block text-center text-sm-start d-sm-inline-block">
+                            Copyright © BeautyApp Images:
+                            <a href="https://www.freepik.com/free-vector/computer-user-human-character-program-windows_17257364.htm#page=2&query=error&position=14&from_view=search&track=ais&uuid=4ecfdda4-b13e-4f99-8870-21bc4704682a">Image by macrovector</a> on Freepik
+                            <a href="https://www.freepik.com/free-vector/curiosity-search-concept-illustration_29979654.htm#query=question&position=41&from_view=search&track=ais&uuid=0442ab92-5f1f-4a41-8f98-a9ef134d8ffd">Image by storyset</a> on Freepik
+                            <a href="https://www.freepik.com/free-vector/megaphone-concept-illustration_38321940.htm#page=2&query=notification%20icon&position=42&from_view=search&track=ais&uuid=be249260-b792-4df6-b5b4-2ed284d7a887">Image by storyset</a> on Freepik
+                            <a href="https://www.freepik.com/icon/checked_190411#fromView=search&term=success&track=ais&page=1&position=22&uuid=774f5553-a51f-4392-8585-39add9e10f4e">Icon by Roundicons</a>
+                            <a href="https://www.freepik.com/free-vector/data-initiative-abstract-concept-illustration_12290882.htm#query=goal&position=35&from_view=search&track=ais&uuid=fc328def-b3ad-4cd3-bd75-c5933dcfe7a1">Image by vectorjuice</a> on Freepik
+                            <a href="https://www.freepik.com/free-vector/removing-goods-from-basket-refusing-purchase-changing-decision-item-deletion-emptying-trash-online-shopping-app-laptop-user-cartoon-character-vector-isolated-concept-metaphor-illustration_12083608.htm#query=delete&position=1&from_view=search&track=sph&uuid=407ce3f8-6c89-4550-bf61-6095f468f649">Image by vectorjuice</a> on Freepik
+                        </span>
                     </div>
                 </footer>
             </div>
         </div>
     </div>
-   <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="~/assets/js/off-canvas.js"></script>
     <script src="~/assets/js/hoverable-collapse.js"></script>
     <script src="~/assets/js/misc.js"></script>
 </body>
 </html>
 
-@*<div class="modal" tabindex="-1" role="dialog" id="myModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 id = "modaltitle"class="modal-title"></h5>
-                <span aria-hidden="true">
-                    <button type="button" id="closeModal" class="btn-close" data-dismiss="modal" aria-label="Close">
-                    </button>
-                </span>
-            </div>
-            <div class="modal-body " id="editReservationContent">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary registerBtn" data-dismiss="modal">Register</button>
-            </div>
-        </div>
-    </div>
-</div>*@
-
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 <script>
-
-
+    $(document).mouseup(function (e) {
+        var modal = $("#errorModal");
+        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+            $("#errorModal").modal('hide');
+        }
+        var modal = $("#notificationModal");
+        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+            $("#notificationModal").modal('hide');
+        }                
+        var modal = $("#successModal");
+        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+            $("#successModal").modal('hide');
+        }
+        var modal = $("#emptyModal");
+        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+            $("#emptyModal").modal('hide');
+        }
+    });
 </script>

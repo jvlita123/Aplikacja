@@ -17,41 +17,41 @@
     }
 </style>
 
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">My Courses</h4>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Enrollment Date</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Title)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Description)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Enrollments.Where(x=>x.User.Email == context.HttpContext.User.Identity.Name).First().EnrollmentDate)
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <a style="text-decoration:none; float:center; display:block;" asp-action="GetCourse" asp-route-id="@item.Id">Details</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+ <div class="col-12 grid-margin">
+     <div class="card">
+         <div class="card-body">
+             <h4 class="card-title">My Courses</h4>
+             <div class="table-responsive">
+                 <table class="table">
+                     <thead>
+                         <tr>
+                             <th>Title</th>
+                             <th>Description</th>
+                             <th>Enrollment Date</th>
+                             <th></th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         @foreach (var item in Model)
+                         {
+                             <tr>
+                                 <td>
+                                     @Html.DisplayFor(modelItem => item.Title)
+                                 </td>
+                                 <td>
+                                     @Html.DisplayFor(modelItem => item.Description)
+                                 </td>
+                                 <td>
+                                     @Html.DisplayFor(modelItem => item.Enrollments.Where(x=>x.User.Email == context.HttpContext.User.Identity.Name).First().EnrollmentDate)
+                                 </td>
+                                 <td class="align-middle text-center">
+                                     <a style="text-decoration:none; display:block;" asp-action="GetCourse" asp-route-id="@item.Id">Details</a>
+                                 </td>
+                             </tr>
+                         }
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     </div>
+ </div>

@@ -3,26 +3,53 @@
 @{
     ViewData["Title"] = "NewEnrollment";
 }
-    <div class="col-md-4">
-        <form asp-action="NewEnrollment">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @if (@context.HttpContext.User.IsInRole("admin"))
-               { <div class="form-group">
-                    <label class="control-label">Select a user to enroll in this course</label>
-                    <select name="userEmail" id="userEmail" class="form-control" asp-items="ViewBag.Emails"></select>
-                </div>
-            }
-            else{
-                <div class="form-group">
-                    <input name="userEmail" id="userEmail" class="form-control" value ="@context.HttpContext.User.Identity.Name" type="hidden" readonly/>
-                </div>
-            }
+<div class="col-md-4">
+    <form asp-action="NewEnrollment" id="enrollmentForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (@context.HttpContext.User.IsInRole("admin"))
+        {
             <div class="form-group">
-                <input name="courseId" id="courseId" class="form-control" value="@ViewBag.course"  type="hidden"readonly />
+                <label class="control-label">Select a user to enroll in this course</label>
+                <select name="userEmail" id="userEmail" class="form-control" asp-items="ViewBag.Emails"></select>
             </div>
+        }
+        else
+        {
             <div class="form-group">
-                <input type="submit" value="Enroll" class="btn btn-primary" />
+                <input name="userEmail" id="userEmail" class="form-control" value="@context.HttpContext.User.Identity.Name" type="hidden" readonly />
             </div>
-        </form>
-    </div>
+        }
+        <div class="form-group">
+            <input name="courseId" id="courseId" class="form-control" value="@ViewBag.course" type="hidden" readonly />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Enroll" class="btn-rounded btn btn-outline-primary" />
+        </div>
+    </form>
+</div>
 
+<script>
+    $(document).ready(function () {
+        $('#enrollmentForm').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Enrollment/NewEnrollment',
+                type: 'POST',
+                data: $('#enrollmentForm').serialize(),
+                success: function (data) {
+                    $('#emptyModal').modal('hide');
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errorMessage = xhr.responseText;
+                        console.log(errorMessage);
+                        $('#errorModalBodyId').text(errorMessage);
+                        $('#emptyModal').modal('hide');
+                        $('#errorModal').modal('show');
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -41,9 +41,7 @@
     margin-bottom: 15px;
     font-weight:100;
 }
-/*p{
-    font-size:10px;
-}*/
+
 .cycle-button {
     margin-right: 5px;
     margin-bottom: 5px;
@@ -71,7 +69,7 @@
 }
 .btn-info{
     padding:4px !important;
-        font-size:10px;
+    font-size:10px;
 
 }
 .deleteCourseButton{
@@ -81,6 +79,5 @@
 }
 .btn-success{
     padding:5px !important;
-        font-size:10px;
-
+    font-size:10px;
 }

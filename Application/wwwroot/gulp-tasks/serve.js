@@ -7,7 +7,6 @@ var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
-// const del = require('del');
 
 
 gulp.task('sass', function () {
@@ -32,7 +31,6 @@ gulp.task('sass', function () {
         .pipe(browserSync.stream());
 });
 
-// Static Server + watching scss/html files
 gulp.task('serve', gulp.series('sass', function () {
 
     browserSync.init({
@@ -52,10 +50,6 @@ gulp.task('serve', gulp.series('sass', function () {
 gulp.task('sass:watch', function () {
     gulp.watch('./assets/scss/**/*.scss');
 });
-
-
-
-// Static Server without watching scss files
 gulp.task('serve:lite', function () {
 
     browserSync.init({

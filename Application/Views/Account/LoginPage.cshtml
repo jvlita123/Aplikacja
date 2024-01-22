@@ -6,11 +6,9 @@
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1001; /* Umieść treść modala na wierzchu tła */
+        z-index: 1001;
     }
 
-
-    /* Styl dla przycisku zamknięcia modala */
     #closeModal {
         position: absolute;
         top: 10px;
@@ -19,29 +17,27 @@
         cursor: pointer;
     }
 
-    /* Styl dla tła modala */
     #modalBackground {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Kolor tła z przezroczystością */
-        z-index: 1000; /* Umieść tło pod treścią modala */
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* Styl dla tła z efektem blur */
     #blurredBackground {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        backdrop-filter: blur(5px); /* Dodaj efekt blur */
-        z-index: 999; /* Umieść tło z blur na niższym poziomie niż tło modala */
+        backdrop-filter: blur(5px); 
+        z-index: 999; 
     }
 
     .rounded {
@@ -49,13 +45,12 @@
         width: 230px;
     }
 
-        .rounded:focus {
-            border-color: rgb(182 109 255);
-            outline: 0;
-            box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
-        }
+    .rounded:focus {
+        border-color: rgb(182 109 255);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
+    }
 </style>
-<!-- Dodaj to do sekcji "Login" -->
 
 <div id="blurredBackground"></div>
 <div id="modalBackground" >

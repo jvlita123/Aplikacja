@@ -7,11 +7,10 @@ namespace Service.Services
     public class AttendanceService
     {
         private readonly AttendanceRepository _attendanceRepository;
-        private readonly CyclesRepository _cyclesRepository;
-        public AttendanceService(AttendanceRepository attendanceRepository, CyclesRepository cyclesRepository)
+
+        public AttendanceService(AttendanceRepository attendanceRepository)
         {
             _attendanceRepository = attendanceRepository;
-            _cyclesRepository = cyclesRepository;
         }
 
         public List<Attendance> GetAll()

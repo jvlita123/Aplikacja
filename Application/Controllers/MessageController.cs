@@ -24,7 +24,7 @@ namespace Application.Controllers
         {
             User? user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             _messageService.SendMessage(user.Id, UserId2, Text);
-            
+
             var user1 = HttpContext.User;
 
             if (user1 != null)
@@ -44,20 +44,23 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetUserConversations()
         {
             User user = _userService.GetByEmail(HttpContext.User.Identity.Name);
             List<User> userConversation = _messageService.GetUserConversations(user.Id);
-            return PartialView("GetUserConversations",userConversation);
+            return PartialView("GetUserConversations", userConversation);
         }
 
         [HttpPost]
+        [Authorize]
         public ViewResult GetConversation()
         {
             return View();
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetConversation")]
         public IActionResult GetConversation(int id)
         {
@@ -88,7 +91,7 @@ namespace Application.Controllers
             ViewData["allusers"] = allAppUsers;
             ViewData["user2"] = user2;
             ViewData["user1"] = user;
-     
+
             return View(conversation);
         }
     }

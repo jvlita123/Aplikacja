@@ -24,7 +24,7 @@ namespace Data.Validators
                     var emailInUse = dataContext.User.Any(u => u.Email == value);
                     if (emailInUse)
                     {
-                        context.AddFailure("Email", "That email is taken");
+                        context.AddFailure("Email", "Email '" + value + "' is already taken");
                     }
                 });
         }

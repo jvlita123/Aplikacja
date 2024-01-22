@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Data.Entities;
 
 public partial class Cycle
@@ -16,11 +15,11 @@ public partial class Cycle
     public int? CourseId { get; set; }
 
     public string? SourcePath { get; set; }
-    
+
     public bool IsNotificationSent { get; set; }
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
-   
+
     [ForeignKey("CourseId")]
     public virtual Course? Course { get; set; }
 

@@ -4,7 +4,7 @@ namespace Data.Repositories
 {
     public class ServiceRepository : BaseRepository<Entities.Service>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public ServiceRepository(DataContext context) : base(context)
         {

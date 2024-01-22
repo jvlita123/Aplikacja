@@ -1,11 +1,4 @@
 ﻿using Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Dto_s
 {
@@ -20,13 +13,14 @@ namespace Data.Dto_s
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime? UserDateOfBirth { get; set; }
 
         public string? RoleName { get; set; }
 
         public string? ProfilePhoto { get; set; }
 
         public List<string>? Photos { get; set; }
+
         public List<Message>? Messages { get; set; }
     }
 }

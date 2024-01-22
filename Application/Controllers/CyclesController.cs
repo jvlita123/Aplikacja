@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -30,18 +31,21 @@ namespace Application.Controllers
             return View(_cyclesService.GetAll());
         }
 
+        [Authorize]
         public List<Cycle> GetCyclesForCourse(int courseId)
         {
             var cycles = _cyclesService.GetAll().Where(x => x.CourseId == courseId).ToList();
             return cycles;
         }
 
+        [Authorize]
         public PartialViewResult GetCycle(int id)
         {
             return PartialView(_cyclesService.GetById(id));
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public PartialViewResult NewCycle(int id)
         {
             ViewBag.id = id;
@@ -49,19 +53,26 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult NewCycle(Cycle cycle)
         {
-            _cyclesService.NewCycle(cycle);
+            if (!ModelState.IsValid)
+            {
+                return PartialView(cycle);
+            }
 
+            _cyclesService.NewCycle(cycle);
             return RedirectToAction("Index", "Courses");
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteCycle(Cycle cycle)
         {
             return View(cycle);
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public RedirectToActionResult DeleteCycle(int cycleId)
         {
             _cyclesService.RemoveCycleById(cycleId);
@@ -70,6 +81,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UploadFile(IFormFile uploadFileCycle, int id)
         {
             if (uploadFileCycle != null && uploadFileCycle.Length > 0)
@@ -85,8 +97,7 @@ namespace Application.Controllers
                 var file = "uploads/" + nazwaPliku;
                 _cyclesService.UploadFile(file, id);
             }
-
-            return RedirectToAction("Index", "Courses");
+            return NoContent();
         }
     }
 }

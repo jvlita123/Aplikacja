@@ -1,10 +1,12 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 using System.Collections.ObjectModel;
 
 namespace Application.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class ReservationSlotsController : Controller
     {
         private readonly ReservationSlotsService _reservationSlotsService;
@@ -32,9 +34,10 @@ namespace Application.Controllers
             var newReservationSlot = _reservationSlotsService.NewReservationSlot(reservationSlot);
             if (newReservationSlot == null)
             {
-                TempData["ErrorMessage"] = "Chosen date conflicts with another date. Please select a different time.";
+                TempData["ErrorMessage"] = "Error";
                 return RedirectToAction(nameof(SlotsCalendar));
             }
+            TempData["ErrorMessage"] = "Success";
             return RedirectToAction(nameof(SlotsCalendar));
         }
 

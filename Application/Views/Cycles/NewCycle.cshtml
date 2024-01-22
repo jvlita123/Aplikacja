@@ -1,37 +1,69 @@
 ﻿@model Data.Entities.Cycle
+<style>
+   .form-control{
+   border-radius: 50px !important;
+   width: 90%;
+   }
+   .form-control:focus {
+   border-color: rgb(182 109 255);
+   outline: 0;
+   box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
+   }
+   #cycleForm{
+   position: relative;
+   padding:34px;
+   }
+</style>
+<div style="algin-items:center;text-algin:center">
+    <form id="cycleForm" asp-action="NewCycle">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="Title" placeholder="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Description" placeholder="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="StartDate" id="StartDate" placeholder="Start date" class="form-control" />
+            <span id="StartDateError" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="EndDate" id="EndDate" placeholder="End date" class="form-control" />
+            <span id="EndDateError" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="CourseId" type="hidden" class="form-control" value="@ViewBag.id" readonly />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn-rounded btn btn-outline-primary" />
+        </div>
+    </form>
+</div>
 
-    <div class="col-md-4">
-        <form asp-action="NewCycle">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input asp-for="CourseId" type="hidden" class ="form-control" value ="@ViewBag.id" readonly/>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    $('#cycleForm').submit(function (e) {
+        var startDate = new Date($('#StartDate').val());
+        var endDate = new Date($('#EndDate').val());
+        var today = new Date();
+
+        var startDateError = $('#StartDateError');
+        var endDateError = $('#EndDateError');
+
+        if (startDate >= endDate) {
+            startDateError.text("Start date must be earlier than end date.");
+            endDateError.text("End date must be later than start date.");
+            e.preventDefault();
+            return; 
+        }
+
+        if (startDate <= today || endDate <= today) {
+            startDateError.text("Start date and end date must be later than today.");
+            e.preventDefault();
+        }
+    });
+</script>

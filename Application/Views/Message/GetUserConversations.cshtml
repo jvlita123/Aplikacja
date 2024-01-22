@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "My Chats";
 }
-
 <div class="list-container message-list">
     <div class="message-row section-title">
         <h2>Latest Chats</h2>
@@ -27,23 +26,3 @@
         </a>
     }
 </div>
-@*
-<script>
-    $('.userId').on('click', function () {
-        var userId = $(this).data('user-id'); 
-        if (userId) {
-            $.ajax({
-                url: '/GetConversation', 
-                type: 'GET',
-                data: { id: userId },
-                success: function (data) {
-                },
-                error: function () {
-                    alert('Wystąpił błąd podczas pobierania konwersacji.');
-                }
-            });
-        } else {
-            console.log('Proszę wybrać użytkownika.');
-        }
-    });
-</script>*@

@@ -35,10 +35,11 @@ namespace Application.Controllers
             var statuses = _statusService.GetAll().ToList();
 
             ViewData["statuses"] = statuses;
-
-            return View(_reservation1Service.GetUserReservations(usr.Id));
+            var reservations = _reservation1Service.GetUserReservations(usr.Id);
+            return View(reservations);
         }
 
+        [Authorize]
         public IActionResult ShowReservation(int id)
         {
             Reservation reservation = _reservation1Service.GetAll().Where(x => x.Id == id).First();
@@ -93,13 +94,19 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public PartialViewResult getReservationsByStatus(string status)
         {
+            var usr = _userService.GetAll().Where(x => x.Email == HttpContext.User.Identity.Name).FirstOrDefault();
+            var statuses = _statusService.GetAll().ToList();
+
+            var reservations = _reservation1Service.GetUserReservations(usr.Id);
+
             if (status == "All")
             {
-                return PartialView(_reservation1Service.GetAll());
+                return PartialView(reservations);
             }
-            return PartialView(_reservation1Service.GetReservationsByStatus(status));
+            return PartialView(_reservation1Service.GetReservationsByStatus(status, reservations));
         }
 
         [HttpGet]
@@ -132,7 +139,6 @@ namespace Application.Controllers
                 }
             }
             return RedirectToAction("Calendar");
-
         }
 
         [HttpPost]
@@ -153,7 +159,6 @@ namespace Application.Controllers
                 _reservation1Service.UploadFile(file, id);
             }
             return RedirectToAction("Index");
-
         }
 
         [HttpPost("NewReservation")]
@@ -174,7 +179,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public IActionResult RemoveReservation(int id)
         {
             Reservation ReservationToRemove = _reservation1Service.GetAll().Where(x => x.Id == id).FirstOrDefault();
@@ -184,7 +189,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public PartialViewResult changeReservationStatus(int id)
         {
             var StatusList = new SelectList(_statusService.GetAll().Select(x => x.Name).ToList());
@@ -196,14 +201,13 @@ namespace Application.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public IActionResult changeReservationStatus(int id, string status)
         {
             _reservation1Service.changeReservationStatus(id, _statusService.GetByName(status).Id);
             return NoContent();
         }
 
-        [HttpPost]
         [Authorize]
         public IActionResult SubscribeSlot(int reservationSlotId)
         {

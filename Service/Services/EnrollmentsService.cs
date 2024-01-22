@@ -7,15 +7,10 @@ namespace Service.Services
     public class EnrollmentsService
     {
         private readonly EnrollmentsRepository _enrollmentsRepository;
-        private readonly UserRepository _userRepository;
-        private readonly CyclesRepository _cyclespository;
-        private readonly CoursesRepository _coursespository;
-        public EnrollmentsService(EnrollmentsRepository enrollmentsRepository, UserRepository userRepository, CyclesRepository cyclesRepository, CoursesRepository coursespository)
+
+        public EnrollmentsService(EnrollmentsRepository enrollmentsRepository)
         {
             _enrollmentsRepository = enrollmentsRepository;
-            _coursespository = coursespository;
-            _userRepository = userRepository;
-            _cyclespository = cyclesRepository;
         }
 
         public List<Enrollment> GetAll()

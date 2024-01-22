@@ -4,7 +4,7 @@ namespace Data.Repositories
 {
     public class StatusRepository : BaseRepository<Status>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public StatusRepository(DataContext context) : base(context)
         {

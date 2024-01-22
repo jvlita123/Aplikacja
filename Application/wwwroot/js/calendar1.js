@@ -93,11 +93,25 @@ function showSchedule(serviceId, reservationSlots) {
         if (slot.isavailable === 'False') {
             slotElement.classList.add('button-disabled');
              slotElement.onclick = (function(reservationSlotId) {
-                return function() {
-                    var confirmed = confirm('This date is already booked. Would you like to receive a notification when it becomes available?');
-                    if (confirmed) {
-                        SubscribeToSlot(reservationSlotId);
-                     }
+                 return function () {
+                     $('#questionModalBodyId').text("This date is already booked. Would you like to receive a notification when it becomes available?");
+                     $('#questionModal').modal('show');
+
+                     var modalFooter = $('#questionModalFooterId');
+                     modalFooter.empty(); 
+
+                     var yesButton = $('<button type="button" class="btn-rounded btn btn-outline-primary">YES</button>');
+                     yesButton.on('click', function () {
+                         SubscribeToSlot(reservationSlotId);
+                         $('#questionModal').modal('hide');
+                     });
+                     modalFooter.append(yesButton);
+
+                     var noButton = $('<button type="button" class="btn-rounded btn btn-outline-secondary">NO</button>');
+                     noButton.on('click', function () {
+                         $('#questionModal').modal('hide');
+                     });
+                     modalFooter.append(noButton);
                 }
             })(slot.id);
         } else {
@@ -116,17 +130,20 @@ function showSchedule(serviceId, reservationSlots) {
 function SubscribeToSlot(reservationSlotId) {
     $.ajax({
         type: "POST",
-        url: "/SubscribeSlot",
+        url: '/Reservation/SubscribeSlot', 
+        xhrFields: {
+            withCredentials: true
+        },
         data: {
             reservationSlotId: reservationSlotId
         },
         success: function (response) {
-            console.log("Subscription successful!");
-            console.log(response);
-            console.log("Subscription successful!");
+            $('#notificationModalBodyId').text("Great news! You've been subscribed. We will send you a notification when the date is available again.");
+            $('#notificationModal').modal('show');
         },
         error: function (error) {
-                alert("You are already subscribed to this date.");
+            $('#errorModalBodyId').text("You are already subscribed to this date.");
+            $('#errorModal').modal('show');
         }
     });
 }
@@ -223,8 +240,8 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
             method: 'GET',
             data: { id: eventId },
             success: function (data) {
-                $('#modalContent').html(data);
-                $('#myModal').modal('show');
+                $('#emptyModalContentId').html(data);
+                $('#emptyModal').modal('show');
                 $('#confirmDeleteBtn').on('click', function () {
                     let indexToRemove = eventsArr.findIndex(event => event.id === eventId);
                     if (indexToRemove !== -1) {
@@ -240,8 +257,8 @@ let calendar = new FullCalendar.Calendar(calendarEl, {
                     } else {
                     }
                     calendar.getEventById(eventId).remove();
-                    $('#deleteConfirmationModal').modal('hide');
-                    $('#myModal').modal('hide');
+                    $('#emptyModal').modal('hide');
+                    $('#removeModal').modal('hide');
                 });
             }
         });

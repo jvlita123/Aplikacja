@@ -14,17 +14,13 @@ namespace Service.Services
     {
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
-        private readonly RoleRepository _roleRepository;
-        private readonly PhotoRepository _photoRepository;
         private readonly MessageRepository _messageRepository;
         private readonly IHttpContextAccessor _context;
 
-        public UserService(IHttpContextAccessor context, UserRepository userRepository, IPasswordHasher<User> passwordHasher, RoleRepository roleRepository, PhotoRepository photoRepository, MessageRepository messageRepository)
+        public UserService(IHttpContextAccessor context, UserRepository userRepository, IPasswordHasher<User> passwordHasher, MessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _roleRepository = roleRepository;
-            _photoRepository = photoRepository;
             _messageRepository = messageRepository;
             _context = context;
 
@@ -107,7 +103,7 @@ namespace Service.Services
             var newUser = new User()
             {
                 Email = dto.Email,
-                RoleId = 2,
+                RoleId = 1,
             };
 
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
@@ -168,11 +164,10 @@ namespace Service.Services
         public void UpdateUser(MyUserDto user)
         {
             User userToSave = _userRepository.GetById(user.Id);
-            userToSave.FirstName = user.FirstName;
+            userToSave.FirstName = user.FirstName.ToString();
             userToSave.LastName = user.LastName;
-            userToSave.Email = user.Email;
             userToSave.PhoneNumber = user.PhoneNumber;
-            userToSave.DateOfBirth = user.DateOfBirth;
+            userToSave.DateOfBirth = user.UserDateOfBirth;
 
             _userRepository.UpdateAndSaveChanges(userToSave);
             _userRepository.SaveChanges();
@@ -198,7 +193,7 @@ namespace Service.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                DateOfBirth = user.DateOfBirth,
+                UserDateOfBirth = user.DateOfBirth,
                 Email = user.Email,
                 RoleName = user.Role.Name,
 

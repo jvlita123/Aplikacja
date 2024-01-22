@@ -1,5 +1,6 @@
 ﻿using Data.Dto_s;
 using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -34,17 +35,20 @@ namespace Application.Controllers
             return View(_userService.GetAll());
         }
 
+        [Authorize]
         public ActionResult MyAccount()
         {
             return View(_userService.GetByEmail(User.Identity.Name));
         }
 
+        [Authorize]
         public void EditUser(int id)
         {
             User user = _userService.GetById(id);
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult MyUser(MyUserDto user)
         {
             if (!ModelState.IsValid)
@@ -59,6 +63,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult MyUser()
         {
             MyUserDto? user = _userService.MyUser(User.Identity.Name);
@@ -67,6 +72,7 @@ namespace Application.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public IActionResult AdminDashboard()
         {
             MyUserDto? user = _userService.MyUser(User.Identity.Name);
@@ -91,6 +97,7 @@ namespace Application.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangeCurrentUserProfilePicture(IFormFile photo, int id)
         {
             MyUserDto? user = _userService.MyUser(User.Identity.Name);
@@ -111,6 +118,5 @@ namespace Application.Controllers
 
             return RedirectToAction("MyUser", "User");
         }
-
     }
 }

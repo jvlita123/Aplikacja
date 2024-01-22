@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -26,6 +27,7 @@ namespace Application.Controllers
             return View(_attendanceService.GetAll());
         }
 
+        [Authorize(Roles = "admin")]
         public bool CheckAttendance(int userId, int cycleId, int courseId)
         {
             if (_attendanceService.GetAll().Where(x => x.CycleId == cycleId && x.CourseId == courseId && x.UserId == userId).FirstOrDefault() == null)
@@ -35,6 +37,7 @@ namespace Application.Controllers
             return true;
         }
 
+        [Authorize]
         public PartialViewResult GetAttendancesForCycle(int id, int courseId)
         {
             var enrolledUsers = _enrollmentService.GetEnrolledUserByCourse(courseId);
@@ -53,12 +56,14 @@ namespace Application.Controllers
             return PartialView(_attendanceService.GetAll().Where(x => x.CycleId == id));
         }
 
+        [Authorize]
         public PartialViewResult AddAttendance()
         {
             return PartialView();
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public void AddAttendance(int courseId, int cycleId, int[] selectedUsers)
         {
             _attendanceService.RemoveAttendanceForCycle(cycleId);

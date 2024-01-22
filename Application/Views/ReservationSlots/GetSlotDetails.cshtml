@@ -1,40 +1,37 @@
 ﻿@model Data.Entities.ReservationSlots
-
 <div>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAvailable)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsAvailable)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Service)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Service.Name)
-        </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Date)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Date)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.StartTime)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.StartTime)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.EndTime)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.EndTime)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.IsAvailable)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.IsAvailable)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Service)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Service.Name)
+    </dd>
 </div>
-
 <button id="deleteReservationBtn" class="btn btn-danger">Delete</button>
-
 <div class="modal fade" id="deleteConfirmationModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -68,11 +65,12 @@
         $.ajax({
             url: '/ReservationSlots/RemoveReservationSlot',
             type: 'POST',
-            data: { slotId: slotId },
+            data: {
+                slotId: slotId
+            },
             success: function (data) {
                 window.location.href = '/ReservationSlots/SlotsCalendar';
                 $('#deleteConfirmationModal').modal('hide');
-
             }
         });
     });

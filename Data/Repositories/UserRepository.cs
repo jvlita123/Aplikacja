@@ -5,7 +5,7 @@ namespace Data.Repositories
 {
     public class UserRepository : BaseRepository<User>
     {
-        private DataContext _dataContext;
+        private readonly DataContext _dataContext;
 
         public UserRepository(DataContext context) : base(context)
         {
@@ -21,7 +21,7 @@ namespace Data.Repositories
 
         public User GetUserByEmail(string email)
         {
-            User user = _dataContext.User.Include(x=>x.Messages).Where(u => u.Email == email).FirstOrDefault();
+            User user = _dataContext.User.Include(x => x.Messages).Where(u => u.Email == email).FirstOrDefault();
 
             return user;
         }

@@ -2,7 +2,7 @@
     <script src="js/clmtrackr.js"></script>
     <style>
         .active-filter {
-            background-color: mediumpurple; 
+            background-color: mediumpurple;
             color: #fff;
         }
 
@@ -11,16 +11,16 @@
             height: 20px;
             padding: 25px;
             border-radius: 50%;
-            background-color: mediumpurple; 
+            background-color: mediumpurple;
         }
 
-            input[type="color"]:hover {
-                opacity: 0.8;
-            }
+        input[type="color"]:hover {
+            opacity: 0.8;
+        }
 
         .filter-label {
             font-weight: bold;
-            text-align:center;
+            text-align: center;
             margin-bottom: 5px;
         }
 
@@ -58,7 +58,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="filter-label">Assets</th>
+                <th class="filter-label"></th>
                 <th class="filter-label">Color</th>
                 <th class="filter-label">Width</th>
                 <th class="filter-label">Opacity</th>
@@ -78,7 +78,7 @@
                         Eyeliner
                     </div>
                 </td>
-                <td><input  type="color" id="eyelinerColorPicker" onchange="updateColor('eyeliner', this.value)"></td>
+                <td><input type="color" id="eyelinerColorPicker" onchange="updateColor('eyeliner', this.value)"></td>
                 <td><input class="form-range" type="range" id="eyelinerWidthSlider" min="1" max="10" value="2" onchange="updateLineWidth('eyeliner', this.value)"></td>
                 <td><input class="form-range" type="range" id="eyelinerOpacitySlider" min="0" max="1" step="0.1" value="0.5" onchange="updateAlpha('eyeliner', this.value)"></td>
                 <td><input class="form-range" type="range" id="eyelinerExtensionSlider" min="0" max="20" value="10" onchange="updateExtension('eyeliner', this.value)"></td>
@@ -89,11 +89,9 @@
                         Lips
                     </div>
                 </td>
-
                 <td><input type="color" id="lipsColorPicker" onchange="updateColor('lips', this.value)"></td>
                 <td><input class="form-range" type="range" id="lipsWidthSlider" min="1" max="10" value="2" onchange="updateLineWidth('lips', this.value)"></td>
                 <td><input class="form-range" type="range" id="lipsOpacitySlider" min="0" max="1" step="0.1" value="0.5" onchange="updateAlpha('lips', this.value)"></td>
-                <td><input class="form-range" type="range" id="lipsExtensionSlider" min="0" max="20" value="10" onchange="updateExtension('lips', this.value)"></td>
             </tr>
             <tr>
                 <td id="shadoweyeBtn" class="filter-btn" onclick="toggleFilter('shadoweye')">
@@ -104,20 +102,17 @@
                 <td><input type="color" id="shadoweyeColorPicker" onchange="updateColor('shadoweye', this.value)"></td>
                 <td><input class="form-range" type="range" id="shadoweyeWidthSlider" min="1" max="10" value="2" onchange="updateLineWidth('shadoweye', this.value)"></td>
                 <td><input class="form-range" type="range" id="shadoweyeOpacitySlider" min="0" max="1" step="0.1" value="0.5" onchange="updateAlpha('shadoweye', this.value)"></td>
-                <td><input class="form-range" type="range" id="shadoweyeExtensionSlider" min="0" max="20" value="10" onchange="updateExtension('shadoweye', this.value)"></td>
-                <td><input class ="form-range"  type="range" id="shadoweyeShadowSlider" min="0" max="20" value="10" onchange="updateShadowEye('shadoweye', this.value)"></td>
+                <td><input class="form-range" type="range" id="shadoweyeShadowSlider" min="0" max="20" value="10" onchange="updateShadowEye('shadoweye', this.value)"></td>
             </tr>
             <tr>
                 <td id="blushBtn" class="filter-btn" onclick="toggleFilter('blush')">
                     <div class="btn-primary filter-btn" style="padding:10px;">
-                       Blush
+                        Blush
                     </div>
                 </td>
                 <td><input type="color" id="blushColorPicker" onchange="updateColor('blush', this.value)"></td>
                 <td><input class="form-range" type="range" id="shadoweyeWidthSlider" min="1" max="10" value="2" onchange="updateLineWidth('blush', this.value)"></td>
                 <td><input class="form-range" type="range" id="shadoweyeOpacitySlider" min="0" max="1" step="0.1" value="0.5" onchange="updateAlpha('blush', this.value)"></td>
-                <td><input class="form-range" type="range" id="shadoweyeExtensionSlider" min="0" max="20" value="10" onchange="updateExtension('blush', this.value)"></td>
-                <td><input class="form-range" type="range" id="shadoweyeShadowSlider" min="0" max="20" value="10" onchange="updateShadowEye('blush', this.value)"></td>
             </tr>
             <tr>
                 <td></td>
@@ -135,7 +130,6 @@
         </tbody>
     </table>
 </div>
-
 <script type="text/javascript">
     var videoInput = document.getElementById('inputVideo');
     var canvasInput = document.getElementById('drawCanvas');
@@ -143,7 +137,7 @@
 
     var filters = {
         eyeliner: {
-            name:'eyeliner',
+            name: 'eyeliner',
             active: false,
             lineWidth: 1,
             color: 'black',
@@ -187,7 +181,9 @@
     var currentExtension = 10;
     var currentShadowRadius = 0;
 
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({
+        video: true
+    })
         .then(function (stream) {
             videoInput.srcObject = stream;
             ctracker.init();
@@ -195,10 +191,11 @@
             drawLoop();
         })
         .catch(function (err) {
-            console.error('An error occurred:', err);
+            console.error('Error:', err);
         });
 
     function drawLoop() {
+
         requestAnimationFrame(drawLoop);
         cc.lineWidth = 0.01;
         cc.clearRect(0, 0, canvasInput.width, canvasInput.height);
@@ -219,8 +216,9 @@
                     var rightEyeIndices3 = [29, 67];
                     var rightEyeIndices4 = [67, 28];
                     var rightEyeIndices5 = [28, 28];
-                    console.log(currentFilters);
+
                     var filter = findFilterByName('eyeliner');
+
                     function drawEyelid(points, lineWidth, currentExtension) {
                         cc.beginPath();
                         cc.moveTo(positions[points[0]][0], positions[points[0]][1]);
@@ -237,19 +235,18 @@
                         cc.stroke();
                     }
 
-                    drawEyelid(leftEyeIndices0, + 3, filter.extension);
-                    drawEyelid(leftEyeIndices1, + 3, 0);
-                    drawEyelid(leftEyeIndices2, + 2, 0);
-                    drawEyelid(leftEyeIndices3, + 1, 0);
+                    drawEyelid(leftEyeIndices0, +3, filter.extension);
+                    drawEyelid(leftEyeIndices1, +3, 0);
+                    drawEyelid(leftEyeIndices2, +2, 0);
+                    drawEyelid(leftEyeIndices3, +1, 0);
                     drawEyelid(leftEyeIndices4, 0);
                     drawEyelid(rightEyeIndices1, 0);
-                    drawEyelid(rightEyeIndices2, + 1, 0);
-                    drawEyelid(rightEyeIndices3, + 2, 0);
-                    drawEyelid(rightEyeIndices4, + 3, 0);
-                    drawEyelid(rightEyeIndices5, + 3, -filter.extension);
-                }
+                    drawEyelid(rightEyeIndices2, +1, 0);
+                    drawEyelid(rightEyeIndices3, +2, 0);
+                    drawEyelid(rightEyeIndices4, +3, 0);
+                    drawEyelid(rightEyeIndices5, +3, -filter.extension);
 
-                else if (currentFilters[i].name === 'lips') {
+                } else if (currentFilters[i].name === 'lips') {
                     var upperMouth = [44, 45, 46, 47, 48, 49, 50, 59, 60, 61, 44];
                     var bottomMouth = [44, 55, 54, 53, 52, 51, 50, 58, 57, 56, 44];
 
@@ -261,7 +258,7 @@
 
                     function drawMouth(points) {
                         cc.beginPath();
-                        cc.filter = 'blur(1px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(1px)';
                         cc.moveTo(positions[points[0]][0], positions[points[0]][1]);
                         for (var i = 1; i < points.length; i++) {
                             if (positions[points[i]]) {
@@ -272,74 +269,71 @@
 
                         cc.stroke();
                         cc.closePath();
-                        cc.filter = 'blur(0px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(0px)';
 
                     }
 
                     drawMouth(upperMouth);
                     drawMouth(bottomMouth);
-                 
 
-                }
 
-            else if (currentFilters[i].name === 'shadoweye') {
-            console.log(currentFilters);
-            var filter = findFilterByName('shadoweye');
-            cc.lineWidth = filter.lineWidth;
-            cc.strokeStyle = filter.color;
-            cc.globalAlpha = filter.alpha;
+                } else if (currentFilters[i].name === 'shadoweye') {
+                    console.log(currentFilters);
+                    var filter = findFilterByName('shadoweye');
+                    cc.lineWidth = filter.lineWidth;
+                    cc.strokeStyle = filter.color;
+                    cc.globalAlpha = filter.alpha;
 
-                        function drawLeftShadowEye() {
-                            cc.beginPath();
-                            cc.moveTo(positions[23][0] - 2, positions[23][1]);
-                            cc.quadraticCurveTo(positions[27][0], positions[27][1] - 17 - filter.shadowRadius, positions[25][0], positions[25][1]);
+                    function drawLeftShadowEye() {
+                        cc.beginPath();
+                        cc.moveTo(positions[23][0] - 2, positions[23][1]);
+                        cc.quadraticCurveTo(positions[27][0], positions[27][1] - 17 - filter.shadowRadius, positions[25][0], positions[25][1]);
 
-                            cc.moveTo(positions[23][0] - 2, positions[23][1]);
-                        cc.filter = 'blur(4px)'; // Dodanie efektu rozmazania
-                            cc.quadraticCurveTo(positions[27][0], positions[27][1] - 17 - 1, positions[25][0], positions[25][1]);
+                        cc.moveTo(positions[23][0] - 2, positions[23][1]);
+                        cc.filter = 'blur(4px)';
+                        cc.quadraticCurveTo(positions[27][0], positions[27][1] - 17 - 1, positions[25][0], positions[25][1]);
 
-                          //  cc.fill();
-                            cc.stroke();
+                        cc.stroke();
                         cc.closePath();
-                        cc.filter = 'blur(0px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(0px)';
 
-                        }
+                    }
 
-                        function drawRightShadowEye() {
-                            cc.beginPath();
-                            cc.moveTo(positions[28][0] + 2, positions[28][1]);
-                            cc.quadraticCurveTo(positions[32][0], positions[32][1] - 17 - filter.shadowRadius, positions[30][0], positions[30][1]);
+                    function drawRightShadowEye() {
+                        cc.beginPath();
+                        cc.moveTo(positions[28][0] + 2, positions[28][1]);
+                        cc.quadraticCurveTo(positions[32][0], positions[32][1] - 17 - filter.shadowRadius, positions[30][0], positions[30][1]);
                         cc.moveTo(positions[28][0] + 2, positions[28][1]);
                         cc.quadraticCurveTo(positions[32][0], positions[32][1] - 17 - 1, positions[30][0], positions[30][1]);
-                       // cc.fill();
-                        cc.filter = 'blur(4px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(4px)'; 
 
-                        cc.stroke(); cc.filter = 'blur(0px)'; // Dodanie efektu rozmazania
+                        cc.stroke();
+                        cc.filter = 'blur(0px)';
                         cc.closePath();
-                        }
-            
+                    }
 
-                        drawLeftShadowEye();
-                        drawRightShadowEye();
-                     }       
-                else if (currentFilters[i].name === 'blush') {
+                    drawLeftShadowEye();
+                    drawRightShadowEye();
+                    } 
+                    else if (currentFilters[i].name === 'blush') {
                     console.log(currentFilters);
                     var filter = findFilterByName('blush');
                     cc.lineWidth = filter.lineWidth;
                     cc.strokeStyle = filter.color;
                     cc.globalAlpha = filter.alpha;
+
                     function drawRightShadowEye() {
                         cc.beginPath();
                         cc.moveTo(positions[13][0] + 2, positions[13][1]);
                         cc.quadraticCurveTo(positions[11][0], positions[11][1] - 17 - filter.shadowRadius, positions[38][0] + 40, positions[38][1]);
 
-                        cc.filter = 'blur(15px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(15px)';
                         cc.stroke();
                         cc.moveTo(positions[1][0] + 2, positions[1][1]);
                         cc.quadraticCurveTo(positions[3][0], positions[3][1] - 17 - filter.shadowRadius, positions[36][0] - 40, positions[36][1]);
                         cc.stroke();
 
-                        cc.filter = 'blur(0px)'; // Dodanie efektu rozmazania
+                        cc.filter = 'blur(0px)';
                     }
                     drawRightShadowEye();
                 }
@@ -360,6 +354,7 @@
         console.log(currentFilters);
         console.log(currentFilter);
     }
+
     function findFilterByName(filterName) {
         console.log(filterName);
         console.log(filters);
@@ -372,10 +367,11 @@
             return null;
         }
     }
+
     function updateColor(filter, value) {
         var filterElement = document.getElementById(filter + 'ColorPicker');
         findFilterByName(filter).color = value;
-        filterElement.style.backgroundColor = value; // Ustaw aktualny kolor jako tło pola wyboru koloru
+        filterElement.style.backgroundColor = value;
     }
 
     function updateLineWidth(filter, value) {

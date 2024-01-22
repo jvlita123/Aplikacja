@@ -9,12 +9,10 @@ namespace Service.Services
         private readonly ReservationRepository _reservation1Repository;
         private readonly ReservationSlotsRepository _reservationSlotsRepository;
         private readonly UserRepository _userRepository;
-        private readonly StatusRepository _statusRepository;
-        public ReservationService(ReservationRepository reservation1Repository, UserRepository userRepository, StatusRepository statusRepository, ReservationSlotsRepository reservationSlotsRepository)
+        public ReservationService(ReservationRepository reservation1Repository, UserRepository userRepository, ReservationSlotsRepository reservationSlotsRepository)
         {
             _reservation1Repository = reservation1Repository;
             _userRepository = userRepository;
-            _statusRepository = statusRepository;
             _reservationSlotsRepository = reservationSlotsRepository;
         }
 
@@ -25,19 +23,14 @@ namespace Service.Services
             return reservations;
         }
 
-        public List<Reservation> GetReservationsByStatus(string status)
+        public List<Reservation> GetReservationsByStatus(string status, List<Reservation> reservationsList)
         {
-            List<Reservation> reservations = _reservation1Repository.GetAll().Include(x => x.User).Include(x => x.Status).Include(x => x.User.Photos).Include(x => x.ReservationSlot).Where(x => x.Status.Name == status).ToList();
+            List<Reservation> reservations = reservationsList.Where(x => x.Status.Name == status).ToList();
             return reservations;
         }
 
         public List<Reservation> GetUserReservations(int id)
         {
-            if (id == null)
-            {
-                return new List<Reservation>();
-            }
-
             var usr = _userRepository.GetById(id);
             if (usr.Role.Name == "admin")
             {
@@ -45,7 +38,7 @@ namespace Service.Services
             }
             else
             {
-                return _reservation1Repository.GetAll().ToList();
+                return _reservation1Repository.GetAll().Where(x => x.UserId == id).ToList();
             }
         }
 
@@ -93,6 +86,7 @@ namespace Service.Services
             _reservationSlotsRepository.UpdateRangeAndSaveChanges(slots);
 
         }
+
         public Reservation UploadFile(string filePath, int id)
         {
             Reservation reservation = _reservation1Repository.GetAll().Where(x => x.Id == id).FirstOrDefault();
@@ -102,6 +96,7 @@ namespace Service.Services
             _reservation1Repository.SaveChanges();
             return reservation;
         }
+
         public void UpdateReservation(Reservation updatedReservation)
         {
             Reservation reservationToSave = _reservation1Repository.GetById(updatedReservation.Id);
@@ -121,6 +116,7 @@ namespace Service.Services
             _reservation1Repository.SaveChanges();
 
         }
+
         public Reservation changeReservationStatus(int idReservation, int idStatus)
         {
             Reservation reservation = _reservation1Repository.GetById(idReservation);

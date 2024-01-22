@@ -3,33 +3,63 @@
     ViewData["Title"] = "GetCycle";
     var path = Model.SourcePath;
 }
-
-    <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3>@Model.Title</h3>
-            <p>@Model.StartDate - @Model.EndDate</p>
-        </div>
-
-            <div class="col-md-6">
-                <p>@Model.Description</p>
-                <p>@Model.SourcePath</p>
-            </div>
+<div class="col-md-12">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>@Model.Title</h3>
+        <p>@Model.StartDate - @Model.EndDate</p>
     </div>
-<form method="post" enctype="multipart/form-data" asp-controller="Cycles" asp-action="UploadFile">
+    <div class="col-md-6">
+        <p>@Model.Description</p>
+        <p>@Model.SourcePath</p>
+    </div>
+</div>
+<form method="post" enctype="multipart/form-data" asp-controller="Cycles" id="uploadForm" asp-action="UploadFile">
     <div class="mb-3">
-        <input class="form-control" type="file" name="uploadFileCycle" id="uploadFileCycle" />
+        <input class="form-control" type="file" name="uploadFileCycle" id="uploadFileCycle" required />
+        <span class="text-danger"></span>
     </div>
     <div class="row mb-3" style="background-color: unset">
         <div class="col" style="display: flex; align-items: center;">
             <input type="hidden" name="id" id="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary" style="width: 100%; height: 30px; display: flex; align-items: center; justify-content: center;">
+            <button type="submit" class="btn btn-primary  btn-rounded" style="width: 100%; height: 30px; display: flex; align-items: center; justify-content: center;">
                 <i class="mdi mdi-upload"></i> Send File
             </button>
         </div>
-        <div class="col">
-            <a href="~/@path" class="btn btn-success" style="width: 100%; height:30px;" download>
-                <i class="mdi mdi-download"></i> Download File
-            </a>
-        </div>
+        @if (Model.SourcePath != null)
+        {
+            <div class="col">
+                <a href="~/@path" class="btn btn-success btn-rounded btn btn-outline-success" style="width: 100%; height:30px;" download>
+                    <i class="mdi mdi-download"></i> Download File
+                </a>
+            </div>
+        }
     </div>
 </form>
+
+<script>
+    $(document).ready(function () {
+        $('#uploadForm').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Cycles/UploadFile',
+                type: 'POST',
+                data: new FormData($('#uploadForm')[0]),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

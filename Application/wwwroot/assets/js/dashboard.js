@@ -7,8 +7,7 @@
     if ($("#serviceSaleProgress").length) {
       var bar = new ProgressBar.Circle(serviceSaleProgress, {
         color: 'url(#gradient)',
-        // This has to be the same size as the maximum width to
-        // prevent clipping
+
         strokeWidth: 8,
         trailWidth: 8,
         easing: 'easeInOut',
@@ -28,8 +27,7 @@
     if ($("#productSaleProgress").length) {
       var bar = new ProgressBar.Circle(productSaleProgress, {
         color: 'url(#productGradient)',
-        // This has to be the same size as the maximum width to
-        // prevent clipping
+
         strokeWidth: 8,
         trailWidth: 8,
         easing: 'easeInOut',
@@ -475,7 +473,6 @@
           ]
         }],
     
-        // These labels appear in the legend and in the tooltips when hovering different arcs
         labels: [
           'Search Engines',
           'Direct Click',

@@ -1,5 +1,4 @@
-﻿using Data.Entities;
-using Data.Repositories;
+﻿using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

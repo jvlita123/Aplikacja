@@ -2,50 +2,67 @@
 @{
     var slots = (IEnumerable<Data.Entities.ReservationSlots>)ViewData["slots"];
 }
-
 <style>
-    #calendar {
+    #calendar 
+    {
         max-width: 1100px;
         margin: 0 auto;
         background-color: white;
     }
 
-    a.fc-day-header {
+    a.fc-day-header 
+    {
         background-color: mediumpurple;
         color: black;
-        text-decoration: none; 
+        text-decoration: none;
     }
 
-    a {
+    a 
+    {
         color: black;
-        text-decoration: none; 
+        text-decoration: none;
     }
 </style>
 
-@if (TempData["ErrorMessage"] != null)
+@if (TempData["ErrorMessage"] != null && TempData["ErrorMessage"].ToString().ToLower() == "error")
 {
+    TempData["ErrorMessage"] = "";
     <script>
-        alert("@TempData["ErrorMessage"]");
+        $(document).ready(function () {
+            $('#ReservationSlotsModal').modal('hide');
+            $('#errorModalBodyId').text("Chosen date conflicts with another date. Please select a different time.");
+            $('#errorModal').modal('show');
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null && TempData["ErrorMessage"].ToString().ToLower() == "success")
+{
+    TempData["ErrorMessage"] = "";
+    <script>
+        $(document).ready(function () {
+            $('#ReservationSlotsModal').modal('hide');
+            $('#successModalBodyId').text("Success.");
+            $('#successModal').modal('show');
+        });
     </script>
 }
 
 <div id='calendar'>
-    
-
-<table id="slots" style="display: none;">
-    @for (int i = 0; i < slots.Count(); i++)
-    {
-        <tr>
-            <td>@slots.ElementAt(i).Id</td>
-            <td>@slots.ElementAt(i).StartTime</td>
-            <td>@slots.ElementAt(i).EndTime</td>
-            <td>@slots.ElementAt(i).Service.Id</td>
-            <td>@slots.ElementAt(i).Date.Add(slots.ElementAt(i).StartTime)</td>
-            <td>@slots.ElementAt(i).IsAvailable</td>
-            <td>@slots.ElementAt(i).Service.Name</td>
-        </tr>
-    }
-</table>
+    <table id="slots" style="display: none;">
+        @for (int i = 0; i < slots.Count(); i++)
+        {
+            <tr>
+                <td>@slots.ElementAt(i).Id</td>
+                <td>@slots.ElementAt(i).StartTime</td>
+                <td>@slots.ElementAt(i).EndTime</td>
+                <td>@slots.ElementAt(i).Service.Id</td>
+                <td>@slots.ElementAt(i).Date.Add(slots.ElementAt(i).StartTime)</td>
+                <td>@slots.ElementAt(i).IsAvailable</td>
+                <td>@slots.ElementAt(i).Service.Name</td>
+            </tr>
+        }
+    </table>
 </div>
 
 <div id="ReservationSlotsModal" class="modal fade" role="dialog">
@@ -60,16 +77,15 @@
 </div>
 
 <script>
-
     var eventsArr = [];
     let slotsTable = document.getElementById("slots");
     let trElems = slotsTable.getElementsByTagName("tr");
     for (let tr of trElems) {
         let tdElems = tr.getElementsByTagName("td");
-            let dateString = tdElems[4].innerText; 
-            let dateParts = dateString.split('.'); 
-            let formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
-            let newDate = new Date(formattedDate);
+        let dateString = tdElems[4].innerText;
+        let dateParts = dateString.split('.');
+        let formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+        let newDate = new Date(formattedDate);
         let eventObj = {
             id: tdElems[0].innerText,
             start: newDate,
@@ -79,7 +95,7 @@
             isavailable: tdElems[5].innerText,
             title: tdElems[6].innerText,
         };
-            eventsArr.push(eventObj);
+        eventsArr.push(eventObj);
     }
 
     var calendarEl = document.getElementById('calendar');
@@ -100,11 +116,14 @@
                 $.ajax({
                     url: '/ReservationSlots/NewReservationSlot',
                     type: 'GET',
-                    data: { selectedDate: selectedDate },
+                    data: {
+                        selectedDate: selectedDate
+                    },
                     success: function (data) {
-                        $('#ReservationSlotsModal .modal-body').html(data); 
+                        $('#ReservationSlotsModal .modal-body').html(data);
                         $('#ReservationSlotsModal').modal('show');
-                    }});
+                    }
+                });
             },
             eventClick: function (info) {
                 var clickedEvent = info.event;
@@ -120,8 +139,7 @@
                         $('#newReservationSlot').html(response);
                         $('#ReservationSlotsModal').modal('show');
                     },
-                    error: function (xhr, status, error) {
-                    }
+                    error: function (xhr, status, error) { }
                 });
             }
         });

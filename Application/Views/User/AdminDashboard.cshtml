@@ -11,110 +11,124 @@
     IEnumerable<Enrollment> enrollments = (IEnumerable<Data.Entities.Enrollment>)ViewData["enrollments"];
     IEnumerable<Reservation> reservations = (IEnumerable<Data.Entities.Reservation>)ViewData["reservations"];
 }
-<link rel="stylesheet" href="~/css/AdminDashboard.css" />
+<style>
+    .form-control 
+    {
+        border-radius: 50px !important;
+        width: 100%;
+    }
 
-        <div class="page-header">
-            <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
-                    <i class="mdi mdi-home"></i>
-                </span> Admin Panel
-            </h3>
-            <nav aria-label="breadcrumb">
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    <div class="row" style="background-color: rgba(0, 128, 0, 0.0);">
+    .form-control:focus 
+    {
+        border-color: rgb(182 109 255);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(182, 109, 255, 0.1);
+    }
+</style>
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-primary text-white me-2">
+            <i class="mdi mdi-home"></i>
+        </span> Admin Panel
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+            </li>
+        </ul>
+    </nav>
+</div>
+<div class="row" style="background-color: rgba(0, 128, 0, 0.0);">
     <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                    <div class="card-body">
-                    <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">
-                             Users Application <i class="mdi mdi-chart-line mdi-24px float-right"></i>
-                        </h4>
-                        <h2 class="mb-5">@users.Count()</h2>
-                   </div>
-                </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                    <div class="card-body">
-                        <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">
-                            Upcoming Appointments <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-                        </h4>
-                        <h2 class="mb-5">@reservations.Count()</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                    <div class="card-body">
-                    <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">
-                            New Course Enrollments <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                        </h4>
-                        <h2 class="mb-5">@enrollments.Count()</h2>
-                   </div>
-                </div>
-            </div>
-        </div>
-
-    <div class="col-12 grid-margin">
-        <div class="card">
+        <div class="card bg-gradient-danger card-img-holder text-white">
             <div class="card-body">
-                <h4 class="card-title">Reservations</h4>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="userSearch" placeholder="Search user">
-                    <span class="input-group-text"><i class="mdi mdi-account-search-outline"></i></span>
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th> User </th>
-                                <th> Service </th>
-                                <th class="" style="text-decoration:none; font-weight:normal">
-                                    <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Status
-                                    </a>
-                                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                                        @foreach (var v in statuses)
-                                        {
-                                            <a class="dropdown-item selected-status">
-                                                @v.Name
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                        }
-                                        <a class="dropdown-item selected-status">
-                                            All
-                                        </a>
-                                    </div>
-                                </th>
-                                <th> Inspiration </th>
-                                <th> Result </th>
-                                <th> Start </th>
-                                <th> End </th>
-                                <th>     </th>
-                            </tr>
-                        </thead>
-                        <tbody id="reservationsTable">
-                        </tbody>
-                    </table>
-                </div>
+                <img src="~/assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Users Application <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">@users.Count()</h2>
             </div>
         </div>
     </div>
-
-<div id="imagemodal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+            <div class="card-body">
+                <img src="~/assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Upcoming Appointments <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">@reservations.Count()</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-success card-img-holder text-white">
+            <div class="card-body">
+                <img src="~/assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    New Course Enrollments <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">@enrollments.Count()</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success alert-dismissible " id="statusChangedMsg" role="alert" style="display: none;">
+    Status has been changed.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Reservations</h4>
+            <div class="input-group">
+                <input type="text" class="form-control" id="userSearch" placeholder="Search user">
+                <span class="input-group-text"><i class="mdi mdi-account-search-outline"></i></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th> User </th>
+                            <th> Service </th>
+                            <th class="" style="text-decoration:none; font-weight:normal">
+                                <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </a>
+                                <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                                    @foreach (var v in statuses)
+                                    {
+                                        <a class="dropdown-item selected-status">
+                                            @v.Name
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                    }
+                                    <a class="dropdown-item selected-status">
+                                        All
+                                    </a>
+                                </div>
+                            </th>
+                            <th> Inspiration </th>
+                            <th> Result </th>
+                            <th> Start </th>
+                            <th> End </th>
+                            <th>     </th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="imagemodal" class="modal fade" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color:white;text-align:center;align-items:center">
             <div class="modal-header">
             </div>
-            <img id="modalImage" src="" alt="Large Image" />
+            <img id="modalImage" src="" />
             @if (context.HttpContext.User.IsInRole("admin"))
             {
                 <form method="post" enctype="multipart/form-data" asp-controller="Reservation" id="uploadphoto" asp-action="UploadFile1">
@@ -122,18 +136,17 @@
                         <input class="form-control" type="file" name="uploadFile" id="uploadFile" />
                     </div>
                     <input class="reservationIdUploadPhoto" type="hidden" name="id" />
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-rounded btn-outline-primary" id="submitBtn">
                         <i class="mdi mdi-upload"></i> Send File
                     </button>
                 </form>
+                <a class="downloadhref btn-rounded btn btn-outline-success" style=" margin:6px; " download>
+                    <i class="mdi mdi-download"></i> Download File
+                </a>
             }
-            <a class="downloadhref btn btn-success" download>
-                <i class="mdi mdi-download"></i> Download File
-            </a>
         </div>
     </div>
 </div>
-
 <div class="modal" tabindex="-1" role="dialog" id="myModal1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -150,13 +163,19 @@
     </div>
 </div>
 
-<div class="alert alert-success alert-dismissible fade" id="statusChangedMsg" role="alert" style="display: none;">
-    Status has been changed.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
-
 <script>
+    $(document).ready(function () {
+        $("#submitBtn").click(function () {
+            var fileInput = $("#uploadFile");
+            if (fileInput.get(0).files.length === 0) {
+                $('#errorModalBodyId').text("Please select a file.");
+                $('#imagemodal').modal('hide');
+                $('#errorModal').modal('show');
+            } else {
+                $("#uploadphoto").submit();
+            }
+        });
+    });
 
     var selectedStatus = 'All';
     refreshTable(selectedStatus);
@@ -165,16 +184,17 @@
         var reservationId = $(this).data('reservation-id');
         var statusChangedMsg = $('#statusChangedMsg');
 
-        $("#myModal1").modal("show");
+        $("#emptyModal").modal("show");
         $.ajax({
             url: '/Reservation/changeReservationStatus',
             type: 'GET',
-            data: { id: reservationId },
+            data: {
+                id: reservationId
+            },
             success: function (data) {
-                $('#contentReservation').html(data);
-                statusChangedMsg.fadeIn().delay(3000).fadeOut();
+                $('#emptyModalContentId').html(data);
 
-                $('#myModal1 .form').on('submit', function (event) {
+                $('#emptyModal .form').on('submit', function (event) {
                     event.preventDefault();
 
                     var formData = $(this).serialize();
@@ -185,6 +205,8 @@
                         data: formData,
                         success: function (data) {
                             refreshTable(selectedStatus);
+                            $("#emptyModal").modal("hide");
+                            statusChangedMsg.fadeIn().delay(3000).fadeOut();
                         }
                     });
                 });
@@ -195,18 +217,33 @@
     $(document).on('click', '.reservationphotos', function () {
         var photoPath = $(this).data('photo-path');
         var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').attr('src', "");
+        $('.downloadhref').removeAttr('href');
+
+        if (photoPath && photoPath.length > 0) {
+            $('.downloadhref').attr('href', photoPath);
+        }
+
         $('#modalImage').attr('src', photoPath);
-        $('.downloadhref').attr('href', photoPath);
-        $('#uploadphoto').css({ 'display': 'none' })
+        $('#uploadphoto').css({
+            'display': 'none'
+        })
         $('#imagemodal').modal('show');
     });
 
     $(document).on('click', '.uploadphoto', function () {
         var photoPath = $(this).data('photo-path');
         var reservatioinId = $(this).data('reservation-id');
+        $('#modalImage').html("");
+        $('#modalImage').attr('src', "");
+        $('.downloadhref').removeAttr('href');
+
+        if (photoPath && photoPath.length > 0) {
+            $('.downloadhref').attr('href', photoPath);
+        }
+
         $('#modalImage').attr('src', photoPath);
-        $('.downloadhref').attr('href', photoPath);
-        $('#uploadphoto').css({ 'display': 'block' })
+        $('#uploadphoto').css({'display': 'block'})
         $('.reservationIdUploadPhoto').attr('value', reservatioinId);
         $('#imagemodal').modal('show');
     });
@@ -220,7 +257,9 @@
         $.ajax({
             url: '/Reservation/getReservationsByStatus',
             type: 'GET',
-            data: { status: selectedStatus },
+            data: {
+                status: selectedStatus
+            },
             success: function (result) {
                 $('#reservationsTable').html(result);
                 highlightTomorrowRows()
@@ -232,7 +271,9 @@
         $.ajax({
             url: '/Reservation/getAll',
             type: 'GET',
-            data: { status: selectedStatus },
+            data: {
+                status: selectedStatus
+            },
             success: function (result) {
                 $('#reservationsTable').html(result);
             },
@@ -255,28 +296,24 @@
             }
         });
     }
+
     function highlightTomorrowRows() {
-    var tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    var dd = String(tomorrow.getDate()).padStart(2, '0');
-    var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-    var yyyy = tomorrow.getFullYear();
-    var tomorrowFormatted = yyyy + '-' + mm + '-' + dd;
-
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var dd = String(tomorrow.getDate()).padStart(2, '0');
+        var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        var yyyy = tomorrow.getFullYear();
+        var tomorrowFormatted = yyyy + '-' + mm + '-' + dd;
         $('#reservationsTable tr').each(function () {
-        console.log(this);
-        var startDate = $(this).find('td').eq(5).text().trim();
-        var date = new Date(startDate);
-        var year = date.getFullYear();
-        var month = String(date.getMonth() + 1).padStart(2, '0');
-        var day = String(date.getDate()).padStart(2, '0');
-        date = year + '-' + day + '-' + month;
+            var startDate = $(this).find('td').eq(5).text().trim();
 
-        console.log('startDate', date);
-        console.log('tommortow', tomorrowFormatted);
-        if (date === tomorrowFormatted) {
+            var parts = startDate.split(',');
+            var parts1 = parts[0].split('.');
+            var startFormatted = parts1[2] + '-' + parts1[1] + '-' + parts1[0];
+
+            if (startFormatted === tomorrowFormatted) {
                 $(this).css('background-color', 'rgba(255, 0, 0, 0.1)');
             }
-    });
+        });
     }
 </script>

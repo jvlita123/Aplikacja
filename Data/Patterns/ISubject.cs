@@ -1,5 +1,4 @@
-﻿
-namespace Data.Patterns
+﻿namespace Data.Patterns
 {
     public interface ISubject
     {

@@ -29,7 +29,6 @@ namespace Service.Services
             {
                 _photoRepository.RemoveById(photoToRemove.Id);
                 _photoRepository.SaveChanges();
-
             }
 
             Photo photo = new Photo();

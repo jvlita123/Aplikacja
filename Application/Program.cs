@@ -3,19 +3,18 @@ using Data.Entities;
 using Data.Repositories;
 using Data.Validators;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Service.Services;
-using Microsoft.AspNetCore.CookiePolicy;
-using FluentValidation.AspNetCore;
-using System.Reflection;
 
 namespace Application
 {
     public class Program
     {
+        [Obsolete]
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -28,18 +27,17 @@ namespace Application
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:3000")
-                    .AllowCredentials(); // W³¹cz zezwolenie na przesy³anie ciasteczek
-
+                    .AllowCredentials();
                 });
             });
 
-                       builder.Services.Configure<CookiePolicyOptions>(options =>
-                        {
-                            options.MinimumSameSitePolicy = SameSiteMode.None;
-                            options.HttpOnly = HttpOnlyPolicy.None;
-                            options.Secure = CookieSecurePolicy.Always;
-                            
-                        });
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+             {
+                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                 options.HttpOnly = HttpOnlyPolicy.None;
+                 options.Secure = CookieSecurePolicy.Always;
+
+             });
 
             builder.Services.AddControllersWithViews()
                 .AddJsonOptions(options =>
@@ -47,12 +45,8 @@ namespace Application
                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                 });
 
-            builder.Services.AddFluentValidation(opt =>
-            {
-                opt.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            });
-
-          //  builder.Services.AddValidatorsFromAssemblyContaining<LoginUserDtoValidator>();
+            builder.Services.AddFluentValidation(x => { x.RegisterValidatorsFromAssemblyContaining<MyUserDto>(); });
+            builder.Services.AddFluentValidation(x => { x.RegisterValidatorsFromAssemblyContaining<Cycle>(); });
 
             string connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
@@ -63,13 +57,14 @@ namespace Application
                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                options.SlidingExpiration = true;
                options.AccessDeniedPath = "/Forbidden/";
-               options.LoginPath ="/Account/LoginPage";
+               options.LoginPath = "/Account/LoginPage";
            });
-
 
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
             builder.Services.AddScoped<IValidator<MyUserDto>, MyUserValidator>();
+            builder.Services.AddScoped<IValidator<Course>, CourseValidator>();
+            builder.Services.AddScoped<IValidator<Cycle>, CycleValidator>();
             builder.Services.AddScoped<IValidator<Data.Entities.Service>, ServiceValidator>();
             builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<RoleRepository>();
@@ -100,7 +95,7 @@ namespace Application
             builder.Services.AddScoped<UserReservationSlotsService>();
             builder.Services.AddScoped<NotificationService>();
             builder.Services.AddHttpContextAccessor();
-        
+
             builder.Services.AddHostedService(provider =>
             {
                 var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
@@ -120,19 +115,15 @@ namespace Application
             }
 
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapControllerRoute(name: "user",
-                pattern: "{controller=User}/{action=Get}/{id?}");
 
             app.UseHttpsRedirection();
 

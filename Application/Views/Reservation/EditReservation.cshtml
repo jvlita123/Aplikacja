@@ -1,7 +1,5 @@
 ﻿@model Data.Entities.Reservation
-
 <h4>Reservation</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditReservation">
@@ -20,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PrimaryColor" class="control-label"></label>
-                <input asp-for="PrimaryColor" class="form-control" value="@Model.PrimaryColor"/>
+                <input asp-for="PrimaryColor" class="form-control" value="@Model.PrimaryColor" />
                 <span asp-validation-for="PrimaryColor" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -37,7 +35,6 @@
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
